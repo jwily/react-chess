@@ -27,3 +27,14 @@ body,
 }
 
 #board {}
+
+.row {
+  display: flex;
+}
+
+.square {
+  background-color: grey;
+  height: 3rem;
+  width: 3rem;
+  margin: .5rem;
+}
