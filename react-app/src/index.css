@@ -26,15 +26,20 @@ body,
   align-items: center;
 }
 
-#board {}
-
 .row {
   display: flex;
 }
 
 .square {
-  background-color: grey;
-  height: 3rem;
-  width: 3rem;
+  height: 4rem;
+  width: 4rem;
   margin: .5rem;
+}
+
+.white {
+  background-color: rgb(200, 200, 200);
+}
+
+.black {
+  background-color: rgb(50, 50, 50);
 }

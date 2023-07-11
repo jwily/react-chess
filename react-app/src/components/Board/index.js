@@ -18,10 +18,16 @@ const Board = () => {
     return (
       <div className='row' key={num}>
         {letters.map((letter) => {
-          return <div className='square'
-            key={letter + num}>{letter + num}</div>
-        })}
-      </div>
+
+          const color = (letters.indexOf(letter) + nums.indexOf(num)) % 2 === 0 ?
+            'white square' :
+            'black square'
+
+          return <div className={color}
+            key={letter + num} id={letter + num}></div>
+        })
+        }
+      </div >
     )
   })
 
