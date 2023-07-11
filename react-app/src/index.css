@@ -1,1 +1,45 @@
 /* TODO Add site wide styles */
+
+*,
+*::after,
+*::before {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  background: rgb(0, 4, 3);
+  background: -moz-linear-gradient(172deg, rgba(0, 4, 3, 1) 0%, rgba(71, 23, 99, 1) 60%, rgba(218, 89, 83, 1) 100%);
+  background: -webkit-linear-gradient(172deg, rgba(0, 4, 3, 1) 0%, rgba(71, 23, 99, 1) 60%, rgba(218, 89, 83, 1) 100%);
+  background: linear-gradient(172deg, rgba(0, 4, 3, 1) 0%, rgba(71, 23, 99, 1) 60%, rgba(218, 89, 83, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000403", endColorstr="#da5953", GradientType=1);
+  height: 100%;
+  width: 100%;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.row {
+  display: flex;
+}
+
+.square {
+  height: 4rem;
+  width: 4rem;
+  margin: .5rem;
+}
+
+.white {
+  background-color: rgb(200, 200, 200);
+}
+
+.black {
+  background-color: rgb(50, 50, 50);
+}
