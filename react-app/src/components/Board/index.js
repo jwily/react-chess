@@ -5,35 +5,38 @@ const Board = () => {
   const nums = [8, 7, 6, 5, 4, 3, 2, 1]
   const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 
-  // const [board, setBoard] = useState(
-  //   [
-  //     [1, 2, 3, 4],
-  //     [1, 2, 3, 4],
-  //     [1, 2, 3, 4],
-  //     [1, 2, 3, 4],
-  //   ]
-  // );
+  const [board, setBoard] = useState(
+    [
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+    ]
+  )
 
-  const rows = nums.map((num) => {
-    return (
-      <div className='row' key={num}>
-        {letters.map((letter) => {
+  console.log(board);
 
-          const color = (letters.indexOf(letter) + nums.indexOf(num)) % 2 === 0 ?
-            'white square' :
-            'black square'
-
-          return <div className={color}
-            key={letter + num} id={letter + num}></div>
-        })
-        }
-      </div >
-    )
-  })
+  const colorPick = (row, col) => {
+    return (row + col) % 2 === 0 ? 'white square' : 'black square';
+  }
 
   return (
-    <div id='board'>
-      {rows}
+    <div>
+      {board.map((row, rowIndex) => (
+        <div key={rowIndex} className="row">
+          {row.map((col, colIndex) => (
+            <span key={colIndex}
+              className={colorPick(rowIndex, colIndex)}
+              id={nums[rowIndex] + letters[colIndex]}>
+              {col}
+            </span>
+          ))}
+        </div>
+      ))}
     </div>
   )
 }
