@@ -1,7 +1,6 @@
 import { toNotation } from ".";
-import { data } from ".";
 
-const knightMoves = (r, c, board) => {
+const knightMoves = (r, c, board, player) => {
 
   // All hypothetical moves a knight can make
   // expressed in row and column changes
@@ -33,9 +32,9 @@ const knightMoves = (r, c, board) => {
     }
   });
 
-  return results.map(([r, c]) => {
-    return toNotation(r, c);
+  return results.map(([row, col]) => {
+    return toNotation(row, col, player);
   });
 }
 
-export default knightMoves
+export default knightMoves;

@@ -1,35 +1,39 @@
 import React, { useState } from 'react';
+import { data, starts, toRowCol } from '../../game-logic';
 import Square from './Square';
+import Options from './Options';
 
 const Board = () => {
 
-  const [board, setBoard] = useState(
-    [
-      ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-      ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      [' ', 'N', ' ', ' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-      ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-      ['R', ' ', 'B', 'Q', 'K', 'B', 'N', 'R']
-    ]
-  );
+  const player = 'black';
 
-  // Represents the square of a selected piece
-  // and the squares that piece can move to
-  // in chess notation (a8, b8, etc.)
+  const [board, setBoard] = useState(starts[player]);
+
+  // Location of the selected piece as well as
+  // possible spaces to move to are represented
+  // in algebraic notation (i.e. 'a8')
+  // for ease of comparison in JavaScript
   const [selected, setSelected] = useState('');
-  const [possible, setPossible] = useState([]);
   const [turn, setTurn] = useState('white');
+
+  const possible = (() => {
+    if (!selected) return [];
+
+    const [row, col] = toRowCol(selected, player);
+    const piece = board[row][col];
+    const movesFunction = data[piece].moves;
+
+    if (!movesFunction) return [];
+
+    return movesFunction(row, col, board, player);
+  })();
 
   return (
 
     // Clicking "off" the board de-selects pieces
     <div className='off-board'
-      onClick={(e) => {
-        setSelected('');
-        setPossible([]);
+      onClick={() => {
+        if (selected) setSelected('');
       }}
     >
       <div className='board'>
@@ -39,7 +43,6 @@ const Board = () => {
 
               // For each row, creating 8 Squares
               // each Square is given relevant state data
-
               return <Square
                 key={cIndex}
 
@@ -54,11 +57,11 @@ const Board = () => {
                 piece={piece !== ' ' ? piece : null}
 
                 // State data for manipulation of the board
+                player={player}
                 turn={turn}
                 selected={selected}
                 possible={possible}
                 setSelected={setSelected}
-                setPossible={setPossible}
                 setBoard={setBoard}
                 setTurn={setTurn}
               />
@@ -66,6 +69,7 @@ const Board = () => {
           </div>
         ))}
       </div>
+      <Options setBoard={setBoard} player={player} />
     </div >
   )
 }
