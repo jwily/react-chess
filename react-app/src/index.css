@@ -1,7 +1,7 @@
 /* TODO Add site wide styles */
 
 *,
-*::after,
+*::before,
 *::before {
   box-sizing: border-box;
   margin: 0;
@@ -11,13 +11,16 @@
 html,
 body,
 #root {
-  background: rgb(0, 4, 3);
-  background: -moz-linear-gradient(172deg, rgba(0, 4, 3, 1) 0%, rgba(71, 23, 99, 1) 60%, rgba(218, 89, 83, 1) 100%);
-  background: -webkit-linear-gradient(172deg, rgba(0, 4, 3, 1) 0%, rgba(71, 23, 99, 1) 60%, rgba(218, 89, 83, 1) 100%);
-  background: linear-gradient(172deg, rgba(0, 4, 3, 1) 0%, rgba(71, 23, 99, 1) 60%, rgba(218, 89, 83, 1) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#000403", endColorstr="#da5953", GradientType=1);
   height: 100%;
   width: 100%;
+}
+
+body {
+  background-image: url('./images/bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center center;
 }
 
 #root {
@@ -31,15 +34,191 @@ body,
 }
 
 .square {
-  height: 4rem;
-  width: 4rem;
-  margin: .5rem;
+  height: 5rem;
+  width: 5rem;
+  margin: 5px;
+
+  position: relative;
+
+  transition: background-color .5s;
+
+  /* Temporary, for illustrative purposes */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 900;
+}
+
+@media (max-width: 800px) {
+  .square {
+    height: 4rem;
+    width: 4rem;
+    margin: 4px;
+  }
+}
+
+@media (max-width: 675px) {
+  .square {
+    height: 3rem;
+    width: 3rem;
+    margin: 3px;
+  }
+}
+
+@media (max-width: 500px) {
+  .square {
+    height: 2rem;
+    width: 2rem;
+    margin: 2px;
+  }
+}
+
+.position {
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  font-size: 12px;
+  font-weight: normal;
+  user-select: none;
+  transition: color .5s;
+}
+
+.off-board {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.selected,
+.possible,
+.targeted,
+.selectable {
+  cursor: pointer;
+}
+
+.square.selected {
+  background-color: lightskyblue;
+}
+
+.square.possible {
+  background-color: lightgreen;
+}
+
+.square.targeted {
+  background-color: lightcoral;
+}
+
+.square.selected,
+.square.possible,
+.square.targeted {
+  color: rgb(50, 50, 50);
 }
 
 .white {
-  background-color: rgb(200, 200, 200);
+  background-color: rgba(200, 200, 200, .75);
+  color: rgb(60, 50, 50);
 }
 
 .black {
-  background-color: rgb(50, 50, 50);
+  background-color: rgba(60, 50, 50, .75);
+  color: rgb(200, 200, 200);
+}
+
+.white-king::before,
+.white-queen::before,
+.white-bishop::before,
+.white-rook::before,
+.white-knight::before,
+.black-king::before,
+.black-queen::before,
+.black-bishop::before,
+.black-rook::before,
+.black-knight::before {
+  padding-top: 5%;
+  width: 60%;
+  backface-visibility: hidden;
+}
+
+.black-pawn::before,
+.white-pawn::before {
+  padding-top: 5%;
+  width: 50%;
+}
+
+.white-king::before {
+  content: url('./images/no_shadow/w_king_svg_NoShadow.svg');
+}
+
+.white-queen::before {
+  content: url('./images/no_shadow/w_queen_svg_NoShadow.svg');
+}
+
+.white-bishop::before {
+  content: url('./images/no_shadow/w_bishop_svg_NoShadow.svg');
+}
+
+.white-rook::before {
+  content: url('./images/no_shadow/w_rook_svg_NoShadow.svg');
+}
+
+.white-knight::before {
+  content: url('./images/no_shadow/w_knight_svg_NoShadow.svg');
+}
+
+.white-pawn::before {
+  content: url('./images/no_shadow/w_pawn_svg_NoShadow.svg');
+}
+
+.black-king::before {
+  content: url('./images/no_shadow/b_king_svg_NoShadow.svg');
+}
+
+.black-queen::before {
+  content: url('./images/no_shadow/b_queen_svg_NoShadow.svg');
+}
+
+.black-bishop::before {
+  content: url('./images/no_shadow/b_bishop_svg_NoShadow.svg');
+}
+
+.black-rook::before {
+  content: url('./images/no_shadow/b_rook_svg_NoShadow.svg');
+}
+
+.black-knight::before {
+  content: url('./images/no_shadow/b_knight_svg_NoShadow.svg');
+}
+
+.black-pawn::before {
+  content: url('./images/no_shadow/b_pawn_svg_NoShadow.svg');
+}
+
+.game-options {
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+}
+
+.game-options button {
+  border: none;
+  color: rgba(60, 50, 50, .75);
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 5px;
+  border-radius: 5px;
+  transition: all .15s;
+}
+
+.game-options button:hover {
+  transform: translateY(-2px);
+  text-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.game-options button:active {
+  transform: translateY(0px);
+  text-shadow: none;
 }

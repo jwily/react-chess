@@ -1,40 +1,76 @@
 import React, { useState } from 'react';
+import { data, starts, toRowCol } from '../../game-logic';
+import Square from './Square';
+import Options from './Options';
 
 const Board = () => {
 
-  const nums = [8, 7, 6, 5, 4, 3, 2, 1]
-  const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+  const player = 'black';
 
-  // const [board, setBoard] = useState(
-  //   [
-  //     [1, 2, 3, 4],
-  //     [1, 2, 3, 4],
-  //     [1, 2, 3, 4],
-  //     [1, 2, 3, 4],
-  //   ]
-  // );
+  const [board, setBoard] = useState(starts[player]);
 
-  const rows = nums.map((num) => {
-    return (
-      <div className='row' key={num}>
-        {letters.map((letter) => {
+  // Location of the selected piece as well as
+  // possible spaces to move to are represented
+  // in algebraic notation (i.e. 'a8')
+  // for ease of comparison in JavaScript
+  const [selected, setSelected] = useState('');
+  const [turn, setTurn] = useState('white');
 
-          const color = (letters.indexOf(letter) + nums.indexOf(num)) % 2 === 0 ?
-            'white square' :
-            'black square'
+  const possible = (() => {
+    if (!selected) return [];
 
-          return <div className={color}
-            key={letter + num} id={letter + num}></div>
-        })
-        }
-      </div >
-    )
-  })
+    const [row, col] = toRowCol(selected, player);
+    const piece = board[row][col];
+    const movesFunction = data[piece].moves;
+
+    if (!movesFunction) return [];
+
+    return movesFunction(row, col, board, player);
+  })();
 
   return (
-    <div id='board'>
-      {rows}
-    </div>
+
+    // Clicking "off" the board de-selects pieces
+    <div className='off-board'
+      onClick={() => {
+        if (selected) setSelected('');
+      }}
+    >
+      <div className='board'>
+        {board.map((row, rIndex) => (
+          <div key={rIndex} className="row">
+            {row.map((piece, cIndex) => {
+
+              // For each row, creating 8 Squares
+              // each Square is given relevant state data
+              return <Square
+                key={cIndex}
+
+                // Coordinates
+                row={rIndex}
+                col={cIndex}
+
+                // State of the board
+                board={board}
+
+                // The occupying piece, if present
+                piece={piece !== ' ' ? piece : null}
+
+                // State data for manipulation of the board
+                player={player}
+                turn={turn}
+                selected={selected}
+                possible={possible}
+                setSelected={setSelected}
+                setBoard={setBoard}
+                setTurn={setTurn}
+              />
+            })}
+          </div>
+        ))}
+      </div>
+      <Options setBoard={setBoard} player={player} />
+    </div >
   )
 }
 
