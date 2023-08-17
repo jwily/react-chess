@@ -83,6 +83,10 @@ export const starts = {
   ]
 }
 
+export const rotateBoard = (board) => {
+  return board.map(row => [...row].reverse()).reverse();
+};
+
 
 // These two functions convert from
 // chess notation to coordinates and back

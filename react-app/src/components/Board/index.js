@@ -5,8 +5,7 @@ import Options from './Options';
 
 const Board = () => {
 
-  const player = 'black';
-
+  const [player, setPlayer] = useState('white')
   const [board, setBoard] = useState(starts[player]);
 
   // Location of the selected piece as well as
@@ -69,7 +68,7 @@ const Board = () => {
           </div>
         ))}
       </div>
-      <Options setBoard={setBoard} player={player} />
+      <Options setBoard={setBoard} player={player} setPlayer={setPlayer} />
     </div >
   )
 }

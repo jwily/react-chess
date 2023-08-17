@@ -139,14 +139,13 @@ body {
 .black-rook::before,
 .black-knight::before {
   padding-top: 5%;
-  width: 60%;
-  backface-visibility: hidden;
+  width: 55%;
 }
 
 .black-pawn::before,
 .white-pawn::before {
   padding-top: 5%;
-  width: 50%;
+  width: 45%;
 }
 
 .white-king::before {
@@ -201,6 +200,8 @@ body {
   position: absolute;
   top: 2rem;
   right: 2.5rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .game-options button {
