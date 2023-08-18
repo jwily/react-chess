@@ -14,7 +14,7 @@ const Options = ({ setBoard, player, setPlayer }) => {
 
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (e.ctrlKey && e.key === 'r') {
+      if (e.shiftKey && e.key === 'R') {
         resetBoard()
       } else if (e.code === 'Space') {
         switchPlayer()

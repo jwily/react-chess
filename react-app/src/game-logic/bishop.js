@@ -4,7 +4,8 @@ const bishopMoves = (r, c, board, player) => {
 
   const moves = [];
 
-  // Define diagonal directions: top-left, top-right, bottom-left, bottom-right
+  // Define diagonal directions:
+  // top-left, top-right, bottom-left, bottom-right
   const directions = [
     [-1, -1], [-1, 1], [1, -1], [1, 1]
   ];
@@ -14,8 +15,7 @@ const bishopMoves = (r, c, board, player) => {
     let newR = r + rowDir;
     let newC = c + colDir;
 
-    while (newR >= 0 && newR < board.length &&
-      newC >= 0 && newC < board[0].length) {
+    while (newR >= 0 && newR < 8 && newC >= 0 && newC < 8) {
 
       const targetPiece = board[newR][newC]
 
