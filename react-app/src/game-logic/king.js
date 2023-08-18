@@ -60,10 +60,6 @@ const diagonalCheck = (r, c, board, player) => {
 
       const piece = board[newR][newC]
 
-      if (piece !== enemyBishop && piece !== enemyQueen) {
-        return false
-      }
-
       if (piece === enemyBishop || piece === enemyQueen) {
         return true
       }
@@ -92,10 +88,6 @@ const verticalCheck = (r, c, board, player) => {
     while (newR >= 0 && newR < 8 && newC >= 0 && newC < 8) {
 
       const piece = board[newR][newC]
-
-      if (piece !== enemyRook && piece !== enemyQueen) {
-        return false
-      }
 
       if (piece === enemyRook || piece === enemyQueen) {
         return true

@@ -15,7 +15,7 @@ const pawnMoves = (r, c, board, player) => {
 
   if (board[nextR][c] === '.') moves.push([nextR, c]);
 
-  if (moves.length && firstMove) moves.push([firstMoveR, c]);
+  if (moves.length && firstMove && board[firstMoveR][c] === '.') moves.push([firstMoveR, c]);
 
   attacks.forEach(([newR, newC]) => {
     const rCheck = 0 <= newR && newR < 8;
