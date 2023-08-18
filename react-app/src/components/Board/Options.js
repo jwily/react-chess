@@ -12,28 +12,20 @@ const Options = ({ setBoard, player, examine, setPlayer, setExamine, setExamined
     setPlayer((prev) => prev === 'white' ? 'black' : 'white');
   }, [setPlayer])
 
-  const toggleExamine = useCallback(() => {
-    setExamine((prev) => !prev);
-    setExamined([]);
-  }, [setExamine, setExamined])
-
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (e.shiftKey && e.key === 'R') {
         resetBoard()
       } else if (e.code === 'Space') {
         switchPlayer()
-      } else if (e.shiftKey && e.key === 'E') {
-        toggleExamine();
       }
-    }
 
-    window.addEventListener('keydown', handleKeyPress);
+      window.addEventListener('keydown', handleKeyPress);
 
-    return () => {
-      window.removeEventListener('keydown', handleKeyPress);
-    };
-  }, [resetBoard, switchPlayer, toggleExamine])
+      return () => {
+        window.removeEventListener('keydown', handleKeyPress);
+      };
+    }, [resetBoard, switchPlayer, toggleExamine])
 
   return (
     <nav className='game-options'>
