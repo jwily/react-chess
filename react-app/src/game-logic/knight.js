@@ -1,6 +1,6 @@
 import { toNotation } from ".";
 
-const knightMoves = (r, c, board, player) => {
+const knightMoves = (r, c) => {
 
   // All hypothetical moves a knight can make
   // expressed in row and column changes
@@ -16,7 +16,7 @@ const knightMoves = (r, c, board, player) => {
     [1, -2],
   ];
 
-  const results = [];
+  const moves = [];
 
   // Calculates new possible ending locations
   // checks if those locations are within board constraints
@@ -28,13 +28,11 @@ const knightMoves = (r, c, board, player) => {
     const cCheck = 0 <= newC && newC < 8;
 
     if (rCheck && cCheck) {
-      results.push([newR, newC])
+      moves.push([newR, newC])
     }
   });
 
-  return results.map(([row, col]) => {
-    return toNotation(row, col, player);
-  });
+  return moves.map(([row, col]) => toNotation(row, col));
 }
 
 export default knightMoves;

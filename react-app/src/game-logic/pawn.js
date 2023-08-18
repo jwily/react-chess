@@ -1,35 +1,32 @@
-import { data, toNotation } from ".";
+import { data, toNotation, isWhite } from ".";
 
 const pawnMoves = (r, c, board, player) => {
 
-  const results = []
+  // Basically figuring out which direction
+  // the pawn should go based on the player
+  const nextR = isWhite(player) ? r - 1 : r + 1;
+  const firstMove = isWhite(player) ? r === 6 : r === 1;
+  const firstMoveR = isWhite(player) ? r - 2 : r + 2;
+  const attacks = [[nextR, c - 1], [nextR, c + 1]]
 
-  if (r - 1 < 0) return results;
+  const moves = []
 
-  const pawnPlayer = board[r][c] === 'P' ? 'white' : 'black';
-  const firstMove = r === 6;
+  if (nextR < 0) return moves;
 
-  if (board[r - 1][c] === ' ') {
-    results.push([r - 1, c]);
-  }
+  if (board[nextR][c] === '.') moves.push([nextR, c]);
 
-  if (results.length === 1 && board[r - 2][c] === ' ' && firstMove) {
-    results.push([r - 2, c]);
-  }
+  if (moves.length && firstMove && board[firstMoveR][c] === '.') moves.push([firstMoveR, c]);
 
-  const attacks = [[r - 1, c - 1], [r - 1, c + 1]];
   attacks.forEach(([newR, newC]) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
-    const targetAvailable = board[newR][newC] !== ' ';
-    const isOpposing = data[board[newR][newC]]?.player !== pawnPlayer
+    const targetAvailable = board[newR][newC] !== '.';
+    const isOpposing = data[board[newR][newC]]?.player !== player
 
-    if (rCheck && cCheck && targetAvailable && isOpposing) results.push([newR, newC])
+    if (rCheck && cCheck && targetAvailable && isOpposing) moves.push([newR, newC])
   })
 
-  return results.map(([row, col]) => {
-    return toNotation(row, col, player);
-  });
+  return moves.map(([row, col]) => toNotation(row, col));
 }
 
 export default pawnMoves;
