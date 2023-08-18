@@ -60,28 +60,16 @@ export const data = {
   },
 }
 
-export const starts = {
-  white: [
-    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
-  ],
-  black: [
-    ['R', 'N', 'B', 'K', 'Q', 'B', 'N', 'R'],
-    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-    ['r', 'n', 'b', 'k', 'q', 'b', 'n', 'r']
-  ]
-}
+export const start = [
+  ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+  ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+  ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+]
 
 export const rotateBoard = (board) => {
   return board.map(row => [...row].reverse()).reverse();
@@ -90,37 +78,18 @@ export const rotateBoard = (board) => {
 
 // These two functions convert from
 // chess notation to coordinates and back
-
 // i.e. 'a8' to [0, 0] and vice versa
 
-const notations = {
-  white: {
-    nums: [8, 7, 6, 5, 4, 3, 2, 1],
-    letters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-  },
-  black: {
-    // nums: [1, 2, 3, 4, 5, 6, 7, 8],
-    // letters: ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
-    nums: [8, 7, 6, 5, 4, 3, 2, 1],
-    letters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-  }
-}
+const nums = [8, 7, 6, 5, 4, 3, 2, 1];
+const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
 export const toNotation = (row, col, player) => {
-
-  const letters = notations[player].letters;
-  const nums = notations[player].nums;
   return letters[col] + nums[row];
 }
 
 export const toRowCol = (string, player) => {
-
-  const letters = notations[player].letters;
-  const nums = notations[player].nums;
-
   const letter = string[0];
   const num = parseInt(string[1]);
-
   return [nums.indexOf(num), letters.indexOf(letter)];
 }
 

@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { data, rotateBoard, starts, toRowCol } from '../../game-logic';
+import React, { useState, useMemo } from 'react';
+import { data, start, toRowCol } from '../../game-logic';
 import Square from './Square';
 import Options from './Options';
 
 const Board = () => {
 
   const [player, setPlayer] = useState('white')
-  const [board, setBoard] = useState(starts['white']);
+  const [board, setBoard] = useState(start);
 
   // Location of the selected piece as well as
   // possible spaces to move to are represented
@@ -15,7 +15,10 @@ const Board = () => {
   const [selected, setSelected] = useState('');
   const [turn, setTurn] = useState('white');
 
-  const possible = (() => {
+
+  // Not really sure if the useMemo
+  // adds any benefit here, to be honest
+  const possible = useMemo(() => {
     if (!selected) return [];
 
     const [row, col] = toRowCol(selected, player);
@@ -25,14 +28,21 @@ const Board = () => {
     if (!movesFunction) return [];
 
     return movesFunction(row, col, board, player);
-  })();
+  }, [board, player, selected]);
 
-  const generateRows = () => {
+  const generateRows = useMemo(() => {
+
     const rows = []
+
+    // Basically, the board state is read either
+    // normally or in reverse depending on the player
+    // That's what all these ternaries are for
     for (let r = player === 'white' ? 0 : 7;
       player === 'white' ? r <= 7 : r >= 0;
       player === 'white' ? r++ : r--) {
+
       const row = []
+
       for (let c = player === 'white' ? 0 : 7;
         player === 'white' ? c <= 7 : c >= 0;
         player === 'white' ? c++ : c--) {
@@ -61,21 +71,21 @@ const Board = () => {
           setTurn={setTurn}
         />))
       }
+
       rows.push(<div key={r} className='row'>{row}</div>);
+
     }
+
     return rows;
-  }
+
+  }, [board, player, possible, turn, selected])
 
   return (
-
     // Clicking "off" the board de-selects pieces
     <div className='off-board'
-      onClick={() => {
-        if (selected) setSelected('');
-      }}
-    >
+      onClick={() => { if (selected) setSelected('') }}>
       <div className='board'>
-        {generateRows()}
+        {generateRows}
       </div>
       <Options setBoard={setBoard} player={player} setPlayer={setPlayer} />
     </div >

@@ -1,15 +1,14 @@
 import React, { useCallback, useEffect } from "react";
 
-import { rotateBoard, starts } from "../../game-logic";
+import { start } from "../../game-logic";
 
 const Options = ({ setBoard, player, setPlayer }) => {
 
-  const resetBoard = useCallback(() => setBoard(starts[player]), [player, setBoard]);
+  const resetBoard = useCallback(() => setBoard(start), [setBoard]);
 
   const switchPlayer = useCallback(() => {
     setPlayer((prev) => prev === 'white' ? 'black' : 'white');
-    // setBoard((board) => rotateBoard(board));
-  }, [setBoard, setPlayer])
+  }, [setPlayer])
 
   useEffect(() => {
     const handleKeyPress = (e) => {
