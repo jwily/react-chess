@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { data, starts, toRowCol } from '../../game-logic';
+import React, { useState, useEffect } from 'react';
+import { data, rotateBoard, starts, toRowCol } from '../../game-logic';
 import Square from './Square';
 import Options from './Options';
 

@@ -2,9 +2,8 @@ import React from "react";
 
 import { data, toNotation, toRowCol, copyBoard } from '../../game-logic';
 
-const Square = ({ row, col, board, piece,
-  turn, selected, possible, player,
-  setSelected, setBoard, setTurn }) => {
+const Square = ({ row, col, board, piece, turn, selected,
+  possible, player, setSelected, setBoard, setTurn }) => {
 
   const colorPick = (row, col) => {
     // Simply determines if square is black or white
