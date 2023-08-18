@@ -33,7 +33,7 @@ const knightMoves = (r, c, board, player) => {
   });
 
   return results.map(([row, col]) => {
-    return toNotation(row, col, player);
+    return toNotation(row, col);
   });
 }
 

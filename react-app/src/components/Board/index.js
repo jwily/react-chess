@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { data, start, toRowCol } from '../../game-logic';
+import { data, start, toRowCol, isWhite } from '../../game-logic';
 import Square from './Square';
 import Options from './Options';
 
@@ -8,9 +8,8 @@ const Board = () => {
   const [player, setPlayer] = useState('white')
   const [board, setBoard] = useState(start);
 
-  // Location of the selected piece as well as
-  // possible spaces to move to are represented
-  // in algebraic notation (i.e. 'a8')
+  // Location of the selected piece as well as possible spaces
+  // to move to are represented in algebraic notation (i.e. 'a8')
   // for ease of comparison in JavaScript
   const [selected, setSelected] = useState('');
   const [turn, setTurn] = useState('white');
@@ -21,7 +20,7 @@ const Board = () => {
   const possible = useMemo(() => {
     if (!selected) return [];
 
-    const [row, col] = toRowCol(selected, player);
+    const [row, col] = toRowCol(selected,);
     const piece = board[row][col];
     const movesFunction = data[piece].moves;
 
@@ -36,16 +35,17 @@ const Board = () => {
 
     // Basically, the board state is read either
     // normally or in reverse depending on the player
+
     // That's what all these ternaries are for
-    for (let r = player === 'white' ? 0 : 7;
-      player === 'white' ? r <= 7 : r >= 0;
-      player === 'white' ? r++ : r--) {
+    for (let r = isWhite(player) ? 0 : 7;
+      isWhite(player) ? r <= 7 : r >= 0;
+      isWhite(player) ? r++ : r--) {
 
       const row = []
 
-      for (let c = player === 'white' ? 0 : 7;
-        player === 'white' ? c <= 7 : c >= 0;
-        player === 'white' ? c++ : c--) {
+      for (let c = isWhite(player) ? 0 : 7;
+        isWhite(player) ? c <= 7 : c >= 0;
+        isWhite(player) ? c++ : c--) {
 
         const piece = board[r][c];
         row.push((<Square
@@ -59,7 +59,7 @@ const Board = () => {
           board={board}
 
           // The occupying piece, if present
-          piece={piece !== ' ' ? piece : null}
+          piece={piece !== '.' ? piece : null}
 
           // State data for manipulation of the board
           player={player}

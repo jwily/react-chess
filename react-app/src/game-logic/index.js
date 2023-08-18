@@ -63,10 +63,10 @@ export const data = {
 export const start = [
   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
   ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  ['.', '.', '.', '.', '.', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.'],
+  ['.', '.', '.', '.', '.', '.', '.', '.'],
   ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
 ]
@@ -74,6 +74,12 @@ export const start = [
 export const rotateBoard = (board) => {
   return board.map(row => [...row].reverse()).reverse();
 };
+
+// Creates a shallow copy of the board state matrix
+
+export const copyBoard = (board) => {
+  return board.map((row) => [...row]);
+}
 
 
 // These two functions convert from
@@ -83,19 +89,14 @@ export const rotateBoard = (board) => {
 const nums = [8, 7, 6, 5, 4, 3, 2, 1];
 const letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-export const toNotation = (row, col, player) => {
+export const toNotation = (row, col) => {
   return letters[col] + nums[row];
 }
 
-export const toRowCol = (string, player) => {
+export const toRowCol = (string) => {
   const letter = string[0];
   const num = parseInt(string[1]);
   return [nums.indexOf(num), letters.indexOf(letter)];
 }
 
-
-// Creates a shallow copy of the board state matrix
-
-export const copyBoard = (board) => {
-  return board.map((row) => [...row]);
-}
+export const isWhite = (player) => player === 'white';

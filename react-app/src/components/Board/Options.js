@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 
-import { start } from "../../game-logic";
+import { start, isWhite } from "../../game-logic";
 
 const Options = ({ setBoard, player, setPlayer }) => {
 
@@ -30,7 +30,7 @@ const Options = ({ setBoard, player, setPlayer }) => {
     <nav className='game-options'>
       <button onClick={resetBoard}><i className="fa-solid fa-rotate-left"></i></button>
       <button onClick={switchPlayer}>
-        <i className={'fa-solid fa-toggle-' + (player === 'white' ? 'off' : 'on')}></i>
+        <i className={'fa-solid fa-toggle-' + (isWhite(player) ? 'off' : 'on')}></i>
       </button>
     </nav >
   )

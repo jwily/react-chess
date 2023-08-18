@@ -12,15 +12,15 @@ const Square = ({ row, col, board, piece, turn, selected,
 
   // A few booleans that are based on state data
   const isSelectable = piece && data[piece].player === player;
-  const isSelected = selected === toNotation(row, col, player);
-  const isPossible = possible.includes(toNotation(row, col, player));
+  const isSelected = selected === toNotation(row, col);
+  const isPossible = possible.includes(toNotation(row, col));
 
   const isAttackable = (() => {
     // Determines whether the square
     // is a potential target of an offensive move
     if (isPossible && piece) {
 
-      const [currR, currC] = toRowCol(selected, player);
+      const [currR, currC] = toRowCol(selected);
       const movingPiece = board[currR][currC];
       const movingPlayer = data[movingPiece].player;
       const occupyingPlayer = data[piece].player;
@@ -45,7 +45,7 @@ const Square = ({ row, col, board, piece, turn, selected,
   }
 
   const select = () => {
-    setSelected(toNotation(row, col, player));
+    setSelected(toNotation(row, col));
   }
 
   const deselect = () => {
@@ -59,11 +59,11 @@ const Square = ({ row, col, board, piece, turn, selected,
 
   const attack = () => {
 
-    const [currR, currC] = toRowCol(selected, player);
+    const [currR, currC] = toRowCol(selected);
     const newBoard = copyBoard(board);
 
     newBoard[row][col] = newBoard[currR][currC];
-    newBoard[currR][currC] = ' ';
+    newBoard[currR][currC] = '.';
 
     deselect();
     setBoard(newBoard);
@@ -73,7 +73,7 @@ const Square = ({ row, col, board, piece, turn, selected,
   const move = () => {
 
     const newBoard = copyBoard(board);
-    const [currR, currC] = toRowCol(selected, player);
+    const [currR, currC] = toRowCol(selected);
 
     // Swaps moving piece with an empty space
     [newBoard[currR][currC], newBoard[row][col]] = [newBoard[row][col], newBoard[currR][currC]];
@@ -90,7 +90,7 @@ const Square = ({ row, col, board, piece, turn, selected,
         + determineStatus()
         + (piece ? ` ${data[piece].player + '-' + data[piece].name}` : '')
       }
-      id={toNotation(row, col, player)}
+      id={toNotation(row, col)}
       onClick={(e) => {
         e.stopPropagation();
         if (isAttackable) attack();
@@ -102,7 +102,7 @@ const Square = ({ row, col, board, piece, turn, selected,
     >
 
       {/* Square notations for debugging purposes */}
-      <span className='position'>{toNotation(row, col, player)}</span>
+      <span className='position'>{toNotation(row, col)}</span>
 
     </span >
   )
