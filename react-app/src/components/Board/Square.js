@@ -2,11 +2,11 @@ import React from "react";
 
 import { data, toNotation, toRowCol, copyBoard } from '../../game-logic';
 
-const Square = ({ row, col, board, piece, turn, selected,
-  possible, player, setSelected, setBoard, setTurn }) => {
+const Square = ({ row, col, board, piece, turn, selected, possible,
+  player, setSelected, setBoard, setTurn }) => {
 
   const colorPick = (row, col) => {
-    // Simply determines if square is black or white
+    // Determines if square itself is black or white
     return (row + col) % 2 === 0 ? 'white square' : 'black square';
   }
 
@@ -20,18 +20,13 @@ const Square = ({ row, col, board, piece, turn, selected,
     // is a potential target of an offensive move
     if (isPossible && piece) {
 
-      const [currR, currC] = toRowCol(selected);
-      const movingPiece = board[currR][currC];
-      const movingPlayer = data[movingPiece].player;
+      const movingPlayer = player;
       const occupyingPlayer = data[piece].player;
 
       if (movingPlayer !== occupyingPlayer) {
         return true;
       }
     }
-
-    // Like the other statuses above
-    // returns either true or false
     return false;
   })();
 
@@ -72,11 +67,12 @@ const Square = ({ row, col, board, piece, turn, selected,
 
   const move = () => {
 
-    const newBoard = copyBoard(board);
     const [currR, currC] = toRowCol(selected);
+    const newBoard = copyBoard(board);
 
     // Swaps moving piece with an empty space
-    [newBoard[currR][currC], newBoard[row][col]] = [newBoard[row][col], newBoard[currR][currC]];
+    [newBoard[currR][currC], newBoard[row][col]] =
+      [newBoard[row][col], newBoard[currR][currC]];
 
     deselect();
     setBoard(newBoard);
@@ -101,8 +97,9 @@ const Square = ({ row, col, board, piece, turn, selected,
       }}
     >
 
-      {/* Square notations for debugging purposes */}
-      {/* <span className='position'>{toNotation(row, col)}</span> */}
+      {/* <span className='position'>
+        {toNotation(row, col)}
+      </span> */}
 
     </span >
   )

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 
 import { start, isWhite } from "../../game-logic";
 
-const Options = ({ setBoard, player, setPlayer }) => {
+const Options = ({ setBoard, player, examine, setPlayer, setExamine, setExamined }) => {
 
   // This stuff is mostly for debugging
 
@@ -12,12 +12,19 @@ const Options = ({ setBoard, player, setPlayer }) => {
     setPlayer((prev) => prev === 'white' ? 'black' : 'white');
   }, [setPlayer])
 
+  const toggleExamine = useCallback(() => {
+    setExamine((prev) => !prev);
+    setExamined([]);
+  }, [setExamine, setExamined])
+
   useEffect(() => {
     const handleKeyPress = (e) => {
       if (e.shiftKey && e.key === 'R') {
         resetBoard()
       } else if (e.code === 'Space') {
         switchPlayer()
+      } else if (e.shiftKey && e.key === 'E') {
+        toggleExamine();
       }
     }
 
@@ -26,7 +33,7 @@ const Options = ({ setBoard, player, setPlayer }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [resetBoard, switchPlayer])
+  }, [resetBoard, switchPlayer, toggleExamine])
 
   return (
     <nav className='game-options'>
@@ -34,6 +41,9 @@ const Options = ({ setBoard, player, setPlayer }) => {
       <button onClick={switchPlayer}>
         <i className={'fa-solid fa-toggle-' + (isWhite(player) ? 'off' : 'on')}></i>
       </button>
+      {/* <button onClick={toggleExamine}>
+        <i className={`fa-${examine ? 'solid' : 'regular'} fa-eye`}></i>
+      </button> */}
     </nav >
   )
 }

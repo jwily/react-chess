@@ -14,7 +14,6 @@ const Board = () => {
   const [selected, setSelected] = useState('');
   const [turn, setTurn] = useState('white');
 
-
   // Not really sure if the useMemo
   // adds any benefit here, to be honest
   const possible = useMemo(() => {
@@ -23,8 +22,6 @@ const Board = () => {
     const [row, col] = toRowCol(selected,);
     const piece = board[row][col];
     const movesFunction = data[piece].moves;
-
-    if (!movesFunction) return [];
 
     return movesFunction(row, col, board, player);
   }, [board, player, selected]);
@@ -87,7 +84,10 @@ const Board = () => {
       <div className='board'>
         {generateRows}
       </div>
-      <Options setBoard={setBoard} player={player} setPlayer={setPlayer} />
+      <Options
+        setBoard={setBoard}
+        player={player}
+        setPlayer={setPlayer} />
     </div >
   )
 }

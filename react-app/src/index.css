@@ -134,6 +134,10 @@ body {
   color: rgb(200, 200, 200);
 }
 
+.examined {
+  border: 2px solid orangered;
+}
+
 .white-king::before,
 .white-queen::before,
 .white-bishop::before,
