@@ -1,5 +1,7 @@
 import knightMoves from "./knight";
 import pawnMoves from "./pawn";
+import bishopMoves from "./bishop";
+import rookMoves from "./rook";
 
 // Traditionally, uppercase denotes white
 // while lowercase denotes black
@@ -14,18 +16,20 @@ export const data = {
     player: 'white',
     name: 'queen',
   },
-  'R': {
-    player: 'white',
-    name: 'rook',
-  },
   'B': {
     player: 'white',
     name: 'bishop',
+    moves: bishopMoves
   },
   'N': {
     player: 'white',
     name: 'knight',
     moves: knightMoves
+  },
+  'R': {
+    player: 'white',
+    name: 'rook',
+    moves: rookMoves
   },
   'P': {
     player: 'white',
@@ -40,18 +44,20 @@ export const data = {
     player: 'black',
     name: 'queen',
   },
-  'r': {
-    player: 'black',
-    name: 'rook',
-  },
   'b': {
     player: 'black',
     name: 'bishop',
+    moves: bishopMoves
   },
   'n': {
     player: 'black',
     name: 'knight',
     moves: knightMoves
+  },
+  'r': {
+    player: 'black',
+    name: 'rook',
+    moves: rookMoves
   },
   'p': {
     player: 'black',

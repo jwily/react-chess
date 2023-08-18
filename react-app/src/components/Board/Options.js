@@ -4,6 +4,8 @@ import { start, isWhite } from "../../game-logic";
 
 const Options = ({ setBoard, player, setPlayer }) => {
 
+  // This stuff is mostly for debugging
+
   const resetBoard = useCallback(() => setBoard(start), [setBoard]);
 
   const switchPlayer = useCallback(() => {

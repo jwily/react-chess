@@ -10,13 +10,13 @@ const pawnMoves = (r, c, board, player) => {
   const attacks = [[nextR, c - 1], [nextR, c + 1]]
   const pawnPlayer = board[r][c] === 'P' ? 'white' : 'black';
 
-  const results = []
+  const moves = []
 
-  if (nextR < 0) return results;
+  if (nextR < 0) return moves;
 
-  if (board[nextR][c] === '.') results.push([nextR, c]);
+  if (board[nextR][c] === '.') moves.push([nextR, c]);
 
-  if (results.length && firstMove) results.push([firstMoveR, c]);
+  if (moves.length && firstMove) moves.push([firstMoveR, c]);
 
   attacks.forEach(([newR, newC]) => {
     const rCheck = 0 <= newR && newR < 8;
@@ -24,12 +24,10 @@ const pawnMoves = (r, c, board, player) => {
     const targetAvailable = board[newR][newC] !== '.';
     const isOpposing = data[board[newR][newC]]?.player !== pawnPlayer
 
-    if (rCheck && cCheck && targetAvailable && isOpposing) results.push([newR, newC])
+    if (rCheck && cCheck && targetAvailable && isOpposing) moves.push([newR, newC])
   })
 
-  return results.map(([row, col]) => {
-    return toNotation(row, col);
-  });
+  return moves.map(([row, col]) => toNotation(row, col));
 }
 
 export default pawnMoves;
