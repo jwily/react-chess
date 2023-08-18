@@ -102,7 +102,7 @@ const Square = ({ row, col, board, piece, turn, selected,
     >
 
       {/* Square notations for debugging purposes */}
-      <span className='position'>{toNotation(row, col)}</span>
+      {/* <span className='position'>{toNotation(row, col)}</span> */}
 
     </span >
   )

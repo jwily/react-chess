@@ -44,6 +44,37 @@ const knightCheck = (r, c, board, player) => {
   return false
 }
 
+const kingCheck = (r, c, board, player) => {
+
+  const deltas = [
+    [-1, 1],
+    [1, -1],
+    [1, 1],
+    [-1, -1],
+    [1, 0],
+    [-1, 0],
+    [0, 1],
+    [0, -1]
+  ];
+
+  const enemyKing = isWhite(player) ? 'k' : 'K';
+
+  for (let [deltaR, deltaC] of deltas) {
+
+    const newR = r + deltaR;
+    const newC = c + deltaC;
+    const rCheck = 0 <= newR && newR < 8;
+    const cCheck = 0 <= newC && newC < 8;
+
+    if (rCheck && cCheck) {
+      const piece = board[newR][newC];
+      if (piece === enemyKing) return true;
+    }
+  }
+
+  return false
+}
+
 const diagonalCheck = (r, c, board, player) => {
 
   const directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
@@ -58,10 +89,14 @@ const diagonalCheck = (r, c, board, player) => {
 
     while (newR >= 0 && newR < 8 && newC >= 0 && newC < 8) {
 
-      const piece = board[newR][newC]
+      const piece = board[newR][newC];
+
+      if (piece !== '.' && piece !== enemyBishop && piece !== enemyQueen) {
+        return false;
+      };
 
       if (piece === enemyBishop || piece === enemyQueen) {
-        return true
+        return true;
       }
 
       newR += rowDir;
@@ -87,10 +122,14 @@ const verticalCheck = (r, c, board, player) => {
 
     while (newR >= 0 && newR < 8 && newC >= 0 && newC < 8) {
 
-      const piece = board[newR][newC]
+      const piece = board[newR][newC];
+
+      if (piece !== '.' && piece !== enemyRook && piece !== enemyQueen) {
+        return false;
+      };
 
       if (piece === enemyRook || piece === enemyQueen) {
-        return true
+        return true;
       }
 
       newR += rowDir;
@@ -126,7 +165,8 @@ const kingMoves = (r, c, board, player) => {
       !pawnCheck(newR, newC, board, player) &&
       !knightCheck(newR, newC, board, player) &&
       !diagonalCheck(newR, newC, board, player) &&
-      !verticalCheck(newR, newC, board, player)) {
+      !verticalCheck(newR, newC, board, player) &&
+      !kingCheck(newR, newC, board, player)) {
       moves.push([newR, newC])
     }
   });
@@ -135,3 +175,4 @@ const kingMoves = (r, c, board, player) => {
 }
 
 export default kingMoves;
+export { pawnCheck, knightCheck, diagonalCheck, verticalCheck, kingCheck };
