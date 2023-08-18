@@ -6,7 +6,7 @@ import Options from './Options';
 const Board = () => {
 
   const [player, setPlayer] = useState('white')
-  const [board, setBoard] = useState(starts[player]);
+  const [board, setBoard] = useState(starts['white']);
 
   // Location of the selected piece as well as
   // possible spaces to move to are represented
@@ -27,6 +27,45 @@ const Board = () => {
     return movesFunction(row, col, board, player);
   })();
 
+  const generateRows = () => {
+    const rows = []
+    for (let r = player === 'white' ? 0 : 7;
+      player === 'white' ? r <= 7 : r >= 0;
+      player === 'white' ? r++ : r--) {
+      const row = []
+      for (let c = player === 'white' ? 0 : 7;
+        player === 'white' ? c <= 7 : c >= 0;
+        player === 'white' ? c++ : c--) {
+
+        const piece = board[r][c];
+        row.push((<Square
+          key={c}
+
+          // Coordinates
+          row={r}
+          col={c}
+
+          // State of the board
+          board={board}
+
+          // The occupying piece, if present
+          piece={piece !== ' ' ? piece : null}
+
+          // State data for manipulation of the board
+          player={player}
+          turn={turn}
+          selected={selected}
+          possible={possible}
+          setSelected={setSelected}
+          setBoard={setBoard}
+          setTurn={setTurn}
+        />))
+      }
+      rows.push(<div key={r} className='row'>{row}</div>);
+    }
+    return rows;
+  }
+
   return (
 
     // Clicking "off" the board de-selects pieces
@@ -36,37 +75,7 @@ const Board = () => {
       }}
     >
       <div className='board'>
-        {board.map((row, rIndex) => (
-          <div key={rIndex} className="row">
-            {row.map((piece, cIndex) => {
-
-              // For each row, creating 8 Squares
-              // each Square is given relevant state data
-              return <Square
-                key={cIndex}
-
-                // Coordinates
-                row={rIndex}
-                col={cIndex}
-
-                // State of the board
-                board={board}
-
-                // The occupying piece, if present
-                piece={piece !== ' ' ? piece : null}
-
-                // State data for manipulation of the board
-                player={player}
-                turn={turn}
-                selected={selected}
-                possible={possible}
-                setSelected={setSelected}
-                setBoard={setBoard}
-                setTurn={setTurn}
-              />
-            })}
-          </div>
-        ))}
+        {generateRows()}
       </div>
       <Options setBoard={setBoard} player={player} setPlayer={setPlayer} />
     </div >

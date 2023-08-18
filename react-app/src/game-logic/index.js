@@ -99,8 +99,10 @@ const notations = {
     letters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
   },
   black: {
-    nums: [1, 2, 3, 4, 5, 6, 7, 8],
-    letters: ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
+    // nums: [1, 2, 3, 4, 5, 6, 7, 8],
+    // letters: ['h', 'g', 'f', 'e', 'd', 'c', 'b', 'a']
+    nums: [8, 7, 6, 5, 4, 3, 2, 1],
+    letters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
   }
 }
 

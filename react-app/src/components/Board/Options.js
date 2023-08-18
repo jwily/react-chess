@@ -8,7 +8,7 @@ const Options = ({ setBoard, player, setPlayer }) => {
 
   const switchPlayer = useCallback(() => {
     setPlayer((prev) => prev === 'white' ? 'black' : 'white');
-    setBoard((board) => rotateBoard(board));
+    // setBoard((board) => rotateBoard(board));
   }, [setBoard, setPlayer])
 
   useEffect(() => {
