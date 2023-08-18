@@ -8,7 +8,6 @@ const pawnMoves = (r, c, board, player) => {
   const firstMove = isWhite(player) ? r === 6 : r === 1;
   const firstMoveR = isWhite(player) ? r - 2 : r + 2;
   const attacks = [[nextR, c - 1], [nextR, c + 1]]
-  const pawnPlayer = board[r][c] === 'P' ? 'white' : 'black';
 
   const moves = []
 
@@ -22,7 +21,7 @@ const pawnMoves = (r, c, board, player) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
     const targetAvailable = board[newR][newC] !== '.';
-    const isOpposing = data[board[newR][newC]]?.player !== pawnPlayer
+    const isOpposing = data[board[newR][newC]]?.player !== player
 
     if (rCheck && cCheck && targetAvailable && isOpposing) moves.push([newR, newC])
   })
