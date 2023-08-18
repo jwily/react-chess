@@ -2,7 +2,7 @@ import React, { useCallback, useEffect } from "react";
 
 import { start, isWhite } from "../../game-logic";
 
-const Options = ({ setBoard, player, examine, setPlayer, setExamine, setExamined }) => {
+const Options = ({ setBoard, player, setPlayer }) => {
 
   // This stuff is mostly for debugging
 
@@ -19,13 +19,14 @@ const Options = ({ setBoard, player, examine, setPlayer, setExamine, setExamined
       } else if (e.code === 'Space') {
         switchPlayer()
       }
+    }
 
-      window.addEventListener('keydown', handleKeyPress);
+    window.addEventListener('keydown', handleKeyPress);
 
-      return () => {
-        window.removeEventListener('keydown', handleKeyPress);
-      };
-    }, [resetBoard, switchPlayer, toggleExamine])
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [resetBoard, switchPlayer])
 
   return (
     <nav className='game-options'>
