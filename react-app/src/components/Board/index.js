@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { data, start, toRowCol, isWhite } from '../../game-logic';
 import Square from './Square';
 import Options from './Options';
@@ -13,6 +13,16 @@ const Board = () => {
   // for ease of comparison in JavaScript
   const [selected, setSelected] = useState('');
   const [turn, setTurn] = useState('white');
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const res = await fetch('/api/games/1');
+      const game = await res.json();
+      setBoard(game.board);
+      setLoaded(true);
+    })();
+  }, [])
 
   // Not really sure if the useMemo
   // adds any benefit here, to be honest
@@ -81,9 +91,10 @@ const Board = () => {
     // Clicking "off" the board de-selects pieces
     <div className='off-board'
       onClick={() => { if (selected) setSelected('') }}>
-      <div className='board'>
-        {generateRows}
-      </div>
+      {loaded &&
+        <div className='board'>
+          {generateRows}
+        </div>}
       <Options
         setBoard={setBoard}
         player={player}

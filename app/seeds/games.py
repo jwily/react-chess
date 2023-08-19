@@ -3,9 +3,9 @@ from sqlalchemy.sql import text
 
 
 def seed_games():
-    demo_game = Game(
-
-    )
+    demo_game = Game(code=Game.generate_code())
+    db.session.add(demo_game)
+    db.session.commit()
 
 
 def undo_games():

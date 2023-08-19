@@ -13,11 +13,13 @@ class Game(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(12), nullable=False, unique=True)
-    board_state = db.Column(db.String(255), nullable=False)
+    board_state = db.Column(
+        db.String(255), nullable=False, default='rnbqkbnrpppppppp32PPPPPPPPRNBQKBNR')
     white_id = db.Column(db.Integer, db.ForeignKey(
         add_prefix_for_prod('users.id')))
     black_id = db.Column(db.Integer, db.ForeignKey(
         add_prefix_for_prod('users.id')))
+    turn = db.Column(db.String(5), nullable=False, default='white')
     completed = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(
         db.DateTime, server_default=func.now(), nullable=False)
@@ -27,7 +29,7 @@ class Game(db.Model):
 
     @staticmethod
     def generate_code():
-        chars = string.hexdigits
+        chars = string.ascii_letters
         code = ''.join(secrets.choice(chars) for _ in range(12))
         code_exists = Game.query.filter(Game.code == code).first() is not None
         if (code_exists):
@@ -42,6 +44,7 @@ class Game(db.Model):
             'board': self.board,
             'white': self.white_id,
             'black': self.black_id,
+            'turn': self.turn,
             'createdAt': self.created_at,
             'updatedAt': self.updated_at
         }
