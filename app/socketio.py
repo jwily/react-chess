@@ -17,7 +17,7 @@ socketio = SocketIO(cors_allowed_origins=origins)
 def on_game(data):
     # room = data['room']
     game_state = data
-    emit("game", data, broadcast=True)
+    emit("game", data, broadcast=True, include_self=False)
 
 @socketio.on('join')
 def on_join(data):
