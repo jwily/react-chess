@@ -219,6 +219,7 @@ body {
   margin: 5px;
   border-radius: 5px;
   transition: all .15s;
+  background-color: none;
 }
 
 .game-options button:hover {
