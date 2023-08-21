@@ -18,6 +18,8 @@ const Board = () => {
   const [turn, setTurn] = useState('white');
   const [loaded, setLoaded] = useState(false);
 
+  console.log('Re-render');
+
   useEffect(() => {
 
     (async () => {
