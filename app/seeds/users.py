@@ -22,5 +22,9 @@ def seed_users():
 # removes all the data from the table, and RESET IDENTITY resets the auto
 # incrementing primary key, CASCADE deletes any dependent entities.
 def undo_users():
-    db.session.execute(f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;")
+    if environment == "production":
+        db.session.execute(
+            f"TRUNCATE table {SCHEMA}.users RESTART IDENTITY CASCADE;")
+    else:
+        db.session.execute('TRUNCATE users RESTART IDENTITY CASCADE;')
     db.session.commit()
