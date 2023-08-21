@@ -2,6 +2,9 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { data, start, toRowCol, isWhite } from '../../game-logic';
 import Square from './Square';
 import Options from './Options';
+import { io } from 'socket.io-client';
+
+let socket;
 
 const Board = () => {
 
@@ -16,12 +19,23 @@ const Board = () => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+
     (async () => {
       const res = await fetch('/api/games/1');
       const game = await res.json();
       setBoard(game.board);
       setLoaded(true);
     })();
+
+    socket = io();
+
+    socket.on("game", (gameState) => {
+      setBoard(gameState)
+    })
+
+    return (() => {
+      socket.disconnect();
+    })
   }, [])
 
   // Not really sure if the useMemo
@@ -76,6 +90,7 @@ const Board = () => {
           setSelected={setSelected}
           setBoard={setBoard}
           setTurn={setTurn}
+          socket={socket}
         />))
       }
 

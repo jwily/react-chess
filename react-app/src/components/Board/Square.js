@@ -3,7 +3,7 @@ import React from "react";
 import { data, toNotation, toRowCol, copyBoard } from '../../game-logic';
 
 const Square = ({ row, col, board, piece, turn, selected, possible,
-  player, setSelected, setBoard, setTurn }) => {
+  player, setSelected, setBoard, setTurn, socket }) => {
 
   const colorPick = (row, col) => {
     // Determines if square itself is black or white
@@ -63,6 +63,8 @@ const Square = ({ row, col, board, piece, turn, selected, possible,
     deselect();
     setBoard(newBoard);
     // changeTurn();
+
+    socket.emit("game", newBoard)
   }
 
   const move = () => {
@@ -77,6 +79,8 @@ const Square = ({ row, col, board, piece, turn, selected, possible,
     deselect();
     setBoard(newBoard);
     // changeTurn();
+
+    socket.emit("game", newBoard)
   }
 
   return (
