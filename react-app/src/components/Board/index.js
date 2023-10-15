@@ -43,7 +43,7 @@ const Board = () => {
   const possible = useMemo(() => {
     if (!selected) return [];
 
-    const [row, col] = toRowCol(selected,);
+    const [row, col] = toRowCol(selected);
     const piece = board[row][col];
     const movesFunction = data[piece].moves;
 
