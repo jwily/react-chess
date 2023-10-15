@@ -79,65 +79,78 @@ const diagonalCheck = (r, c, board, player) => {
 
   const directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]];
 
+  for (const direction of directions) {
+    if (_diagonalCheck(r, c, board, player, direction)) return true;
+  }
+
+  return false;
+}
+
+const _diagonalCheck = (r, c, board, player, direction) => {
+
   const enemyBishop = isWhite(player) ? 'b' : 'B';
   const enemyQueen = isWhite(player) ? 'q' : 'Q';
+  const selfKing = isWhite(player) ? 'K' : 'k';
+
+  const [rowDir, colDir] = direction;
+  let newR = r + rowDir;
+  let newC = c + colDir;
+
+  while (newR >= 0 && newR < 8 && newC >= 0 && newC < 8) {
+
+    const piece = board[newR][newC];
+
+    if (piece !== '.' && piece !== enemyBishop && piece !== enemyQueen && piece !== selfKing) {
+      return false;
+    };
+
+    if (piece === enemyBishop || piece === enemyQueen) {
+      return true;
+    }
+
+    newR += rowDir;
+    newC += colDir;
+  }
+
+}
+
+const verticalCheck = (r, c, board, player) => {
+
+  const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
 
   for (const direction of directions) {
-    const [rowDir, colDir] = direction;
-    let newR = r + rowDir;
-    let newC = c + colDir;
-
-    while (newR >= 0 && newR < 8 && newC >= 0 && newC < 8) {
-
-      const piece = board[newR][newC];
-
-      if (piece !== '.' && piece !== enemyBishop && piece !== enemyQueen) {
-        return false;
-      };
-
-      if (piece === enemyBishop || piece === enemyQueen) {
-        return true;
-      }
-
-      newR += rowDir;
-      newC += colDir;
-    }
+    if (_verticalCheck(r, c, board, player, direction)) return true;
   }
 
   return false;
 }
 
 
-const verticalCheck = (r, c, board, player) => {
-
-  const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+const _verticalCheck = (r, c, board, player, direction) => {
 
   const enemyRook = isWhite(player) ? 'r' : 'R';
   const enemyQueen = isWhite(player) ? 'q' : 'Q';
+  const selfKing = isWhite(player) ? 'K' : 'k';
 
-  for (const direction of directions) {
-    const [rowDir, colDir] = direction;
-    let newR = r + rowDir;
-    let newC = c + colDir;
+  const [rowDir, colDir] = direction;
+  let newR = r + rowDir;
+  let newC = c + colDir;
 
-    while (newR >= 0 && newR < 8 && newC >= 0 && newC < 8) {
+  while (newR >= 0 && newR < 8 && newC >= 0 && newC < 8) {
 
-      const piece = board[newR][newC];
+    const piece = board[newR][newC];
 
-      if (piece !== '.' && piece !== enemyRook && piece !== enemyQueen) {
-        return false;
-      };
+    if (piece !== '.' && piece !== enemyRook && piece !== enemyQueen && piece !== selfKing) {
+      return false;
+    };
 
-      if (piece === enemyRook || piece === enemyQueen) {
-        return true;
-      }
-
-      newR += rowDir;
-      newC += colDir;
+    if (piece === enemyRook || piece === enemyQueen) {
+      return true;
     }
-  }
 
-  return false;
+    newR += rowDir;
+    newC += colDir;
+  }
 }
 
 const kingMoves = (r, c, board, player) => {
