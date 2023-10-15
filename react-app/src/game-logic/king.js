@@ -1,5 +1,13 @@
 import { toNotation, isWhite } from ".";
 
+// The various "check" functions verify
+// whether a possible destination for the king
+// would place it in the attack path of an
+// enemy piece
+
+// They are in a sense variations of
+// the various movement algorithms
+
 const pawnCheck = (r, c, board, player) => {
 
   const direction = isWhite(player) ? -1 : 1;
@@ -153,6 +161,17 @@ const _verticalCheck = (r, c, board, player, direction) => {
   }
 }
 
+// All of the the "check" functions are
+// neatly packaged here
+
+const legalKingMove = (r, c, board, player) => {
+  return !pawnCheck(r, c, board, player) &&
+    !knightCheck(r, c, board, player) &&
+    !diagonalCheck(r, c, board, player) &&
+    !verticalCheck(r, c, board, player) &&
+    !kingCheck(r, c, board, player)
+}
+
 const kingMoves = (r, c, board, player) => {
 
   const deltas = [
@@ -174,12 +193,7 @@ const kingMoves = (r, c, board, player) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
 
-    if (rCheck && cCheck &&
-      !pawnCheck(newR, newC, board, player) &&
-      !knightCheck(newR, newC, board, player) &&
-      !diagonalCheck(newR, newC, board, player) &&
-      !verticalCheck(newR, newC, board, player) &&
-      !kingCheck(newR, newC, board, player)) {
+    if (rCheck && cCheck && legalKingMove(newR, newC, board, player)) {
       moves.push([newR, newC])
     }
   });
