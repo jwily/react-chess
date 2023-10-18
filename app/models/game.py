@@ -13,13 +13,17 @@ class Game(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(12), nullable=False, unique=True)
-    board_state = db.Column(
+    _board = db.Column(
         db.String(255), nullable=False, default='rnbqkbnrpppppppp32PPPPPPPPRNBQKBNR')
     white_id = db.Column(db.Integer, db.ForeignKey(
         add_prefix_for_prod('users.id')))
     black_id = db.Column(db.Integer, db.ForeignKey(
         add_prefix_for_prod('users.id')))
     turn = db.Column(db.String(5), nullable=False, default='white')
+    white_long_ok = db.Column(db.Boolean, nullable=False, default=True)
+    white_short_ok = db.Column(db.Boolean, nullable=False, default=True)
+    black_long_ok = db.Column(db.Boolean, nullable=False, default=True)
+    black_short_ok = db.Column(db.Boolean, nullable=False, default=True)
     completed = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(
         db.DateTime, server_default=func.now(), nullable=False)
@@ -29,7 +33,7 @@ class Game(db.Model):
 
     @staticmethod
     def generate_code():
-        chars = string.ascii_letters
+        chars = string.ascii_letters + string.digits
         code = ''.join(secrets.choice(chars) for _ in range(12))
         code_exists = Game.query.filter(Game.code == code).first() is not None
         if (code_exists):
@@ -54,7 +58,7 @@ class Game(db.Model):
         nums = '123456890'
         int_string = ''
         decompressed = ''
-        for char in self.board_state:
+        for char in self._board:
             if char in nums:
                 int_string += char
             else:
@@ -66,7 +70,7 @@ class Game(db.Model):
 
     @board.setter
     def compress_board(self):
-        decompressed = ''.join([''.join(row) for row in self.board_state])
+        decompressed = ''.join([''.join(row) for row in self._board])
         count = 0
         compressed = ''
         for char in decompressed:
@@ -78,5 +82,5 @@ class Game(db.Model):
                     count = 0
                 compressed += char
 
-        self.board_state = compressed
+        self._board = compressed
         return compressed
