@@ -2,8 +2,10 @@ import React from "react";
 
 import { data, toNotation, toRowCol, copyBoard } from '../../game-logic';
 
-const Square = ({ row, col, board, piece, turn, selected, possible,
+const Square = React.memo(({ row, col, board, piece, turn, selected, possible,
   player, setSelected, setBoard, setTurn, socket }) => {
+
+  console.log(`Square ${row} ${col}`)
 
   const colorPick = (row, col) => {
     // Determines if square itself is black or white
@@ -107,6 +109,6 @@ const Square = ({ row, col, board, piece, turn, selected, possible,
 
     </span >
   )
-}
+})
 
 export default Square;
