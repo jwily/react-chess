@@ -225,6 +225,7 @@ body {
 
 .game-options div {
   display: flex;
+  align-items: center;
   justify-content: right;
 }
 
@@ -245,7 +246,7 @@ body {
 
 .game-options button:hover {
   transform: translateY(-2px);
-  text-shadow: 0 3px 5px rgba(0, 0, 0, 0.25);
+  text-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
 }
 
 .game-options button:active {
@@ -257,6 +258,13 @@ body {
   color: rgba(60, 50, 50, .75);
   user-select: none;
   font-size: 2.4rem;
+}
+
+#hotkey-info {
+  color: rgba(60, 50, 50, .5);
+  user-select: none;
+  font-size: 2rem;
+  margin-left: .8rem;
 }
 
 /* @media (max-width: 500px) {

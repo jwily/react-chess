@@ -38,6 +38,10 @@ const Options = ({ player, setPlayer, socket, turn }) => {
           {status === 2 && 'Reset Game'}
           {status === 3 && `Switch to ${isWhite(player) ? 'Black' : 'White'}`}
         </span>
+        <span id='hotkey-info'>
+          {status === 2 && 'shift + r'}
+          {status === 3 && 'spacebar'}
+        </span>
       </div>
       <div>
         <button
