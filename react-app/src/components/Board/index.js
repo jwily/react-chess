@@ -153,7 +153,6 @@ const Board = () => {
       <Options
         player={player}
         setPlayer={setPlayer}
-        setBoard={setBoard}
         turn={turn}
         socket={socket} />
     </div >

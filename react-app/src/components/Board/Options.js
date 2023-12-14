@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
-import { start, isWhite } from "../../game-logic";
+import { isWhite } from "../../game-logic";
 
-const Options = ({ setBoard, player, setPlayer, socket, turn }) => {
+const Options = ({ player, setPlayer, socket, turn }) => {
 
-  // This stuff is mostly for debugging
+  const [status, setStatus] = useState(1);
 
   const resetBoard = useCallback(() => {
     socket.emit("reset");
@@ -33,17 +33,31 @@ const Options = ({ setBoard, player, setPlayer, socket, turn }) => {
   return (
     <nav className='game-options'>
       <div>
-        <button onClick={switchPlayer}>
-          <i className={`fa-${isWhite(player) ? 'regular' : 'solid'} fa-chess-knight`}></i>
+        <span id='status'>
+          {status === 1 && (turn === 'white' ? 'White Moves' : 'Black Moves')}
+          {status === 2 && 'Reset Game'}
+          {status === 3 && `Switch to ${isWhite(player) ? 'Black' : 'White'}`}
+        </span>
+      </div>
+      <div>
+        <button
+          id='reset-btn'
+          onClick={resetBoard}
+          onMouseEnter={() => setStatus(2)}
+          onMouseLeave={() => setStatus(1)}
+        ><i className="fa-solid fa-power-off"></i>
         </button>
-        <button onClick={resetBoard}><i className="fa-solid fa-rotate-left"></i></button>
+        <button
+          id='switch-btn'
+          onClick={switchPlayer}
+          onMouseEnter={() => setStatus(3)}
+          onMouseLeave={() => setStatus(1)}
+        ><i className={`fa-${isWhite(player) ? 'regular' : 'solid'} fa-chess-knight`}></i>
+        </button>
       </div>
       {/* <button onClick={toggleExamine}>
         <i className={`fa-${examine ? 'solid' : 'regular'} fa-eye`}></i>
       </button> */}
-      <div>
-        <span id='turn-status'>{turn === 'white' ? 'White Moves' : 'Black Moves'}</span>
-      </div>
     </nav >
   )
 }
