@@ -18,12 +18,16 @@ const Board = () => {
   const [turn, setTurn] = useState('white');
   const [loaded, setLoaded] = useState(false);
 
+  const [shouldUpdate, setShouldUpdate] = useState(false);
+
   useEffect(() => {
 
     (async () => {
+
       const res = await fetch('/api/games/1');
       const game = await res.json();
       setBoard(game.board);
+      setTurn(game.turn);
       setLoaded(true);
     })();
 
@@ -44,7 +48,33 @@ const Board = () => {
     })
   }, [])
 
-  const executeMove = (curr, target) => {
+  useEffect(() => {
+
+    const updateGame = () => {
+      fetch('/api/games/1', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          board, turn
+        })
+      })
+    }
+
+    let debounceTimer;
+
+    if (shouldUpdate) {
+      debounceTimer = setTimeout(() => {
+        updateGame();
+      })
+    }
+
+    return () => clearInterval(debounceTimer);
+
+  }, [board, turn, shouldUpdate])
+
+  const executeMove = async (curr, target) => {
     const [currR, currC] = toRowCol(curr);
     const [targetR, targetC] = toRowCol(target);
 
@@ -54,9 +84,9 @@ const Board = () => {
     newBoard[currR][currC] = '.';
 
     setSelected('');
+    setShouldUpdate(true);
     setBoard(newBoard);
     setTurn(prev => prev === 'white' ? 'black' : 'white');
-
     socket.emit("game", newBoard);
   }
 
@@ -134,6 +164,10 @@ const Board = () => {
 
   }, [board, player, possible, turn, selected])
 
+  if (!loaded) {
+    return null;
+  }
+
   return (
     // Clicking "off" the board de-selects pieces
     <div className='off-board'
@@ -143,13 +177,12 @@ const Board = () => {
         }
       }}
     >
-      {loaded &&
-        <div
-          className='board'
-          onClick={clickHandler}
-        >
-          {generateRows}
-        </div>}
+      <div
+        className='board'
+        onClick={clickHandler}
+      >
+        {generateRows}
+      </div>
       <Options
         player={player}
         setPlayer={setPlayer}

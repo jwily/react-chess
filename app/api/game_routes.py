@@ -13,9 +13,24 @@ def games():
 
 
 @game_routes.route('/<int:id>')
-def game(id):
+def get_game(id):
     game = Game.query.get(id)
     return game.to_dict()
+
+
+@game_routes.route('/<int:id>', methods=['PUT'])
+def update_game(id):
+    form = DummyForm()
+    form['csrf_token'].data = request.cookies['csrf_token']
+    if form.validate_on_submit():
+        game = Game.query.get(id)
+        data = request.json
+        game.board = data['board']
+        game.turn = data['turn']
+        db.session.add(game)
+        db.session.commit()
+        return game.to_dict()
+
 
 @game_routes.route('/new', methods=['POST'])
 def new_game():

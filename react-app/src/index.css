@@ -245,12 +245,13 @@ body {
 }
 
 .game-options button:hover {
-  transform: translateY(-2px);
+  padding-bottom: 2px;
   text-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
 }
 
 .game-options button:active {
-  transform: translateY(0px);
+  padding-bottom: 0px;
+  opacity: .5;
   text-shadow: none;
 }
 
@@ -265,6 +266,21 @@ body {
   user-select: none;
   font-size: 2rem;
   margin-left: .8rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in-slow {
+  opacity: 0;
+  animation: fadeIn 1s ease-in 1 forwards;
 }
 
 /* @media (max-width: 500px) {

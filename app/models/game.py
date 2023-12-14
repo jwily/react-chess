@@ -12,7 +12,7 @@ class Game(db.Model):
         __table_args__ = {'schema': SCHEMA}
 
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(12), nullable=False, unique=True)
+    code = db.Column(db.String(12), nullable=False, unique=True, index=True)
     _board = db.Column(
         db.String(255), nullable=False, default='rnbqkbnrpppppppp32PPPPPPPPRNBQKBNR')
     white_id = db.Column(db.Integer, db.ForeignKey(
@@ -69,8 +69,8 @@ class Game(db.Model):
         return [list(decompressed[i * 8: (i + 1) * 8]) for i in range(8)]
 
     @board.setter
-    def compress_board(self):
-        decompressed = ''.join([''.join(row) for row in self._board])
+    def board(self, board):
+        decompressed = ''.join([''.join(row) for row in board])
         count = 0
         compressed = ''
         for char in decompressed:
@@ -83,4 +83,3 @@ class Game(db.Model):
                 compressed += char
 
         self._board = compressed
-        return compressed
