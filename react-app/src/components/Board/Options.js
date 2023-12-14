@@ -2,11 +2,13 @@ import React, { useCallback, useEffect } from "react";
 
 import { start, isWhite } from "../../game-logic";
 
-const Options = ({ setBoard, player, setPlayer }) => {
+const Options = ({ setBoard, player, setPlayer, socket, turn }) => {
 
   // This stuff is mostly for debugging
 
-  const resetBoard = useCallback(() => setBoard(start), [setBoard]);
+  const resetBoard = useCallback(() => {
+    socket.emit("reset");
+  }, [socket]);
 
   const switchPlayer = useCallback(() => {
     setPlayer((prev) => prev === 'white' ? 'black' : 'white');
@@ -30,13 +32,18 @@ const Options = ({ setBoard, player, setPlayer }) => {
 
   return (
     <nav className='game-options'>
-      <button onClick={resetBoard}><i className="fa-solid fa-rotate-left"></i></button>
-      <button onClick={switchPlayer}>
-        <i className={'fa-solid fa-toggle-' + (isWhite(player) ? 'off' : 'on')}></i>
-      </button>
+      <div>
+        <button onClick={switchPlayer}>
+          <i className={`fa-${isWhite(player) ? 'regular' : 'solid'} fa-chess-knight`}></i>
+        </button>
+        <button onClick={resetBoard}><i className="fa-solid fa-rotate-left"></i></button>
+      </div>
       {/* <button onClick={toggleExamine}>
         <i className={`fa-${examine ? 'solid' : 'regular'} fa-eye`}></i>
       </button> */}
+      <div>
+        <span id='turn-status'>{turn === 'white' ? 'White Moves' : 'Black Moves'}</span>
+      </div>
     </nav >
   )
 }

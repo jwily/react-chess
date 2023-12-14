@@ -30,7 +30,13 @@ const Board = () => {
     socket = io();
 
     socket.on("game", (gameState) => {
-      setBoard(gameState)
+      setBoard(gameState);
+      setTurn(prev => prev === 'white' ? 'black' : 'white');
+    })
+
+    socket.on("reset", () => {
+      setBoard(start);
+      setTurn("white");
     })
 
     return (() => {
@@ -49,6 +55,9 @@ const Board = () => {
 
     setSelected('');
     setBoard(newBoard);
+    setTurn(prev => prev === 'white' ? 'black' : 'white');
+
+    socket.emit("game", newBoard);
   }
 
   const clickHandler = (e) => {
@@ -107,6 +116,9 @@ const Board = () => {
           piece={piece !== '.' ? piece : null}
           color={(r + c) % 2 === 0 ? 'white square' : 'black square'}
 
+          isSelectable={piece !== '.'
+            && data[piece].player === player
+            && turn === player}
           isSelected={selected === notation}
           isPossible={possible.has(notation)}
 
@@ -139,9 +151,11 @@ const Board = () => {
           {generateRows}
         </div>}
       <Options
-        setBoard={setBoard}
         player={player}
-        setPlayer={setPlayer} />
+        setPlayer={setPlayer}
+        setBoard={setBoard}
+        turn={turn}
+        socket={socket} />
     </div >
   )
 }

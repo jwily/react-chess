@@ -2,11 +2,9 @@ import React from "react";
 
 import { data } from '../../game-logic';
 
-const Square = React.memo(({ color, notation, piece, turn, isSelected, isPossible, player }) => {
+const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, isPossible, player }) => {
 
-  console.log(`Square ${notation}`)
-
-  const isSelectable = piece && data[piece].player === player;
+  console.log(`Square Rendered`)
 
   const isAttackable = (() => {
     // Determines whether the square
@@ -41,11 +39,9 @@ const Square = React.memo(({ color, notation, piece, turn, isSelected, isPossibl
       }
       id={notation}
     >
-
-      <span className='position'>
+      {/* <span className='position'>
         {notation}
-      </span>
-
+      </span> */}
     </span >
   )
 })
