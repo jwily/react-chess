@@ -58,7 +58,7 @@ class Game(db.Model):
         nums = '123456890'
         int_string = ''
         decompressed = ''
-        for char in self._board:
+        for char in self._board + '_':
             if char in nums:
                 int_string += char
             else:
@@ -66,20 +66,20 @@ class Game(db.Model):
                     decompressed += '.' * int(int_string)
                     int_string = ''
                 decompressed += char
+
         return [list(decompressed[i * 8: (i + 1) * 8]) for i in range(8)]
 
     @board.setter
-    def board(self, board):
-        decompressed = ''.join([''.join(row) for row in board])
+    def board(self, matrix):
+        compressed = ''.join([''.join(row) for row in matrix]) + '_'
         count = 0
-        compressed = ''
-        for char in decompressed:
+        board_string = ''
+        for char in compressed:
             if char == '.':
                 count += 1
             else:
                 if count:
-                    compressed += str(count)
+                    board_string += str(count)
                     count = 0
-                compressed += char
-
-        self._board = compressed
+                board_string += char
+        self._board = board_string[:-1]

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import { data } from '../../game-logic';
 
-const Square = React.memo(({ color, notation, piece, animated, isSelectable, isSelected, isPossible, player }) => {
+const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, isPossible, player }) => {
 
   const isAttackable = (() => {
     // Determines whether the square
