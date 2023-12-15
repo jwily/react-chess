@@ -278,9 +278,21 @@ body {
   }
 }
 
+
+.fade-in-nav {
+  animation: fadeIn 1s ease-in-out 1 forwards;
+}
+
 .fade-in-slow {
-  opacity: 0;
-  animation: fadeIn 1s ease-in 1 forwards;
+  animation: fadeIn .8s ease-in-out 1 forwards;
+}
+
+.fade-in-med {
+  animation: fadeIn .6s ease-in-out 1 forwards;
+}
+
+.fade-in-fast {
+  animation: fadeIn .4s ease-in-out 1 forwards;
 }
 
 /* @media (max-width: 500px) {

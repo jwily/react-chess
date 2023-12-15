@@ -1,8 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { data } from '../../game-logic';
 
+const animationClasses = [
+  'fade-in-slow',
+  'fade-in-med',
+  'fade-in-fast',
+]
+
 const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, isPossible, player }) => {
+
+  const [animated, setAnimated] = useState(true);
+
+  useEffect(() => {
+
+    const removeAnimation = setTimeout(() => {
+      setAnimated(false);
+    }, 800)
+
+    return () => clearTimeout(removeAnimation);
+
+  }, [])
 
   const isAttackable = (() => {
     // Determines whether the square
@@ -34,6 +52,7 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
         color
         + determineStatus()
         + (piece ? ` ${data[piece].player + '-' + data[piece].name}` : '')
+        + (` ${animated ? animationClasses[Math.floor(Math.random() * 3)] : ''}`)
       }
       id={notation}
     >

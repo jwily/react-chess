@@ -115,7 +115,6 @@ const Board = () => {
 
     return new Set(movesFunction(row, col, board, player));
 
-    // return movesFunction(row, col, board, player);
   }, [board, player, selected]);
 
   const generateRows = useMemo(() => {

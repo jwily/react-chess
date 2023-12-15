@@ -1,34 +1,47 @@
-// import React, { useState, useEffect } from "react";
-import React from 'react';
-// import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
-// import SignupFormPage from "./components/SignupFormPage";
-// import LoginFormPage from "./components/LoginFormPage";
-// import { authenticate } from "./store/session";
-// import Navigation from "./components/Navigation";
 import Board from './components/Board';
 import Dummy from './components/Dummy';
 
+import WhiteKing from './images/no_shadow/w_king_svg_NoShadow.svg'
+import WhiteQueen from './images/no_shadow/w_queen_svg_NoShadow.svg'
+import WhiteBishop from './images/no_shadow/w_bishop_svg_NoShadow.svg'
+import WhiteRook from './images/no_shadow/w_rook_svg_NoShadow.svg'
+import WhiteKnight from './images/no_shadow/w_knight_svg_NoShadow.svg'
+import WhitePawn from './images/no_shadow/w_pawn_svg_NoShadow.svg'
+
+import BlackKing from './images/no_shadow/b_king_svg_NoShadow.svg'
+import BlackQueen from './images/no_shadow/b_queen_svg_NoShadow.svg'
+import BlackBishop from './images/no_shadow/b_bishop_svg_NoShadow.svg'
+import BlackRook from './images/no_shadow/b_rook_svg_NoShadow.svg'
+import BlackKnight from './images/no_shadow/b_knight_svg_NoShadow.svg'
+import BlackPawn from './images/no_shadow/b_pawn_svg_NoShadow.svg'
+
+const imagePaths = [
+  WhiteKing, WhiteQueen, WhiteBishop, WhiteRook, WhiteKnight, WhitePawn,
+  BlackKing, BlackQueen, BlackBishop, BlackRook, BlackKnight, BlackPawn
+]
+
 function App() {
-  // const dispatch = useDispatch();
-  // const [isLoaded, setIsLoaded] = useState(false);
-  // useEffect(() => {
-  //   dispatch(authenticate()).then(() => setIsLoaded(true));
-  // }, [dispatch]);
+
+  const [imagesLoaded, setImagesLoaded] = useState({});
+
+  useEffect(() => {
+    imagePaths.forEach(path => {
+      const img = new Image();
+      img.onload = () => setImagesLoaded(prev => ({ ...prev, [path]: true }));
+      img.src = path;
+    })
+  }, [])
+
+  const allImagesLoaded = () => {
+    return imagePaths.every(path => imagesLoaded[path]);
+  }
+
+  if (!allImagesLoaded) return null;
 
   return (
     <>
-      {/* <Navigation isLoaded={isLoaded} />
-      {isLoaded && (
-        <Switch>
-          <Route path="/login" >
-            <LoginFormPage />
-          </Route>
-          <Route path="/signup">
-            <SignupFormPage />
-          </Route>
-        </Switch>
-      )} */}
       <Switch>
         <Route exact path='/'>
           <Board />

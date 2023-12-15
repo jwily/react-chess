@@ -4,17 +4,34 @@ import { isWhite } from "../../game-logic";
 
 const Options = ({ player, setPlayer, socket, turn }) => {
 
+  const [animated, setAnimated] = useState(true);
+
+  useEffect(() => {
+
+    const removeAnimation = setTimeout(() => {
+      setAnimated(false);
+    }, 800)
+
+    return () => clearTimeout(removeAnimation);
+
+  }, [])
+
   const [status, setStatus] = useState('turn');
 
   const resetBoard = useCallback(() => {
-    socket.emit("reset");
-  }, [socket]);
+    if (!animated) {
+      socket.emit("reset");
+    }
+  }, [socket, animated]);
 
   const switchPlayer = useCallback(() => {
-    setPlayer((prev) => prev === 'white' ? 'black' : 'white');
-  }, [setPlayer])
+    if (!animated) {
+      setPlayer((prev) => prev === 'white' ? 'black' : 'white');
+    }
+  }, [setPlayer, animated])
 
   useEffect(() => {
+
     const handleKeyPress = (e) => {
       if (e.shiftKey && e.key === 'R') {
         resetBoard()
@@ -28,10 +45,11 @@ const Options = ({ player, setPlayer, socket, turn }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
+
   }, [resetBoard, switchPlayer])
 
   return (
-    <nav className='game-options'>
+    <nav className={'game-options' + (animated ? ' fade-in-nav' : '')}>
       <div>
         <span id='status'>
           {status === 'turn' && (turn === 'white' ? 'White Moves' : 'Black Moves')}
