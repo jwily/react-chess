@@ -10,7 +10,7 @@ const Options = ({ player, setPlayer, socket, turn }) => {
 
     const removeAnimation = setTimeout(() => {
       setAnimated(false);
-    }, 800)
+    }, 850)
 
     return () => clearTimeout(removeAnimation);
 
@@ -77,9 +77,6 @@ const Options = ({ player, setPlayer, socket, turn }) => {
         ><i className={`fa-${isWhite(player) ? 'regular' : 'solid'} fa-chess-knight`}></i>
         </button>
       </div>
-      {/* <button onClick={toggleExamine}>
-        <i className={`fa-${examine ? 'solid' : 'regular'} fa-eye`}></i>
-      </button> */}
     </nav >
   )
 }

@@ -16,7 +16,7 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
 
     const removeAnimation = setTimeout(() => {
       setAnimated(false);
-    }, 800)
+    }, 850)
 
     return () => clearTimeout(removeAnimation);
 
