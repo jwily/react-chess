@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { data, start, toRowCol, isWhite } from '../../game-logic';
+import { data, start, toRowCol, isWhite, toNotation, copyBoard } from '../../game-logic';
 import Square from './Square';
 import Options from './Options';
 import { io } from 'socket.io-client';
@@ -18,19 +18,29 @@ const Board = () => {
   const [turn, setTurn] = useState('white');
   const [loaded, setLoaded] = useState(false);
 
+  const [shouldUpdate, setShouldUpdate] = useState(false);
+
   useEffect(() => {
 
     (async () => {
+
       const res = await fetch('/api/games/1');
       const game = await res.json();
       setBoard(game.board);
+      setTurn(game.turn);
       setLoaded(true);
     })();
 
     socket = io();
 
     socket.on("game", (gameState) => {
-      setBoard(gameState)
+      setBoard(gameState);
+      setTurn(prev => prev === 'white' ? 'black' : 'white');
+    })
+
+    socket.on("reset", () => {
+      setBoard(start);
+      setTurn("white");
     })
 
     return (() => {
@@ -38,16 +48,73 @@ const Board = () => {
     })
   }, [])
 
+  useEffect(() => {
+
+    const updateGame = () => {
+      fetch('/api/games/1', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          board, turn
+        })
+      })
+    }
+
+    let debounceTimer;
+
+    if (shouldUpdate) {
+      debounceTimer = setTimeout(() => {
+        updateGame();
+      })
+    }
+
+    return () => clearInterval(debounceTimer);
+
+  }, [board, turn, shouldUpdate])
+
+  const executeMove = async (curr, target) => {
+    const [currR, currC] = toRowCol(curr);
+    const [targetR, targetC] = toRowCol(target);
+
+    const newBoard = copyBoard(board);
+
+    newBoard[targetR][targetC] = newBoard[currR][currC];
+    newBoard[currR][currC] = '.';
+
+    setSelected('');
+    setShouldUpdate(true);
+    setBoard(newBoard);
+    setTurn(prev => prev === 'white' ? 'black' : 'white');
+    socket.emit("game", newBoard);
+  }
+
+  const clickHandler = (e) => {
+
+    e.stopPropagation();
+
+    if (e.target.className.includes('selectable')) {
+      setSelected(e.target.id);
+    } else if (e.target.className.includes('possible')
+      || e.target.className.includes('target')) {
+      executeMove(selected, e.target.id);
+    } else {
+      setSelected('');
+    }
+  };
+
   // Not really sure if the useMemo
   // adds any benefit here, to be honest
   const possible = useMemo(() => {
-    if (!selected) return [];
+    if (!selected) return new Set();
 
     const [row, col] = toRowCol(selected);
     const piece = board[row][col];
     const movesFunction = data[piece].moves;
 
-    return movesFunction(row, col, board, player);
+    return new Set(movesFunction(row, col, board, player));
+
   }, [board, player, selected]);
 
   const generateRows = useMemo(() => {
@@ -57,7 +124,7 @@ const Board = () => {
     // Basically, the board state is read either
     // normally or in reverse depending on the player
 
-    // That's what all these ternaries are for
+    // The ternaries set the direction of the board
     for (let r = isWhite(player) ? 0 : 7;
       isWhite(player) ? r <= 7 : r >= 0;
       isWhite(player) ? r++ : r--) {
@@ -69,51 +136,57 @@ const Board = () => {
         isWhite(player) ? c++ : c--) {
 
         const piece = board[r][c];
+        const notation = toNotation(r, c);
+
         row.push((<Square
           key={c}
 
-          // Coordinates
-          row={r}
-          col={c}
-
-          // State of the board
-          board={board}
-
-          // The occupying piece, if present
+          notation={notation}
           piece={piece !== '.' ? piece : null}
+          color={(r + c) % 2 === 0 ? 'white square' : 'black square'}
 
-          // State data for manipulation of the board
-          player={player}
+          isSelectable={piece !== '.'
+            && data[piece].player === player
+            && turn === player}
+          isSelected={selected === notation}
+          isPossible={possible.has(notation)}
+
           turn={turn}
-          selected={selected}
-          possible={possible}
-          setSelected={setSelected}
-          setBoard={setBoard}
-          setTurn={setTurn}
-          socket={socket}
+          player={player}
         />))
       }
 
       rows.push(<div key={r} className='row'>{row}</div>);
-
     }
 
     return rows;
 
   }, [board, player, possible, turn, selected])
 
+  if (!loaded) {
+    return null;
+  }
+
   return (
     // Clicking "off" the board de-selects pieces
     <div className='off-board'
-      onClick={() => { if (selected) setSelected('') }}>
-      {loaded &&
-        <div className='board'>
-          {generateRows}
-        </div>}
+      onClick={(e) => {
+        if (selected !== '') {
+          setSelected('');
+        }
+      }}
+    >
+      <div
+        className='board'
+        onClick={clickHandler}
+      >
+        {generateRows}
+      </div>
       <Options
-        setBoard={setBoard}
         player={player}
-        setPlayer={setPlayer} />
+        setPlayer={setPlayer}
+        turn={turn}
+        socket={socket} />
     </div >
   )
 }

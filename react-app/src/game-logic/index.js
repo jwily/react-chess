@@ -93,7 +93,6 @@ export const copyBoard = (board) => {
   return board.map((row) => [...row]);
 }
 
-
 // These two functions convert from
 // chess notation to coordinates and back
 // i.e. 'a8' to [0, 0] and vice versa
@@ -111,55 +110,54 @@ export const toRowCol = (string) => {
   return [nums.indexOf(num), letters.indexOf(letter)];
 }
 
-
 export const isWhite = (player) => player === 'white';
 
 
 // These two functions convert the board
 // matrix to a string and back
 
-export const compressBoard = (board) => {
+// export const compressBoard = (board) => {
 
-  const chars = [].concat(...board);
+//   const chars = [].concat(...board);
 
-  let string = '';
-  let count = 0;
+//   let string = '';
+//   let count = 0;
 
-  for (let char of chars) {
-    if (char === '.') count++;
-    else {
-      if (count > 0) {
-        string += count;
-        count = 0
-      }
-      string += char;
-    }
-  }
+//   for (let char of chars) {
+//     if (char === '.') count++;
+//     else {
+//       if (count > 0) {
+//         string += count;
+//         count = 0
+//       }
+//       string += char;
+//     }
+//   }
 
-  return string
-}
+//   return string
+// }
 
-export const decompressBoard = (string) => {
+// export const decompressBoard = (string) => {
 
-  const nums = '1234567890'
+//   const nums = '1234567890'
 
-  let intString = '';
-  let decompressed = '';
+//   let intString = '';
+//   let decompressed = '';
 
-  for (let char of string) {
-    if (nums.includes(char)) intString += char;
-    else {
-      if (intString) {
-        const count = parseInt(intString);
-        decompressed += '.'.repeat(count);
-        intString = '';
-      }
-      decompressed += char;
-    }
-  }
+//   for (let char of string) {
+//     if (nums.includes(char)) intString += char;
+//     else {
+//       if (intString) {
+//         const count = parseInt(intString);
+//         decompressed += '.'.repeat(count);
+//         intString = '';
+//       }
+//       decompressed += char;
+//     }
+//   }
 
-  const board = Array.from({ length: 8 }, (_, i) =>
-    decompressed.substring(i * 8, (i + 1) * 8).split(''));
+//   const board = Array.from({ length: 8 }, (_, i) =>
+//     decompressed.substring(i * 8, (i + 1) * 8).split(''));
 
-  return board;
-}
+//   return board;
+// }

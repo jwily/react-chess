@@ -17,6 +17,12 @@ socketio = SocketIO(cors_allowed_origins=origins)
 def on_game(data):
     emit("game", data, broadcast=True, include_self=False)
 
+
+@socketio.on("reset")
+def on_reset():
+    emit("reset", broadcast=True)
+
+
 @socketio.on('join')
 def on_join(data):
     room = data['room']
