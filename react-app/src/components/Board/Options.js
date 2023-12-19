@@ -52,7 +52,7 @@ const Options = ({ player, setPlayer, socket, turn }) => {
     <nav className={'game-options' + (animated ? ' fade-in-nav' : '')}>
       <div>
         <span id='status'>
-          {status === 'turn' && (turn === 'white' ? 'White Moves' : 'Black Moves')}
+          {status === 'turn' && (turn === player ? 'Your Move' : `${turn[0].toUpperCase() + turn.slice(1)} Moves`)}
           {status === 'reset' && 'Reset Game'}
           {status === 'switch' && `Switch to ${isWhite(player) ? 'Black' : 'White'}`}
         </span>

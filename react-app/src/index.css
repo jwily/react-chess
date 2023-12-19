@@ -97,6 +97,14 @@ body {
   cursor: pointer;
 }
 
+.selectable.black:hover {
+  border: 3px solid rgba(200, 200, 200, .5);
+}
+
+.selectable.white:hover {
+  border: 3px solid rgba(60, 50, 50, .5);
+}
+
 .square.selected {
   background-color: rgba(135, 206, 250, .75);
 }
@@ -115,6 +123,7 @@ body {
   color: rgb(60, 50, 50);
 }
 
+.square.selected:hover,
 .square.possible:hover,
 .square.targeted:hover {
   border: 3px solid rgba(60, 50, 50, .5);
