@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import Board from './components/Board';
-import Dummy from './components/Dummy';
+// import Dummy from './components/Dummy';
+import Home from "./components/Home";
 
 import WhiteKing from './images/no_shadow/w_king_svg_NoShadow.svg'
 import WhiteQueen from './images/no_shadow/w_queen_svg_NoShadow.svg'
@@ -44,10 +45,10 @@ function App() {
     <>
       <Switch>
         <Route exact path='/'>
-          <Board />
+          <Home />
         </Route>
-        <Route path='/test'>
-          <Dummy />
+        <Route path='/match/:matchCode'>
+          <Board />
         </Route>
       </Switch>
     </>
