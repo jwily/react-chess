@@ -29,9 +29,12 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
   const resetBoard = useCallback((e) => {
     if (!animated) {
+      if (offline) {
+        setPlayer('white')
+      }
       socket.emit("reset");
     }
-  }, [socket, animated]);
+  }, [socket, animated, setPlayer, offline]);
 
   const switchPlayer = useCallback((e) => {
     if (!animated) {
@@ -161,12 +164,14 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
           onClick={data.action}
           onMouseEnter={() => setStatus(value)}
           onMouseLeave={() => setStatus('turn')}
+          disabled={offline && value === 'switch'}
+          className={offline && value === 'switch' ? 'disabled' : ''}
         >
           <i className={data.icon}></i>
         </button>
       )
     })
-  }, [optionsData])
+  }, [optionsData, offline])
 
   if (help) {
     return (
@@ -181,7 +186,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
           <p>Share the match code with a friend</p>
           <p>Determine together who will play black and who will play white</p>
           <p>Press the [switch] button to choose your color</p>
-          <p>Enable [offline] mode to rotate the board after each move if your friend is by your side</p>
+          <p>Enable [offline] mode to automate player switching</p>
           <p>May the nobler stand victorious</p>
           <p><i className="fa-solid fa-crow"></i><i className="fa-solid fa-crow"></i></p>
           <p>Click this window to dismiss it</p>

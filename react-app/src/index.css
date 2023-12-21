@@ -229,7 +229,7 @@ body {
   top: 2rem;
   right: 2.5rem;
   /* background-color: rgba(60, 50, 50, .5); */
-  width: 22.5%;
+  width: 20%;
   /* margin: 2rem 2.5rem; */
 }
 
@@ -287,6 +287,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.game-options button.disabled,
+.game-options button.disabled:hover,
+.game-options button.disabled:active {
+  color: rgba(60, 50, 50, .25);
+  cursor: default;
+  padding-bottom: 0;
+  text-shadow: none;
+  opacity: 1;
 }
 
 .game-options button:hover {
