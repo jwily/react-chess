@@ -10,6 +10,8 @@ const Board = () => {
 
   const [player, setPlayer] = useState('white')
   const [board, setBoard] = useState(start);
+  const [offline, setOffline] = useState(false);
+
 
   // Location of the selected piece as well as possible spaces
   // to move to are represented in algebraic notation (i.e. 'a8')
@@ -23,7 +25,6 @@ const Board = () => {
   useEffect(() => {
 
     (async () => {
-
       const res = await fetch('/api/games/1');
       const game = await res.json();
       setBoard(game.board);
@@ -39,6 +40,7 @@ const Board = () => {
     })
 
     socket.on("reset", () => {
+      setShouldUpdate(true);
       setBoard(start);
       setTurn("white");
     })
@@ -104,8 +106,6 @@ const Board = () => {
     }
   };
 
-  // Not really sure if the useMemo
-  // adds any benefit here, to be honest
   const possible = useMemo(() => {
     if (!selected) return new Set();
 
@@ -186,6 +186,9 @@ const Board = () => {
         player={player}
         setPlayer={setPlayer}
         turn={turn}
+        offline={offline}
+        setOffline={setOffline}
+        setSelected={setSelected}
         socket={socket} />
     </div >
   )

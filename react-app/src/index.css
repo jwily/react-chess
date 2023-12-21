@@ -224,6 +224,43 @@ body {
   content: url('./images/no_shadow/b_pawn_svg_NoShadow.svg');
 }
 
+.help-window {
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  /* background-color: rgba(60, 50, 50, .5); */
+  width: 22.5%;
+  /* margin: 2rem 2.5rem; */
+}
+
+.help-text {
+  font-family: 'Afacad', sans-serif;
+  font-size: 1.8rem;
+  padding: 1.5rem 3rem;
+  user-select: none;
+  text-transform: lowercase;
+  color: rgba(60, 50, 50, .75);
+  border: 1px solid rgba(60, 50, 50, .25);
+}
+
+.help-text h2 {
+  font-size: 3.2rem;
+  margin-bottom: 2.5rem;
+  font-weight: normal;
+}
+
+.help-text p {
+  margin-bottom: 2rem;
+}
+
+.help-window.open {
+  animation: fadeIn .2s ease-out 1 forwards;
+}
+
+.help-window.close {
+  animation: fadeOut .2s ease-out 1 forwards;
+}
+
 .game-options {
   position: absolute;
   top: 2rem;
@@ -244,8 +281,7 @@ body {
   color: rgba(60, 50, 50, .75);
   cursor: pointer;
   font-size: 1.8rem;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 2.8rem;
   background-color: transparent;
   transition: all .15s;
   display: flex;
@@ -264,17 +300,23 @@ body {
   text-shadow: none;
 }
 
-#status {
-  color: rgba(60, 50, 50, .75);
-  user-select: none;
-  font-size: 2.4rem;
+.game-options div {
+  display: flex;
+  align-items: baseline;
 }
 
-#hotkey-info {
+#message {
+  color: rgba(60, 50, 50, .75);
+  user-select: none;
+  font-size: 2.6rem;
+}
+
+#status {
   color: rgba(60, 50, 50, .5);
   user-select: none;
   font-size: 2rem;
-  margin-left: .8rem;
+  margin-left: 1rem;
+  font-family: 'Ubuntu Mono', monospace;
 }
 
 @keyframes fadeIn {
@@ -287,6 +329,15 @@ body {
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
 
 .fade-in-nav {
   animation: fadeIn 1s ease-in-out 1 forwards;
