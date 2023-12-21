@@ -57,7 +57,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       } else if (e.shiftKey && e.key === 'F') {
         // setSelected('')
         setOffline(prev => !prev);
-      } else if (e.shiftKey && e.key === 'S') {
+      } else if (e.shiftKey && e.key === 'S' && !offline) {
         setSelected('')
         switchPlayer()
       }
@@ -69,7 +69,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       window.removeEventListener('keydown', handleKeyPress);
     };
 
-  }, [resetBoard, switchPlayer, help, setOffline, setPlayer, turn, setSelected])
+  }, [resetBoard, switchPlayer, help, setOffline, setPlayer, turn, setSelected, offline])
 
   useEffect(() => {
 
