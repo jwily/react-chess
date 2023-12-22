@@ -3,6 +3,7 @@ import { data, start, toRowCol, isWhite, toNotation, copyBoard } from '../../gam
 import Square from './Square';
 import Options from './Options';
 import { io } from 'socket.io-client';
+import { useParams } from 'react-router-dom';
 
 let socket;
 
@@ -11,7 +12,6 @@ const Board = () => {
   const [player, setPlayer] = useState('white')
   const [board, setBoard] = useState(start);
   const [offline, setOffline] = useState(false);
-
 
   // Location of the selected piece as well as possible spaces
   // to move to are represented in algebraic notation (i.e. 'a8')
@@ -22,15 +22,21 @@ const Board = () => {
 
   const [shouldUpdate, setShouldUpdate] = useState(false);
 
+  const { matchCode } = useParams();
+
   useEffect(() => {
 
     (async () => {
-      const res = await fetch('/api/games/1');
+      const res = await fetch(`/api/games/${matchCode}`);
       const game = await res.json();
       setBoard(game.board);
       setTurn(game.turn);
       setLoaded(true);
     })();
+
+  }, [matchCode])
+
+  useEffect(() => {
 
     socket = io();
 
@@ -53,7 +59,7 @@ const Board = () => {
   useEffect(() => {
 
     const updateGame = () => {
-      fetch('/api/games/1', {
+      fetch(`/api/games/${matchCode}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

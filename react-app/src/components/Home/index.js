@@ -1,17 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 const Home = () => {
 
   const history = useHistory();
 
+  const [generating, setGenerating] = useState(false);
+
   const newMatch = async (e) => {
+
     e.preventDefault();
+
+    if (!generating) {
+
+      setGenerating(true)
+
+      const res = await fetch('/api/games/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({})
+      })
+
+      if (res.ok) {
+        const match = await res.json();
+        setGenerating(false);
+        history.push(`/${match.code}`);
+      }
+    }
   }
 
   const loadMatch = (e) => {
     e.preventDefault();
-    history.push('/match/demo')
+    history.push('/demo')
   }
 
   return (
@@ -23,6 +45,7 @@ const Home = () => {
       <button id='load-match' onClick={loadMatch}>
         <span className='home-upper'>L</span><span>oad </span><span className='home-upper'>M</span><span>atch</span>
       </button>
+      {generating && <span id='home-loading'>Loading...</span>}
     </div>
   )
 }

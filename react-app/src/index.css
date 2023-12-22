@@ -276,7 +276,7 @@ body {
 }
 
 .game-options button {
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
   border: none;
   color: rgba(60, 50, 50, .75);
   cursor: pointer;
@@ -284,9 +284,9 @@ body {
   width: 2.8rem;
   background-color: transparent;
   transition: all .15s;
-  display: flex;
+  /* display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; */
 }
 
 .game-options button.disabled,
@@ -297,17 +297,20 @@ body {
   padding-bottom: 0;
   text-shadow: none;
   opacity: 1;
+  transform: none;
 }
 
 .game-options button:hover {
   padding-bottom: 2px;
   text-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px);
 }
 
 .game-options button:active {
   padding-bottom: 0px;
   opacity: .5;
   text-shadow: none;
+  transform: none;
 }
 
 .game-options div {
@@ -319,6 +322,7 @@ body {
   color: rgba(60, 50, 50, .75);
   user-select: none;
   font-size: 2.6rem;
+  margin-bottom: 1rem;
 }
 
 #status {
@@ -460,4 +464,15 @@ body {
 #load-match:active::after {
   background-color: rgba(60, 50, 50, .1);
   transition: none;
+}
+
+
+#home-loading {
+  color: rgba(60, 50, 50, .75);
+  user-select: none;
+  font-size: 2.6rem;
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  animation: fadeIn .2s ease-out 1 forwards;
 }

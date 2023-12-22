@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 
 import { isWhite } from "../../game-logic";
+import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
 
 const BUTTON_ORDER = [
   'reset',
+  'copy',
   'switch',
   'offline',
   'help',
+  'home',
 ]
 
 const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSelected }) => {
@@ -14,6 +17,9 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
   const [animated, setAnimated] = useState(true);
   const [help, setHelp] = useState(false);
   const [helpClosing, setHelpClosing] = useState(false);
+
+  const { matchCode } = useParams();
+  const history = useHistory();
 
   useEffect(() => {
 
@@ -141,9 +147,34 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
           e.stopPropagation();
           setOffline(prev => !prev);
         }
+      },
+      copy: {
+        message: 'Copy Code',
+        hotkey: 'shift + c',
+        icon: 'fa-regular fa-copy',
+        action: (e) => {
+          navigator.clipboard.writeText(matchCode).then(() => {
+            setStatus('copied');
+          })
+        }
+      },
+      copied: {
+        message: 'Copied',
+        hotkey: matchCode,
+        icon: null,
+        action: null
+      },
+      home: {
+        message: 'Back Home',
+        hotkey: null,
+        icon: 'fa-solid fa-house',
+        action: () => {
+          history.push('/');
+        }
       }
     }
-  }, [player, turn, resetBoard, switchPlayer, offline, setOffline])
+  }, [player, turn, resetBoard, switchPlayer,
+    offline, setOffline, matchCode, history])
 
   const statusDisplay = useMemo(() => {
     return (
@@ -186,7 +217,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
           <p>Share the match code with a friend</p>
           <p>Determine together who will play black and who will play white</p>
           <p>Press the [switch] button to choose your color</p>
-          <p>Enable [offline] mode to automate player switching</p>
+          <p>Enable [offline] mode to automate player switching for in-person play</p>
           <p>May the nobler stand victorious</p>
           <p><i className="fa-solid fa-crow"></i><i className="fa-solid fa-crow"></i></p>
           <p>Click this window to dismiss it</p>

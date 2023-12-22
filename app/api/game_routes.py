@@ -6,24 +6,18 @@ from app.models import db, Game
 game_routes = Blueprint('games', __name__)
 
 
-@game_routes.route('/')
-def games():
-    games = Game.query.all()
-    return {'games': [game.to_dict() for game in games]}
-
-
-@game_routes.route('/<int:id>')
-def get_game(id):
-    game = Game.query.get(id)
+@game_routes.route('/<code>')
+def get_game(code):
+    game = Game.query.filter(Game.code == code).first()
     return game.to_dict()
 
 
-@game_routes.route('/<int:id>', methods=['PUT'])
-def update_game(id):
+@game_routes.route('/<code>', methods=['PUT'])
+def update_game(code):
     form = DummyForm()
     form['csrf_token'].data = request.cookies['csrf_token']
     if form.validate_on_submit():
-        game = Game.query.get(id)
+        game = Game.query.filter(Game.code == code).first()
         data = request.json
         game.board = data['board']
         game.turn = data['turn']
@@ -32,7 +26,7 @@ def update_game(id):
         return game.to_dict()
 
 
-@game_routes.route('/new', methods=['POST'])
+@game_routes.route('/', methods=['POST'])
 def new_game():
     form = DummyForm()
     form['csrf_token'].data = request.cookies['csrf_token']
