@@ -45,7 +45,9 @@ const Home = ({ freshGame, setFreshGame }) => {
 
   const loadMatch = (e) => {
     e.preventDefault();
-    history.push(`/encounter/${matchCode}`)
+    if (matchCode) {
+      history.push(`/encounter/${matchCode}`)
+    }
   }
 
   return (
