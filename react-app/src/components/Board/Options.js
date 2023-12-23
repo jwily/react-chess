@@ -50,6 +50,8 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
   useEffect(() => {
 
+    let copyTimeout;
+
     const handleKeyPress = (e) => {
       if (e.shiftKey && e.key === 'R') {
         setSelected('')
@@ -66,6 +68,13 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       } else if (e.shiftKey && e.key === 'S' && !offline) {
         setSelected('')
         switchPlayer()
+      } else if (e.shiftKey && e.key === 'C') {
+        navigator.clipboard.writeText(matchCode).then(() => {
+          setStatus('copied');
+          copyTimeout = setTimeout(() => {
+            setStatus('turn');
+          }, 1000)
+        })
       }
     }
 
@@ -73,9 +82,10 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
+      clearTimeout(copyTimeout);
     };
 
-  }, [resetBoard, switchPlayer, help, setOffline, setPlayer, turn, setSelected, offline])
+  }, [resetBoard, switchPlayer, help, setOffline, setSelected, offline, matchCode])
 
   useEffect(() => {
 
@@ -142,7 +152,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       offline: {
         message: `${offline ? 'Disable' : 'Enable'} Offline Mode`,
         hotkey: 'shift + f',
-        icon: `fa-solid fa-${offline ? 'people-arrows' : 'wifi'}`,
+        icon: `fa-solid fa-${offline ? 'people-arrows' : 'street-view'}`,
         action: (e) => {
           e.stopPropagation();
           setOffline(prev => !prev);
@@ -153,6 +163,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
         hotkey: 'shift + c',
         icon: 'fa-regular fa-copy',
         action: (e) => {
+          e.stopPropagation();
           navigator.clipboard.writeText(matchCode).then(() => {
             setStatus('copied');
           })
@@ -196,7 +207,6 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
           onMouseEnter={() => setStatus(value)}
           onMouseLeave={() => setStatus('turn')}
           disabled={offline && value === 'switch'}
-          className={offline && value === 'switch' ? 'disabled' : ''}
         >
           <i className={data.icon}></i>
         </button>
@@ -217,7 +227,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
           <p>Share the match code with a friend</p>
           <p>Determine together who will play black and who will play white</p>
           <p>Press the [switch] button to choose your color</p>
-          <p>Enable [offline] mode to automate player switching for in-person play</p>
+          <p>Enable [offline] mode to rotate the board after each move</p>
           <p>May the nobler stand victorious</p>
           <p><i className="fa-solid fa-crow"></i><i className="fa-solid fa-crow"></i></p>
           <p>Click this window to dismiss it</p>

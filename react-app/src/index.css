@@ -275,7 +275,8 @@ body {
   justify-content: right;
 }
 
-.game-options button {
+.game-options button,
+#load-buttons button {
   /* margin-top: 1rem; */
   border: none;
   color: rgba(60, 50, 50, .75);
@@ -289,25 +290,24 @@ body {
   justify-content: center; */
 }
 
-.game-options button.disabled,
-.game-options button.disabled:hover,
-.game-options button.disabled:active {
+.game-options button:disabled,
+.game-options button:disabled:hover,
+.game-options button:disabled:active {
   color: rgba(60, 50, 50, .25);
   cursor: default;
-  padding-bottom: 0;
   text-shadow: none;
   opacity: 1;
   transform: none;
 }
 
-.game-options button:hover {
-  padding-bottom: 2px;
+.game-options button:hover,
+#load-buttons button:hover {
   text-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
   transform: translateY(-1px);
 }
 
-.game-options button:active {
-  padding-bottom: 0px;
+.game-options button:active,
+#load-buttons button:active {
   opacity: .5;
   text-shadow: none;
   transform: none;
@@ -398,17 +398,18 @@ body {
   user-select: none;
 }
 
-.home-menu button {
+.home-menu>button {
   background-color: transparent;
   border: none;
   color: rgba(60, 50, 50, .5);
   cursor: pointer;
   font-family: 'Lora', serif;
   font-size: 3rem;
-  letter-spacing: 3px;
+  letter-spacing: .3rem;
   padding-bottom: 1rem;
   position: relative;
   text-transform: uppercase;
+  user-select: none;
 }
 
 #new-match {
@@ -419,19 +420,23 @@ body {
   font-size: 3.6rem;
 }
 
-.home-menu button:hover {
+.home-menu>button:hover {
   color: rgba(60, 50, 50, .75);
 }
 
-.home-menu button:active {
+.home-menu>button:active {
   color: rgba(60, 50, 50, .25);
   transition: none;
 }
 
-.home-menu button,
+#load-match {
+  width: 23.8rem;
+}
+
+.home-menu>button,
 #new-match::after,
 #load-match::after {
-  transition: all .2s ease-in-out;
+  transition: all .15s ease-in-out;
 }
 
 #new-match::after,
@@ -466,6 +471,50 @@ body {
   transition: none;
 }
 
+#load-buttons {
+  position: absolute;
+  right: -7rem;
+  bottom: 1rem;
+  display: flex;
+}
+
+#load-form input {
+  border: none;
+  background-color: rgba(200, 200, 200, .25);
+  height: 4.6rem;
+  width: 23.8rem;
+  font-family: 'Afacad', sans-serif;
+  font-size: 2.2rem;
+  color: rgba(60, 50, 50, .75);
+  letter-spacing: 1px;
+  display: flex;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-bottom: .2rem;
+}
+
+#load-form input:focus::placeholder {
+  color: transparent;
+}
+
+#load-form input::placeholder {
+  color: rgba(60, 50, 50, .5);
+  text-transform: lowercase;
+}
+
+#load-form {
+  position: relative;
+}
+
+#load-form::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(60, 50, 50, .1);
+}
 
 #home-loading {
   color: rgba(60, 50, 50, .75);

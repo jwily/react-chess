@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 
 let socket;
 
-const Board = () => {
+const Board = ({ freshGame, setFreshGame }) => {
 
   const [player, setPlayer] = useState('white')
   const [board, setBoard] = useState(start);
@@ -19,6 +19,7 @@ const Board = () => {
   const [selected, setSelected] = useState('');
   const [turn, setTurn] = useState('white');
   const [loaded, setLoaded] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const [shouldUpdate, setShouldUpdate] = useState(false);
 
@@ -28,10 +29,14 @@ const Board = () => {
 
     (async () => {
       const res = await fetch(`/api/games/${matchCode}`);
-      const game = await res.json();
-      setBoard(game.board);
-      setTurn(game.turn);
-      setLoaded(true);
+      if (res.ok) {
+        const game = await res.json();
+        setBoard(game.board);
+        setTurn(game.turn);
+        setLoaded(true);
+      } else {
+        setNotFound(true);
+      }
     })();
 
   }, [matchCode])
@@ -80,7 +85,7 @@ const Board = () => {
 
     return () => clearInterval(debounceTimer);
 
-  }, [board, turn, shouldUpdate])
+  }, [board, turn, shouldUpdate, matchCode])
 
   const executeMove = async (curr, target) => {
     const [currR, currC] = toRowCol(curr);
@@ -91,6 +96,9 @@ const Board = () => {
     newBoard[targetR][targetC] = newBoard[currR][currC];
     newBoard[currR][currC] = '.';
 
+    if (freshGame === matchCode) {
+      setFreshGame('');
+    };
     setSelected('');
     setShouldUpdate(true);
     setBoard(newBoard);
@@ -112,7 +120,7 @@ const Board = () => {
     }
   };
 
-  const possible = useMemo(() => {
+  const possibleMoves = useMemo(() => {
     if (!selected) return new Set();
 
     const [row, col] = toRowCol(selected);
@@ -155,7 +163,7 @@ const Board = () => {
             && data[piece].player === player
             && turn === player}
           isSelected={selected === notation}
-          isPossible={possible.has(notation)}
+          isPossible={possibleMoves.has(notation)}
 
           turn={turn}
           player={player}
@@ -167,7 +175,11 @@ const Board = () => {
 
     return rows;
 
-  }, [board, player, possible, turn, selected])
+  }, [board, player, possibleMoves, turn, selected])
+
+  if (notFound) {
+    return 'Not Found'
+  }
 
   if (!loaded) {
     return null;

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Route, Switch } from "react-router-dom";
 import Board from './components/Board';
-// import Dummy from './components/Dummy';
 import Home from "./components/Home";
 
 import WhiteKing from './images/no_shadow/w_king_svg_NoShadow.svg'
@@ -26,6 +25,9 @@ const imagePaths = [
 function App() {
 
   const [imagesLoaded, setImagesLoaded] = useState({});
+  const [freshGame, setFreshGame] = useState('');
+
+  console.log(freshGame);
 
   useEffect(() => {
     imagePaths.forEach(path => {
@@ -45,10 +47,10 @@ function App() {
     <>
       <Switch>
         <Route exact path='/'>
-          <Home />
+          <Home freshGame={freshGame} setFreshGame={setFreshGame} />
         </Route>
         <Route path='/:matchCode'>
-          <Board />
+          <Board freshGame={freshGame} setFreshGame={setFreshGame} />
         </Route>
       </Switch>
     </>
