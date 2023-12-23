@@ -9,6 +9,8 @@ game_routes = Blueprint('games', __name__)
 @game_routes.route('/<code>')
 def get_game(code):
     game = Game.query.filter(Game.code == code).first()
+    if not game:
+        return {'error': 'Match not found.'}, 404
     return game.to_dict()
 
 
