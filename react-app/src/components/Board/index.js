@@ -3,13 +3,15 @@ import { data, start, toRowCol, isWhite, toNotation, copyBoard } from '../../gam
 import Square from './Square';
 import Options from './Options';
 import { io } from 'socket.io-client';
+import { useParams } from 'react-router-dom';
 
 let socket;
 
-const Board = () => {
+const Board = ({ freshGame, setFreshGame }) => {
 
   const [player, setPlayer] = useState('white')
   const [board, setBoard] = useState(start);
+  const [offline, setOffline] = useState(false);
 
   // Location of the selected piece as well as possible spaces
   // to move to are represented in algebraic notation (i.e. 'a8')
@@ -17,19 +19,29 @@ const Board = () => {
   const [selected, setSelected] = useState('');
   const [turn, setTurn] = useState('white');
   const [loaded, setLoaded] = useState(false);
+  const [notFound, setNotFound] = useState(false);
 
   const [shouldUpdate, setShouldUpdate] = useState(false);
+
+  const { matchCode } = useParams();
 
   useEffect(() => {
 
     (async () => {
-
-      const res = await fetch('/api/games/1');
-      const game = await res.json();
-      setBoard(game.board);
-      setTurn(game.turn);
-      setLoaded(true);
+      const res = await fetch(`/api/games/${matchCode}`);
+      if (res.ok) {
+        const game = await res.json();
+        setBoard(game.board);
+        setTurn(game.turn);
+        setLoaded(true);
+      } else {
+        setNotFound(true);
+      }
     })();
+
+  }, [matchCode])
+
+  useEffect(() => {
 
     socket = io();
 
@@ -39,6 +51,7 @@ const Board = () => {
     })
 
     socket.on("reset", () => {
+      setShouldUpdate(true);
       setBoard(start);
       setTurn("white");
     })
@@ -51,7 +64,7 @@ const Board = () => {
   useEffect(() => {
 
     const updateGame = () => {
-      fetch('/api/games/1', {
+      fetch(`/api/games/${matchCode}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -72,7 +85,7 @@ const Board = () => {
 
     return () => clearInterval(debounceTimer);
 
-  }, [board, turn, shouldUpdate])
+  }, [board, turn, shouldUpdate, matchCode])
 
   const executeMove = async (curr, target) => {
     const [currR, currC] = toRowCol(curr);
@@ -83,6 +96,9 @@ const Board = () => {
     newBoard[targetR][targetC] = newBoard[currR][currC];
     newBoard[currR][currC] = '.';
 
+    if (freshGame === matchCode) {
+      setFreshGame('');
+    };
     setSelected('');
     setShouldUpdate(true);
     setBoard(newBoard);
@@ -104,9 +120,7 @@ const Board = () => {
     }
   };
 
-  // Not really sure if the useMemo
-  // adds any benefit here, to be honest
-  const possible = useMemo(() => {
+  const possibleMoves = useMemo(() => {
     if (!selected) return new Set();
 
     const [row, col] = toRowCol(selected);
@@ -149,7 +163,7 @@ const Board = () => {
             && data[piece].player === player
             && turn === player}
           isSelected={selected === notation}
-          isPossible={possible.has(notation)}
+          isPossible={possibleMoves.has(notation)}
 
           turn={turn}
           player={player}
@@ -161,7 +175,11 @@ const Board = () => {
 
     return rows;
 
-  }, [board, player, possible, turn, selected])
+  }, [board, player, possibleMoves, turn, selected])
+
+  if (notFound) {
+    return <div className='not-found fade-in-v-fast'>Match Not Found</div>
+  }
 
   if (!loaded) {
     return null;
@@ -186,6 +204,9 @@ const Board = () => {
         player={player}
         setPlayer={setPlayer}
         turn={turn}
+        offline={offline}
+        setOffline={setOffline}
+        setSelected={setSelected}
         socket={socket} />
     </div >
   )

@@ -47,7 +47,7 @@ body {
 
   position: relative;
 
-  transition: background-color .3s;
+  transition: border .15s;
 
   display: flex;
   justify-content: center;
@@ -97,6 +97,14 @@ body {
   cursor: pointer;
 }
 
+.selectable.black:hover {
+  border: 3px solid rgba(200, 200, 200, .75);
+}
+
+.selectable.white:hover {
+  border: 3px solid rgba(60, 50, 50, .75);
+}
+
 .square.selected {
   background-color: rgba(135, 206, 250, .75);
 }
@@ -115,9 +123,10 @@ body {
   color: rgb(60, 50, 50);
 }
 
+.square.selected:hover,
 .square.possible:hover,
 .square.targeted:hover {
-  border: 3px solid rgba(60, 50, 50, .5);
+  border: 3px solid rgba(60, 50, 50, .75);
 }
 
 .white {
@@ -215,6 +224,43 @@ body {
   content: url('./images/no_shadow/b_pawn_svg_NoShadow.svg');
 }
 
+.help-window {
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  /* background-color: rgba(60, 50, 50, .5); */
+  width: 20%;
+  /* margin: 2rem 2.5rem; */
+}
+
+.help-text {
+  font-family: 'Afacad', sans-serif;
+  font-size: 1.8rem;
+  padding: 1.5rem 3rem;
+  user-select: none;
+  text-transform: lowercase;
+  color: rgba(60, 50, 50, .75);
+  border: 1px solid rgba(60, 50, 50, .25);
+}
+
+.help-text h2 {
+  font-size: 3.2rem;
+  margin-bottom: 2.5rem;
+  font-weight: normal;
+}
+
+.help-text p {
+  margin-bottom: 2rem;
+}
+
+.help-window.open {
+  animation: fadeIn .2s ease-out 1 forwards;
+}
+
+.help-window.close {
+  animation: fadeOut .2s ease-out 1 forwards;
+}
+
 .game-options {
   position: absolute;
   top: 2rem;
@@ -229,43 +275,62 @@ body {
   justify-content: right;
 }
 
-.game-options button {
-  margin-top: 1rem;
+.game-options button,
+#load-buttons button {
+  /* margin-top: 1rem; */
   border: none;
   color: rgba(60, 50, 50, .75);
   cursor: pointer;
   font-size: 1.8rem;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 2.8rem;
   background-color: transparent;
   transition: all .15s;
-  display: flex;
+  /* display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center; */
 }
 
-.game-options button:hover {
-  padding-bottom: 2px;
+.game-options button:disabled,
+.game-options button:disabled:hover,
+.game-options button:disabled:active {
+  color: rgba(60, 50, 50, .25);
+  cursor: default;
+  text-shadow: none;
+  opacity: 1;
+  transform: none;
+}
+
+.game-options button:hover,
+#load-buttons button:hover {
   text-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px);
 }
 
-.game-options button:active {
-  padding-bottom: 0px;
+.game-options button:active,
+#load-buttons button:active {
   opacity: .5;
   text-shadow: none;
+  transform: none;
+}
+
+.game-options div {
+  display: flex;
+  align-items: baseline;
+}
+
+#message {
+  color: rgba(60, 50, 50, .75);
+  user-select: none;
+  font-size: 2.6rem;
+  margin-bottom: 1rem;
 }
 
 #status {
-  color: rgba(60, 50, 50, .75);
-  user-select: none;
-  font-size: 2.4rem;
-}
-
-#hotkey-info {
   color: rgba(60, 50, 50, .5);
   user-select: none;
   font-size: 2rem;
-  margin-left: .8rem;
+  margin-left: 1rem;
+  font-family: 'Ubuntu Mono', monospace;
 }
 
 @keyframes fadeIn {
@@ -278,6 +343,15 @@ body {
   }
 }
 
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
 
 .fade-in-nav {
   animation: fadeIn 1s ease-in-out 1 forwards;
@@ -295,6 +369,10 @@ body {
   animation: fadeIn .4s ease-in-out 1 forwards;
 }
 
+.fade-in-v-fast {
+  animation: fadeIn .2s ease-in-out 1 forwards;
+}
+
 /* @media (max-width: 500px) {
   .square {
     height: 2rem;
@@ -307,3 +385,155 @@ body {
     border: 3px solid transparent;
   }
 } */
+
+.home-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16rem;
+}
+
+.home-menu h1 {
+  color: rgba(60, 50, 50, .75);
+  margin-bottom: 2rem;
+  font-size: 5rem;
+  text-transform: lowercase;
+  letter-spacing: 3px;
+  user-select: none;
+}
+
+.home-menu>button {
+  background-color: transparent;
+  border: none;
+  color: rgba(60, 50, 50, .5);
+  cursor: pointer;
+  font-family: 'Lora', serif;
+  font-size: 3rem;
+  letter-spacing: .3rem;
+  padding-bottom: 1rem;
+  position: relative;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+#new-match {
+  margin-bottom: 1rem;
+}
+
+.home-upper {
+  font-size: 3.6rem;
+}
+
+.home-menu>button:hover {
+  color: rgba(60, 50, 50, .75);
+}
+
+.home-menu>button:active {
+  color: rgba(60, 50, 50, .25);
+  transition: none;
+}
+
+#load-match {
+  width: 23.8rem;
+}
+
+.home-menu>button,
+#new-match::after,
+#load-match::after {
+  transition: all .15s ease-in-out;
+}
+
+#new-match::after,
+#load-match::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(60, 50, 50, .5);
+  opacity: 0;
+}
+
+#new-match::after {
+  transform: translateX(-14rem);
+}
+
+#load-match::after {
+  transform: translateX(14rem);
+}
+
+#new-match:hover::after,
+#load-match:hover::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+#new-match:active::after,
+#load-match:active::after {
+  background-color: rgba(60, 50, 50, .1);
+  transition: none;
+}
+
+#load-buttons {
+  position: absolute;
+  right: -7rem;
+  bottom: 1rem;
+  display: flex;
+}
+
+#load-form input {
+  border: none;
+  background-color: rgba(200, 200, 200, .25);
+  height: 4.6rem;
+  width: 23.8rem;
+  font-family: 'Afacad', sans-serif;
+  font-size: 2.2rem;
+  color: rgba(60, 50, 50, .75);
+  letter-spacing: 1px;
+  display: flex;
+  text-align: center;
+  margin-bottom: 1rem;
+  padding-bottom: .2rem;
+}
+
+#load-form input:focus::placeholder {
+  color: transparent;
+}
+
+#load-form input::placeholder {
+  color: rgba(60, 50, 50, .5);
+  text-transform: lowercase;
+}
+
+#load-form {
+  position: relative;
+}
+
+#load-form::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(60, 50, 50, .1);
+}
+
+#home-loading {
+  color: rgba(60, 50, 50, .75);
+  user-select: none;
+  font-size: 2.6rem;
+  position: absolute;
+  top: 2rem;
+  right: 2.5rem;
+  animation: fadeIn .2s ease-out 1 forwards;
+}
+
+.not-found {
+  color: rgba(60, 50, 50, .5);
+  margin-bottom: 16rem;
+  font-size: 4rem;
+  letter-spacing: 3px;
+  user-select: none;
+}

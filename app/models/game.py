@@ -55,31 +55,40 @@ class Game(db.Model):
 
     @property
     def board(self):
-        nums = '123456890'
-        int_string = ''
-        decompressed = ''
-        for char in self._board + '_':
-            if char in nums:
-                int_string += char
-            else:
-                if int_string:
-                    decompressed += '.' * int(int_string)
-                    int_string = ''
-                decompressed += char
+        digits = '0123456789'
+        period_string = ''
+        decompressed_string = ''
 
-        return [list(decompressed[i * 8: (i + 1) * 8]) for i in range(8)]
+        for char in self._board:
+            if char in digits:
+                period_string += char
+            else:
+                if period_string != '':
+                    decompressed_string += ('.' * int(period_string))
+                    period_string = ''
+                decompressed_string += char
+
+        if period_string != '':
+            decompressed_string += ('.' * int(period_string))
+
+        return [list(decompressed_string[i:i+8]) for i in range(0, 64, 8)]
 
     @board.setter
     def board(self, matrix):
-        compressed = ''.join([''.join(row) for row in matrix]) + '_'
-        count = 0
-        board_string = ''
-        for char in compressed:
-            if char == '.':
-                count += 1
-            else:
-                if count:
-                    board_string += str(count)
-                    count = 0
-                board_string += char
-        self._board = board_string[:-1]
+        result = ''
+        period_count = 0
+
+        for row in matrix:
+            for char in row:
+                if char == '.':
+                    period_count += 1
+                else:
+                    if period_count > 0:
+                        result += str(period_count)
+                        period_count = 0
+                    result += char
+
+        if period_count > 0:
+            result += str(period_count)
+
+        self._board = result

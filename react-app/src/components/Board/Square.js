@@ -10,10 +10,11 @@ const animationClasses = [
 
 const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, isPossible, player }) => {
 
+  // console.log('Squares rendered');
+
   const [animated, setAnimated] = useState(true);
 
   useEffect(() => {
-
     const removeAnimation = setTimeout(() => {
       setAnimated(false);
     }, 850)
@@ -56,9 +57,6 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
       }
       id={notation}
     >
-      {/* <span className='position'>
-        {notation}
-      </span> */}
     </span >
   )
 })
