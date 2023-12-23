@@ -12,8 +12,6 @@ else:
 
 socketio = SocketIO(cors_allowed_origins=origins)
 
-total_users = 0
-
 
 @socketio.on("game")
 def on_game(data):
