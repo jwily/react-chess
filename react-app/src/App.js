@@ -27,8 +27,6 @@ function App() {
   const [imagesLoaded, setImagesLoaded] = useState({});
   const [freshGame, setFreshGame] = useState('');
 
-  console.log(freshGame);
-
   useEffect(() => {
     imagePaths.forEach(path => {
       const img = new Image();
