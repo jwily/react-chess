@@ -14,7 +14,7 @@ const Home = ({ freshGame, setFreshGame }) => {
     e.preventDefault();
 
     if (freshGame) {
-      history.push(`/${freshGame}`);
+      history.push(`/encounter/${freshGame}`);
     }
 
     else if (!generating) {
@@ -33,7 +33,7 @@ const Home = ({ freshGame, setFreshGame }) => {
         const match = await res.json();
         setGenerating(false);
         setFreshGame(match.code);
-        history.push(`/${match.code}`);
+        history.push(`/encounter/${match.code}`);
       }
     }
   }
@@ -45,12 +45,12 @@ const Home = ({ freshGame, setFreshGame }) => {
 
   const loadMatch = (e) => {
     e.preventDefault();
-    history.push(`/${matchCode}`)
+    history.push(`/encounter/${matchCode}`)
   }
 
   return (
     <div className='home-menu'>
-      <h2>React Chess</h2>
+      <h1>React Chess</h1>
       <button id='new-match' onClick={newMatch}>
         <span className='home-upper'>N</span><span>ew </span><span className='home-upper'>M</span><span>atch</span>
       </button>

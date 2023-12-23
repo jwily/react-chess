@@ -178,7 +178,7 @@ const Board = ({ freshGame, setFreshGame }) => {
   }, [board, player, possibleMoves, turn, selected])
 
   if (notFound) {
-    return 'Not Found'
+    return <div className='not-found fade-in-v-fast'>Match Not Found</div>
   }
 
   if (!loaded) {

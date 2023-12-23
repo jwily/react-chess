@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
 import Board from './components/Board';
 import Home from "./components/Home";
@@ -49,8 +49,11 @@ function App() {
         <Route exact path='/'>
           <Home freshGame={freshGame} setFreshGame={setFreshGame} />
         </Route>
-        <Route path='/:matchCode'>
+        <Route path='/encounter/:matchCode'>
           <Board freshGame={freshGame} setFreshGame={setFreshGame} />
+        </Route>
+        <Route>
+          <div className="not-found">Page Not Found</div>
         </Route>
       </Switch>
     </>

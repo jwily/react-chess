@@ -369,6 +369,10 @@ body {
   animation: fadeIn .4s ease-in-out 1 forwards;
 }
 
+.fade-in-v-fast {
+  animation: fadeIn .2s ease-in-out 1 forwards;
+}
+
 /* @media (max-width: 500px) {
   .square {
     height: 2rem;
@@ -389,7 +393,7 @@ body {
   margin-bottom: 16rem;
 }
 
-.home-menu h2 {
+.home-menu h1 {
   color: rgba(60, 50, 50, .75);
   margin-bottom: 2rem;
   font-size: 5rem;
@@ -524,4 +528,12 @@ body {
   top: 2rem;
   right: 2.5rem;
   animation: fadeIn .2s ease-out 1 forwards;
+}
+
+.not-found {
+  color: rgba(60, 50, 50, .5);
+  margin-bottom: 16rem;
+  font-size: 4rem;
+  letter-spacing: 3px;
+  user-select: none;
 }
