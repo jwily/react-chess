@@ -3,7 +3,7 @@ from sqlalchemy.sql import text
 
 
 def seed_games():
-    demo_game = Game(code='demonstration')
+    demo_game = Game(code='demonstrate')
     db.session.add(demo_game)
     db.session.commit()
 
