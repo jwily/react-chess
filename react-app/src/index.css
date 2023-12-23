@@ -47,7 +47,7 @@ body {
 
   position: relative;
 
-  transition: border .2s;
+  transition: border .15s;
 
   display: flex;
   justify-content: center;
