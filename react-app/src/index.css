@@ -98,11 +98,11 @@ body {
 }
 
 .selectable.black:hover {
-  border: 3px solid rgba(200, 200, 200, .5);
+  border: 3px solid rgba(200, 200, 200, .75);
 }
 
 .selectable.white:hover {
-  border: 3px solid rgba(60, 50, 50, .5);
+  border: 3px solid rgba(60, 50, 50, .75);
 }
 
 .square.selected {
@@ -126,7 +126,7 @@ body {
 .square.selected:hover,
 .square.possible:hover,
 .square.targeted:hover {
-  border: 3px solid rgba(60, 50, 50, .5);
+  border: 3px solid rgba(60, 50, 50, .75);
 }
 
 .white {
