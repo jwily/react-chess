@@ -23,6 +23,9 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const [shouldUpdate, setShouldUpdate] = useState(false);
 
+  const [blackKing, setBlackKing] = useState([0, 4]);
+  const [whiteKing, setWhiteKing] = useState([7, 4]);
+
   const { matchCode } = useParams();
 
   useEffect(() => {
@@ -31,6 +34,16 @@ const Board = ({ freshGame, setFreshGame }) => {
       const res = await fetch(`/api/games/${matchCode}`);
       if (res.ok) {
         const game = await res.json();
+
+        let whiteKing;
+        let blackKing;
+
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+
+          }
+        }
+
         setBoard(game.board);
         setTurn(game.turn);
         setLoaded(true);

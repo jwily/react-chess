@@ -15,16 +15,21 @@ class Game(db.Model):
     code = db.Column(db.String(12), nullable=False, unique=True, index=True)
     _board = db.Column(
         db.String(255), nullable=False, default='rnbqkbnrpppppppp32PPPPPPPPRNBQKBNR')
+
     white_id = db.Column(db.Integer, db.ForeignKey(
         add_prefix_for_prod('users.id')))
     black_id = db.Column(db.Integer, db.ForeignKey(
         add_prefix_for_prod('users.id')))
+
     turn = db.Column(db.String(5), nullable=False, default='white')
+
     white_long_ok = db.Column(db.Boolean, nullable=False, default=True)
     white_short_ok = db.Column(db.Boolean, nullable=False, default=True)
     black_long_ok = db.Column(db.Boolean, nullable=False, default=True)
     black_short_ok = db.Column(db.Boolean, nullable=False, default=True)
+
     completed = db.Column(db.Boolean, nullable=False, default=False)
+
     created_at = db.Column(
         db.DateTime, server_default=func.now(), nullable=False)
     updated_at = db.Column(

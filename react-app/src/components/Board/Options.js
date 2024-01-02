@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
 
 import { isWhite } from "../../game-logic";
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
@@ -13,6 +13,8 @@ const BUTTON_ORDER = [
 ]
 
 const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSelected }) => {
+
+  const copiedTimeout = useRef(null);
 
   const [animated, setAnimated] = useState(true);
   const [help, setHelp] = useState(false);
@@ -50,8 +52,6 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
   useEffect(() => {
 
-    let copyTimeout;
-
     const handleKeyPress = (e) => {
       if (e.shiftKey && e.key === 'R') {
         setSelected('')
@@ -71,9 +71,9 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       } else if (e.shiftKey && e.key === 'C') {
         navigator.clipboard.writeText(matchCode).then(() => {
           setStatus('copied');
-          copyTimeout = setTimeout(() => {
+          copiedTimeout.current = setTimeout(() => {
             setStatus('turn');
-          }, 1000)
+          }, 2500)
         })
       }
     }
@@ -82,10 +82,18 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
-      clearTimeout(copyTimeout);
+      clearTimeout(copiedTimeout.current);
     };
 
   }, [resetBoard, switchPlayer, help, setOffline, setSelected, offline, matchCode])
+
+  useEffect(() => {
+
+    if (status !== 'copied') {
+      clearTimeout(copiedTimeout.current);
+    };
+
+  }, [status])
 
   useEffect(() => {
 
