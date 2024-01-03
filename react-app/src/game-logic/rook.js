@@ -1,6 +1,6 @@
 import { data, toNotation } from ".";
 
-const rookMoves = (r, c, board, player) => {
+const rookMoves = (r, c, board, player, kingPosition) => {
 
   const moves = [];
 

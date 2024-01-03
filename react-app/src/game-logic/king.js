@@ -1,4 +1,4 @@
-import { toNotation, isWhite } from ".";
+import { toNotation, isWhite, copyBoard } from ".";
 
 // The various "Check" functions verify
 // whether a possible destination for the king
@@ -162,7 +162,7 @@ const _verticalCheck = (r, c, board, player, direction) => {
 }
 
 // All of the the "check" functions are
-// neatly packaged here
+// neatly packaged here, returns a boolean
 
 const checkCheck = (r, c, board, player) => {
   return !pawnCheck(r, c, board, player) &&
@@ -172,7 +172,16 @@ const checkCheck = (r, c, board, player) => {
     !kingCheck(r, c, board, player)
 }
 
-const kingMoves = (r, c, board, player) => {
+const doesNotCheck = (r, c, board, player, kingPosition, currPosition) => {
+
+  const [kingR, kingC] = kingPosition;
+  const [currR, currC] = currPosition;
+
+  const newBoard = copyBoard(board);
+
+}
+
+const kingMoves = (r, c, board, player, kingPosition) => {
 
   const deltas = [
     [-1, 1],

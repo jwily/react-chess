@@ -1,6 +1,6 @@
 import { data, toNotation, isWhite } from ".";
 
-const pawnMoves = (r, c, board, player) => {
+const pawnMoves = (r, c, board, player, kingPosition) => {
 
   // Basically figuring out which direction
   // the pawn should go based on the player

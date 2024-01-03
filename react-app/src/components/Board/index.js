@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { data, start, toRowCol, isWhite, toNotation, copyBoard } from '../../game-logic';
+import { checkCheck } from '../../game-logic/king';
 import Square from './Square';
 import Options from './Options';
 import { io } from 'socket.io-client';
@@ -17,6 +18,7 @@ const Board = ({ freshGame, setFreshGame }) => {
   // to move to are represented in algebraic notation (i.e. 'a8')
   // for ease of comparison in JavaScript
   const [selected, setSelected] = useState('');
+
   const [turn, setTurn] = useState('white');
   const [loaded, setLoaded] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -33,32 +35,35 @@ const Board = ({ freshGame, setFreshGame }) => {
     (async () => {
       const res = await fetch(`/api/games/${matchCode}`);
       if (res.ok) {
-        const game = await res.json();
+        const data = await res.json();
 
-        let whiteKing;
-        let blackKing;
-
+        // Sets king positions on game load
         for (let r = 0; r < 8; r++) {
           for (let c = 0; c < 8; c++) {
-
+            const piece = data.board[r][c];
+            if (piece === 'K') {
+              setWhiteKing([r, c]);
+            } else if (piece === 'k') {
+              setBlackKing([r, c]);
+            }
           }
         }
 
-        setBoard(game.board);
-        setTurn(game.turn);
+        // Updates state with data from back end
+        setBoard(data.board);
+        setTurn(data.turn);
         setLoaded(true);
       } else {
         setNotFound(true);
       }
     })();
 
-  }, [matchCode])
-
-  useEffect(() => {
-
     socket = io();
 
-    socket.on("game", (gameState) => {
+    socket.on("move", (gameState) => {
+      if (freshGame === matchCode) {
+        setFreshGame('');
+      };
       setBoard(gameState);
       setTurn(prev => prev === 'white' ? 'black' : 'white');
     })
@@ -72,10 +77,13 @@ const Board = ({ freshGame, setFreshGame }) => {
     return (() => {
       socket.disconnect();
     })
-  }, [])
+
+  }, [matchCode, setFreshGame, freshGame])
 
   useEffect(() => {
 
+    // Saves the game state after certain state changes
+    // Simple debouncing with setTimeout
     const updateGame = () => {
       fetch(`/api/games/${matchCode}`, {
         method: 'PUT',
@@ -116,7 +124,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     setShouldUpdate(true);
     setBoard(newBoard);
     setTurn(prev => prev === 'white' ? 'black' : 'white');
-    socket.emit("game", newBoard);
+    socket.emit("move", newBoard);
   }
 
   const clickHandler = (e) => {
@@ -140,9 +148,11 @@ const Board = ({ freshGame, setFreshGame }) => {
     const piece = board[row][col];
     const movesFunction = data[piece].moves;
 
-    return new Set(movesFunction(row, col, board, player));
+    const kingPosition = isWhite(player) ? whiteKing : blackKing;
 
-  }, [board, player, selected]);
+    return new Set(movesFunction(row, col, board, player, kingPosition));
+
+  }, [board, player, selected, blackKing, whiteKing]);
 
   const generateRows = useMemo(() => {
 

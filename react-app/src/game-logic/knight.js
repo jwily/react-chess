@@ -1,6 +1,6 @@
 import { toNotation } from ".";
 
-const knightMoves = (r, c) => {
+const knightMoves = (r, c, board, player, kingPosition) => {
 
   // All hypothetical moves a knight can make
   // expressed in row and column changes
