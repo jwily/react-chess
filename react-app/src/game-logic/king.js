@@ -164,21 +164,25 @@ const _verticalCheck = (r, c, board, player, direction) => {
 // All of the the "check" functions are
 // neatly packaged here, returns a boolean
 
-const checkCheck = (r, c, board, player) => {
-  return !pawnCheck(r, c, board, player) &&
-    !knightCheck(r, c, board, player) &&
-    !diagonalCheck(r, c, board, player) &&
-    !verticalCheck(r, c, board, player) &&
-    !kingCheck(r, c, board, player)
+const kingChecked = (r, c, board, player) => {
+  return pawnCheck(r, c, board, player) ||
+    knightCheck(r, c, board, player) ||
+    diagonalCheck(r, c, board, player) ||
+    verticalCheck(r, c, board, player) ||
+    kingCheck(r, c, board, player)
 }
 
-const doesNotCheck = (r, c, board, player, kingPosition, currPosition) => {
+export const endangersKing = (newPosition, currPosition, kingPosition, board, player) => {
 
-  const [kingR, kingC] = kingPosition;
+  const [newR, newC] = newPosition;
   const [currR, currC] = currPosition;
+  const [kingR, kingC] = kingPosition;
 
   const newBoard = copyBoard(board);
+  newBoard[newR][newC] = newBoard[currR][currC];
+  newBoard[currR][currC] = '.';
 
+  return kingChecked(kingR, kingC, newBoard, player);
 }
 
 const kingMoves = (r, c, board, player, kingPosition) => {
@@ -202,7 +206,7 @@ const kingMoves = (r, c, board, player, kingPosition) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
 
-    if (rCheck && cCheck && checkCheck(newR, newC, board, player)) {
+    if (rCheck && cCheck && !kingChecked(newR, newC, board, player)) {
       moves.push([newR, newC])
     }
   });
@@ -211,4 +215,3 @@ const kingMoves = (r, c, board, player, kingPosition) => {
 }
 
 export default kingMoves;
-export { checkCheck };

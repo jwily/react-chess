@@ -1,4 +1,5 @@
 import { toNotation } from ".";
+import { endangersKing } from "./king";
 
 const knightMoves = (r, c, board, player, kingPosition) => {
 
@@ -32,7 +33,11 @@ const knightMoves = (r, c, board, player, kingPosition) => {
     }
   });
 
-  return moves.map(([row, col]) => toNotation(row, col));
+  const legalMoves = moves.filter(([row, col]) => {
+    return !endangersKing([row, col], [r, c], kingPosition, board, player)
+  });
+
+  return legalMoves.map(([row, col]) => toNotation(row, col));
 }
 
 export default knightMoves;

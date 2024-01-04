@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { data } from '../../game-logic';
+import { pieceData } from '../../game-logic';
 
 const animationClasses = [
   'fade-in-slow',
@@ -29,7 +29,7 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
     if (isPossible && piece) {
 
       const movingPlayer = player;
-      const occupyingPlayer = data[piece].player;
+      const occupyingPlayer = pieceData[piece].player;
 
       if (movingPlayer !== occupyingPlayer) {
         return true;
@@ -52,7 +52,7 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
       className={
         color
         + determineStatus()
-        + (piece ? ` ${data[piece].player + '-' + data[piece].name}` : '')
+        + (piece ? ` ${pieceData[piece].player + '-' + pieceData[piece].name}` : '')
         + (` ${animated ? animationClasses[Math.floor(Math.random() * 3)] : ''}`)
       }
       id={notation}

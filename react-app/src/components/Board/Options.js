@@ -12,7 +12,7 @@ const BUTTON_ORDER = [
   'home',
 ]
 
-const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSelected }) => {
+const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSelected, resetGame }) => {
 
   const copiedTimeout = useRef(null);
 
@@ -31,7 +31,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
     return () => clearTimeout(removeAnimation);
 
-  }, [socket])
+  }, [])
 
   const [status, setStatus] = useState('turn');
 
@@ -41,8 +41,10 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
         setPlayer('white')
       }
       socket.emit("reset");
+
+      resetGame();
     }
-  }, [socket, animated, setPlayer, offline]);
+  }, [socket, animated, setPlayer, offline, resetGame]);
 
   const switchPlayer = useCallback((e) => {
     if (!animated) {

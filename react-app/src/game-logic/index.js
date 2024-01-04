@@ -9,7 +9,7 @@ import pawnMoves from "./pawn";
 // while lowercase denotes black
 
 // Used to access a piece's relevant data
-export const data = {
+export const pieceData = {
   'K': {
     player: 'white',
     name: 'king',

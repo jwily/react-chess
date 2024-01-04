@@ -141,21 +141,6 @@ body {
   border: 3px solid transparent
 }
 
-/* .white-king,
-.white-queen,
-.white-bishop,
-.white-rook,
-.white-knight,
-.black-king,
-.black-queen,
-.black-bishop,
-.black-rook,
-.black-knight,
-.black-pawn,
-.white-pawn {
-  position: relative;
-} */
-
 .white-king::before,
 .white-queen::before,
 .white-bishop::before,
@@ -228,9 +213,7 @@ body {
   position: absolute;
   top: 2rem;
   right: 2.5rem;
-  /* background-color: rgba(60, 50, 50, .5); */
   width: 20%;
-  /* margin: 2rem 2.5rem; */
 }
 
 .help-text {
@@ -271,7 +254,7 @@ body {
 
 .game-options div {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: right;
 }
 
@@ -311,11 +294,6 @@ body {
   opacity: .5;
   text-shadow: none;
   transform: none;
-}
-
-.game-options div {
-  display: flex;
-  align-items: baseline;
 }
 
 #message {
