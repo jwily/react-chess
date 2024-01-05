@@ -13,9 +13,9 @@ else:
 socketio = SocketIO(cors_allowed_origins=origins)
 
 
-@socketio.on("game")
+@socketio.on("move")
 def on_game(data):
-    emit("game", data, broadcast=True, include_self=False)
+    emit("move", data, broadcast=True, include_self=False)
 
 
 @socketio.on("reset")

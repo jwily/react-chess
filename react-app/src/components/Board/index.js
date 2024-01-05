@@ -1,5 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import { data, start, toRowCol, isWhite, toNotation, copyBoard } from '../../game-logic';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { pieceData, start, toRowCol, isWhite, toNotation, copyBoard } from '../../game-logic';
 import Square from './Square';
 import Options from './Options';
 import { io } from 'socket.io-client';
@@ -9,7 +9,7 @@ let socket;
 
 const Board = ({ freshGame, setFreshGame }) => {
 
-  const [player, setPlayer] = useState('white')
+  const [player, setPlayer] = useState('white');
   const [board, setBoard] = useState(start);
   const [offline, setOffline] = useState(false);
 
@@ -17,93 +17,117 @@ const Board = ({ freshGame, setFreshGame }) => {
   // to move to are represented in algebraic notation (i.e. 'a8')
   // for ease of comparison in JavaScript
   const [selected, setSelected] = useState('');
+
   const [turn, setTurn] = useState('white');
   const [loaded, setLoaded] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  const [shouldUpdate, setShouldUpdate] = useState(false);
+  const [whiteKing, setWhiteKing] = useState([7, 4]);
+  const [blackKing, setBlackKing] = useState([0, 4]);
 
   const { matchCode } = useParams();
+
+  const updateGame = useCallback((board = start, turn = 'white') => {
+    fetch(`/api/games/${matchCode}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        board, turn
+      })
+    })
+  }, [matchCode])
 
   useEffect(() => {
 
     (async () => {
       const res = await fetch(`/api/games/${matchCode}`);
       if (res.ok) {
-        const game = await res.json();
-        setBoard(game.board);
-        setTurn(game.turn);
+        const data = await res.json();
+
+        // Sets king positions on game load
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            const piece = data.board[r][c];
+            if (piece === 'K') {
+              setWhiteKing([r, c]);
+            } else if (piece === 'k') {
+              setBlackKing([r, c]);
+            }
+          }
+        }
+
+        // Updates state with data from back end
+        setBoard(data.board);
+        setTurn(data.turn);
         setLoaded(true);
       } else {
         setNotFound(true);
       }
     })();
 
-  }, [matchCode])
-
-  useEffect(() => {
-
     socket = io();
 
-    socket.on("game", (gameState) => {
-      setBoard(gameState);
+    socket.on("move", (gameState) => {
+      if (freshGame === matchCode) setFreshGame('');
+      setBoard(gameState.board);
+      setWhiteKing(gameState.whiteKing);
+      setBlackKing(gameState.blackKing);
       setTurn(prev => prev === 'white' ? 'black' : 'white');
     })
 
     socket.on("reset", () => {
-      setShouldUpdate(true);
       setBoard(start);
       setTurn("white");
+      setWhiteKing([7, 4]);
+      setBlackKing([0, 4]);
     })
 
     return (() => {
       socket.disconnect();
     })
+
   }, [])
-
-  useEffect(() => {
-
-    const updateGame = () => {
-      fetch(`/api/games/${matchCode}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          board, turn
-        })
-      })
-    }
-
-    let debounceTimer;
-
-    if (shouldUpdate) {
-      debounceTimer = setTimeout(() => {
-        updateGame();
-      })
-    }
-
-    return () => clearInterval(debounceTimer);
-
-  }, [board, turn, shouldUpdate, matchCode])
 
   const executeMove = async (curr, target) => {
     const [currR, currC] = toRowCol(curr);
     const [targetR, targetC] = toRowCol(target);
 
+    const currPiece = board[currR][currC];
+
     const newBoard = copyBoard(board);
 
-    newBoard[targetR][targetC] = newBoard[currR][currC];
+    newBoard[targetR][targetC] = currPiece;
     newBoard[currR][currC] = '.';
 
-    if (freshGame === matchCode) {
-      setFreshGame('');
-    };
+    updateGame(newBoard, turn === 'white' ? 'black' : 'white');
+
+    let whiteKingMoved = false;
+    let blackKingMoved = false;
+
+    if (currPiece === 'K') {
+      whiteKingMoved = true;
+      setWhiteKing([targetR, targetC]);
+    }
+    else if (currPiece === 'k') {
+      blackKingMoved = true;
+      setBlackKing([targetR, targetC]);
+    }
+
+    const socketData = {
+      board: newBoard,
+      whiteKing: whiteKingMoved ? [targetR, targetC] : whiteKing,
+      blackKing: blackKingMoved ? [targetR, targetC] : blackKing,
+    }
+
+    socket.emit("move", socketData);
+
+    if (freshGame === matchCode) setFreshGame('');
+
     setSelected('');
-    setShouldUpdate(true);
     setBoard(newBoard);
     setTurn(prev => prev === 'white' ? 'black' : 'white');
-    socket.emit("game", newBoard);
   }
 
   const clickHandler = (e) => {
@@ -121,24 +145,29 @@ const Board = ({ freshGame, setFreshGame }) => {
   };
 
   const possibleMoves = useMemo(() => {
+
+    // All possible moves for the selected piece
+    // A Set is used for a tiny bit of optimization
+
     if (!selected) return new Set();
 
     const [row, col] = toRowCol(selected);
     const piece = board[row][col];
-    const movesFunction = data[piece].moves;
+    const movesFunction = pieceData[piece].moves;
 
-    return new Set(movesFunction(row, col, board, player));
+    const kingPosition = isWhite(player) ? whiteKing : blackKing;
 
-  }, [board, player, selected]);
+    return new Set(movesFunction(row, col, board, player, kingPosition));
+
+  }, [board, player, selected, blackKing, whiteKing]);
 
   const generateRows = useMemo(() => {
 
     const rows = []
 
-    // Basically, the board state is read either
+    // Basically, the board matrix is traversed either
     // normally or in reverse depending on the player
 
-    // The ternaries set the direction of the board
     for (let r = isWhite(player) ? 0 : 7;
       isWhite(player) ? r <= 7 : r >= 0;
       isWhite(player) ? r++ : r--) {
@@ -160,7 +189,7 @@ const Board = ({ freshGame, setFreshGame }) => {
           color={(r + c) % 2 === 0 ? 'white square' : 'black square'}
 
           isSelectable={piece !== '.'
-            && data[piece].player === player
+            && pieceData[piece].player === player
             && turn === player}
           isSelected={selected === notation}
           isPossible={possibleMoves.has(notation)}
@@ -181,9 +210,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     return <div className='not-found fade-in-v-fast'>Match Not Found</div>
   }
 
-  if (!loaded) {
-    return null;
-  }
+  if (!loaded) return null;
 
   return (
     // Clicking "off" the board de-selects pieces
@@ -207,7 +234,8 @@ const Board = ({ freshGame, setFreshGame }) => {
         offline={offline}
         setOffline={setOffline}
         setSelected={setSelected}
-        socket={socket} />
+        socket={socket}
+        resetGame={updateGame} />
     </div >
   )
 }

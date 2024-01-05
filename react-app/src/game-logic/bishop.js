@@ -1,6 +1,7 @@
-import { data, toNotation } from ".";
+import { pieceData, toNotation } from ".";
+import { endangersKing } from "./king";
 
-const bishopMoves = (r, c, board, player) => {
+const bishopMoves = (r, c, board, player, kingPosition) => {
 
   const moves = [];
 
@@ -21,7 +22,7 @@ const bishopMoves = (r, c, board, player) => {
 
       if (targetPiece === '.') {
         moves.push([newR, newC]);
-      } else if (player !== data[targetPiece].player) {
+      } else if (player !== pieceData[targetPiece].player) {
         // Add if enemy piece, then stop
         moves.push([newR, newC]);
         break
@@ -34,7 +35,11 @@ const bishopMoves = (r, c, board, player) => {
     }
   }
 
-  return moves.map(([row, col]) => toNotation(row, col));
+  const legalMoves = moves.filter(([row, col]) => {
+    return !endangersKing([row, col], [r, c], kingPosition, board, player)
+  });
+
+  return legalMoves.map(([row, col]) => toNotation(row, col));
 }
 
 export default bishopMoves;

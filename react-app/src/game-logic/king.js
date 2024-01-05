@@ -1,6 +1,6 @@
-import { toNotation, isWhite } from ".";
+import { toNotation, isWhite, copyBoard } from ".";
 
-// The various "check" functions verify
+// The various "Check" functions verify
 // whether a possible destination for the king
 // would place it in the attack path of an
 // enemy piece
@@ -162,17 +162,30 @@ const _verticalCheck = (r, c, board, player, direction) => {
 }
 
 // All of the the "check" functions are
-// neatly packaged here
+// neatly packaged here, returns a boolean
 
-const legalKingMove = (r, c, board, player) => {
-  return !pawnCheck(r, c, board, player) &&
-    !knightCheck(r, c, board, player) &&
-    !diagonalCheck(r, c, board, player) &&
-    !verticalCheck(r, c, board, player) &&
-    !kingCheck(r, c, board, player)
+const kingChecked = (r, c, board, player) => {
+  return pawnCheck(r, c, board, player) ||
+    knightCheck(r, c, board, player) ||
+    diagonalCheck(r, c, board, player) ||
+    verticalCheck(r, c, board, player) ||
+    kingCheck(r, c, board, player)
 }
 
-const kingMoves = (r, c, board, player) => {
+export const endangersKing = (newPosition, currPosition, kingPosition, board, player) => {
+
+  const [newR, newC] = newPosition;
+  const [currR, currC] = currPosition;
+  const [kingR, kingC] = kingPosition;
+
+  const newBoard = copyBoard(board);
+  newBoard[newR][newC] = newBoard[currR][currC];
+  newBoard[currR][currC] = '.';
+
+  return kingChecked(kingR, kingC, newBoard, player);
+}
+
+const kingMoves = (r, c, board, player, kingPosition) => {
 
   const deltas = [
     [-1, 1],
@@ -193,7 +206,7 @@ const kingMoves = (r, c, board, player) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
 
-    if (rCheck && cCheck && legalKingMove(newR, newC, board, player)) {
+    if (rCheck && cCheck && !kingChecked(newR, newC, board, player)) {
       moves.push([newR, newC])
     }
   });
@@ -202,4 +215,3 @@ const kingMoves = (r, c, board, player) => {
 }
 
 export default kingMoves;
-export { pawnCheck, knightCheck, diagonalCheck, verticalCheck, kingCheck };

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
 
 import { isWhite } from "../../game-logic";
 import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
@@ -12,7 +12,9 @@ const BUTTON_ORDER = [
   'home',
 ]
 
-const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSelected }) => {
+const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSelected, resetGame }) => {
+
+  const copiedTimeout = useRef(null);
 
   const [animated, setAnimated] = useState(true);
   const [help, setHelp] = useState(false);
@@ -29,7 +31,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
     return () => clearTimeout(removeAnimation);
 
-  }, [socket])
+  }, [])
 
   const [status, setStatus] = useState('turn');
 
@@ -39,8 +41,10 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
         setPlayer('white')
       }
       socket.emit("reset");
+
+      resetGame();
     }
-  }, [socket, animated, setPlayer, offline]);
+  }, [socket, animated, setPlayer, offline, resetGame]);
 
   const switchPlayer = useCallback((e) => {
     if (!animated) {
@@ -49,8 +53,6 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
   }, [setPlayer, animated])
 
   useEffect(() => {
-
-    let copyTimeout;
 
     const handleKeyPress = (e) => {
       if (e.shiftKey && e.key === 'R') {
@@ -71,9 +73,9 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       } else if (e.shiftKey && e.key === 'C') {
         navigator.clipboard.writeText(matchCode).then(() => {
           setStatus('copied');
-          copyTimeout = setTimeout(() => {
+          copiedTimeout.current = setTimeout(() => {
             setStatus('turn');
-          }, 1000)
+          }, 2500)
         })
       }
     }
@@ -82,10 +84,18 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
-      clearTimeout(copyTimeout);
+      clearTimeout(copiedTimeout.current);
     };
 
   }, [resetBoard, switchPlayer, help, setOffline, setSelected, offline, matchCode])
+
+  useEffect(() => {
+
+    if (status !== 'copied') {
+      clearTimeout(copiedTimeout.current);
+    };
+
+  }, [status])
 
   useEffect(() => {
 

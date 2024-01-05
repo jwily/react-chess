@@ -1,6 +1,7 @@
 import { toNotation } from ".";
+import { endangersKing } from "./king";
 
-const knightMoves = (r, c) => {
+const knightMoves = (r, c, board, player, kingPosition) => {
 
   // All hypothetical moves a knight can make
   // expressed in row and column changes
@@ -32,7 +33,11 @@ const knightMoves = (r, c) => {
     }
   });
 
-  return moves.map(([row, col]) => toNotation(row, col));
+  const legalMoves = moves.filter(([row, col]) => {
+    return !endangersKing([row, col], [r, c], kingPosition, board, player)
+  });
+
+  return legalMoves.map(([row, col]) => toNotation(row, col));
 }
 
 export default knightMoves;

@@ -1,6 +1,7 @@
-import { data, toNotation, isWhite } from ".";
+import { pieceData, toNotation, isWhite } from ".";
+import { endangersKing } from "./king";
 
-const pawnMoves = (r, c, board, player) => {
+const pawnMoves = (r, c, board, player, kingPosition) => {
 
   // Basically figuring out which direction
   // the pawn should go based on the player
@@ -21,12 +22,16 @@ const pawnMoves = (r, c, board, player) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
     const targetAvailable = board[newR][newC] !== '.';
-    const isOpposing = data[board[newR][newC]]?.player !== player
+    const isOpposing = pieceData[board[newR][newC]]?.player !== player
 
     if (rCheck && cCheck && targetAvailable && isOpposing) moves.push([newR, newC])
   })
 
-  return moves.map(([row, col]) => toNotation(row, col));
+  const legalMoves = moves.filter(([row, col]) => {
+    return !endangersKing([row, col], [r, c], kingPosition, board, player)
+  });
+
+  return legalMoves.map(([row, col]) => toNotation(row, col));
 }
 
 export default pawnMoves;

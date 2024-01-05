@@ -141,21 +141,6 @@ body {
   border: 3px solid transparent
 }
 
-/* .white-king,
-.white-queen,
-.white-bishop,
-.white-rook,
-.white-knight,
-.black-king,
-.black-queen,
-.black-bishop,
-.black-rook,
-.black-knight,
-.black-pawn,
-.white-pawn {
-  position: relative;
-} */
-
 .white-king::before,
 .white-queen::before,
 .white-bishop::before,
@@ -228,9 +213,7 @@ body {
   position: absolute;
   top: 2rem;
   right: 2.5rem;
-  /* background-color: rgba(60, 50, 50, .5); */
   width: 20%;
-  /* margin: 2rem 2.5rem; */
 }
 
 .help-text {
@@ -271,51 +254,49 @@ body {
 
 .game-options div {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: right;
 }
 
 .game-options button,
 #load-buttons button {
-  /* margin-top: 1rem; */
   border: none;
   color: rgba(60, 50, 50, .75);
   cursor: pointer;
   font-size: 1.8rem;
   width: 2.8rem;
   background-color: transparent;
-  transition: all .15s;
-  /* display: flex;
-  align-items: center;
-  justify-content: center; */
 }
 
-.game-options button:disabled,
-.game-options button:disabled:hover,
-.game-options button:disabled:active {
-  color: rgba(60, 50, 50, .25);
+.game-options button:disabled {
   cursor: default;
+}
+
+.game-options button i,
+#load-buttons button i {
+  transition: all .15s;
+}
+
+.game-options button:disabled i,
+.game-options button:disabled:hover i,
+.game-options button:disabled:active i {
+  color: rgba(60, 50, 50, .25);
   text-shadow: none;
   opacity: 1;
   transform: none;
 }
 
-.game-options button:hover,
-#load-buttons button:hover {
+.game-options button:hover i,
+#load-buttons button:hover i {
   text-shadow: 0 3px 3px rgba(0, 0, 0, 0.25);
   transform: translateY(-1px);
 }
 
-.game-options button:active,
-#load-buttons button:active {
+.game-options button:active i,
+#load-buttons button:active i {
   opacity: .5;
   text-shadow: none;
   transform: none;
-}
-
-.game-options div {
-  display: flex;
-  align-items: baseline;
 }
 
 #message {

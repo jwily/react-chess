@@ -52,7 +52,7 @@ const Home = ({ freshGame, setFreshGame }) => {
 
   return (
     <div className='home-menu'>
-      <h1>React Chess</h1>
+      <h1>Justo Chess</h1>
       <button id='new-match' onClick={newMatch}>
         <span className='home-upper'>N</span><span>ew </span><span className='home-upper'>M</span><span>atch</span>
       </button>
