@@ -207,11 +207,11 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [board, player, possibleMoves, turn, selected])
 
-  if (!loaded) return null;
-
   if (notFound) {
     return <div className='not-found fade-in-v-fast'>Match Not Found</div>
   }
+
+  if (!loaded) return null;
 
   return (
     // Clicking "off" the board de-selects pieces
