@@ -39,7 +39,6 @@ const Board = ({ freshGame, setFreshGame }) => {
     })
   }, [matchCode])
 
-
   useEffect(() => {
 
     (async () => {
