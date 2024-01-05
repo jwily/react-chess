@@ -5,6 +5,8 @@ import Options from './Options';
 import { io } from 'socket.io-client';
 import { useParams } from 'react-router-dom';
 
+import { kingChecked } from '../../game-logic/king';
+
 let socket;
 
 const Board = ({ freshGame, setFreshGame }) => {
@@ -25,6 +27,9 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [whiteKing, setWhiteKing] = useState([7, 4]);
   const [blackKing, setBlackKing] = useState([0, 4]);
 
+  const [whiteChecked, setWhiteChecked] = useState(false);
+  const [blackChecked, setBlackChecked] = useState(false);
+
   const { matchCode } = useParams();
 
   const updateGame = useCallback((board = start, turn = 'white') => {
@@ -42,11 +47,13 @@ const Board = ({ freshGame, setFreshGame }) => {
   useEffect(() => {
 
     (async () => {
+
+      // Grabs game state from database
       const res = await fetch(`/api/games/${matchCode}`);
       if (res.ok) {
         const data = await res.json();
 
-        // Sets king positions on game load
+        // Identifies where the kings are located
         for (let r = 0; r < 8; r++) {
           for (let c = 0; c < 8; c++) {
             const piece = data.board[r][c];
@@ -58,7 +65,7 @@ const Board = ({ freshGame, setFreshGame }) => {
           }
         }
 
-        // Updates state with data from back end
+        // Updates state with game data
         setBoard(data.board);
         setTurn(data.turn);
         setLoaded(true);
@@ -77,6 +84,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       setTurn(prev => prev === 'white' ? 'black' : 'white');
     })
 
+    // Fires in response to reset game button in options
     socket.on("reset", () => {
       setBoard(start);
       setTurn("white");
@@ -90,6 +98,14 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [])
 
+  useEffect(() => {
+
+    // Checks if either king is checked after each move
+    setWhiteChecked(kingChecked(...whiteKing, board, 'white'));
+    setBlackChecked(kingChecked(...blackKing, board, 'black'));
+
+  }, [blackKing, whiteKing, board])
+
   const executeMove = async (curr, target) => {
     const [currR, currC] = toRowCol(curr);
     const [targetR, targetC] = toRowCol(target);
@@ -98,14 +114,17 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     const newBoard = copyBoard(board);
 
+    // Piece is "moved"
     newBoard[targetR][targetC] = currPiece;
     newBoard[currR][currC] = '.';
 
+    // Game state saved to back end
     updateGame(newBoard, turn === 'white' ? 'black' : 'white');
 
     let whiteKingMoved = false;
     let blackKingMoved = false;
 
+    // Updates king position if king is moved
     if (currPiece === 'K') {
       whiteKingMoved = true;
       setWhiteKing([targetR, targetC]);
@@ -121,6 +140,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       blackKing: blackKingMoved ? [targetR, targetC] : blackKing,
     }
 
+    // Sends new game state to other player
     socket.emit("move", socketData);
 
     if (freshGame === matchCode) setFreshGame('');
@@ -131,9 +151,8 @@ const Board = ({ freshGame, setFreshGame }) => {
   }
 
   const clickHandler = (e) => {
-
+    // Does different things depending on square's class
     e.stopPropagation();
-
     if (e.target.className.includes('selectable')) {
       setSelected(e.target.id);
     } else if (e.target.className.includes('possible')
@@ -146,8 +165,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const possibleMoves = useMemo(() => {
 
-    // All possible moves for the selected piece
-    // A Set is used for a tiny bit of optimization
+    // Returns a set of all possible moves given a selected piece
 
     if (!selected) return new Set();
 
@@ -188,13 +206,14 @@ const Board = ({ freshGame, setFreshGame }) => {
           piece={piece !== '.' ? piece : null}
           color={(r + c) % 2 === 0 ? 'white square' : 'black square'}
 
+          // Square status passed as booleans for memoization
+          // Prevents re-renders if square does not change status
           isSelectable={piece !== '.'
             && pieceData[piece].player === player
             && turn === player}
           isSelected={selected === notation}
           isPossible={possibleMoves.has(notation)}
 
-          turn={turn}
           player={player}
         />))
       }
@@ -235,7 +254,9 @@ const Board = ({ freshGame, setFreshGame }) => {
         setOffline={setOffline}
         setSelected={setSelected}
         socket={socket}
-        resetGame={updateGame} />
+        resetGame={updateGame}
+        whiteChecked={whiteChecked}
+        blackChecked={blackChecked} />
     </div >
   )
 }

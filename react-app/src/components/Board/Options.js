@@ -12,7 +12,8 @@ const BUTTON_ORDER = [
   'home',
 ]
 
-const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSelected, resetGame }) => {
+const Options = ({ player, setPlayer, socket, turn, offline,
+  setOffline, setSelected, resetGame, whiteChecked, blackChecked }) => {
 
   const copiedTimeout = useRef(null);
 

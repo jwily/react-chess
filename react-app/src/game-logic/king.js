@@ -164,11 +164,11 @@ const _verticalCheck = (r, c, board, player, direction) => {
 // All of the the "check" functions are
 // neatly packaged here, returns a boolean
 
-const kingChecked = (r, c, board, player) => {
-  return pawnCheck(r, c, board, player) ||
-    knightCheck(r, c, board, player) ||
+export const kingChecked = (r, c, board, player) => {
+  return verticalCheck(r, c, board, player) ||
     diagonalCheck(r, c, board, player) ||
-    verticalCheck(r, c, board, player) ||
+    knightCheck(r, c, board, player) ||
+    pawnCheck(r, c, board, player) ||
     kingCheck(r, c, board, player)
 }
 
