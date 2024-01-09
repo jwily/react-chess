@@ -273,15 +273,16 @@ const Board = ({ freshGame, setFreshGame }) => {
       </div>
       <Options
         turn={turn}
+        winner={winner}
         player={player}
         checkedPlayer={checkedPlayer}
-        offline={offline}
 
         setPlayer={setPlayer}
         setOffline={setOffline}
         setSelected={setSelected}
 
         socket={socket}
+        offline={offline}
         resetGame={updateGame} />
     </div >
   )

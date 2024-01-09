@@ -1,4 +1,4 @@
-import { belongsToPlayer, pieceData, toNotation } from ".";
+import { belongsToPlayer, toNotation } from ".";
 import { endangersKing } from "./king";
 
 const bishopMoves = (r, c, board, player, kingPosition) => {

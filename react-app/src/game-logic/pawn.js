@@ -1,4 +1,4 @@
-import { pieceData, toNotation, isWhite, belongsToPlayer } from ".";
+import { toNotation, isWhite, belongsToPlayer } from ".";
 import { endangersKing } from "./king";
 
 const pawnMoves = (r, c, board, player, kingPosition) => {

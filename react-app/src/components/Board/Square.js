@@ -15,6 +15,7 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
   const [animated, setAnimated] = useState(true);
 
   useEffect(() => {
+
     const removeAnimation = setTimeout(() => {
       setAnimated(false);
     }, 850)
@@ -24,6 +25,7 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
   }, [])
 
   const isAttackable = (() => {
+
     // Determines whether the square
     // is a potential target of an offensive move
     if (isPossible && piece) {
@@ -35,7 +37,9 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
         return true;
       }
     }
+
     return false;
+
   })();
 
   const determineStatus = () => {

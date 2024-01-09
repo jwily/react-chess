@@ -13,7 +13,7 @@ const BUTTON_ORDER = [
 ]
 
 const Options = ({ player, setPlayer, socket, turn, offline,
-  setOffline, setSelected, resetGame, checkedPlayer }) => {
+  setOffline, setSelected, resetGame, checkedPlayer, winner }) => {
 
   const copiedTimeout = useRef(null);
 
@@ -34,7 +34,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
 
   }, [])
 
-  const [status, setStatus] = useState('turn');
+  const [status, setStatus] = useState('default');
 
   const resetBoard = useCallback((e) => {
 
@@ -130,13 +130,33 @@ const Options = ({ player, setPlayer, socket, turn, offline,
   }, [helpClosing])
 
   const optionsData = useMemo(() => {
+
+    const defaultMessage = () => {
+
+      if (winner) {
+        return `${winner[0].toUpperCase() + winner.slice(1)}'s Victory`
+
+      } else return (turn === player && !offline) ? 'Your Move'
+        : `${turn[0].toUpperCase() + turn.slice(1)} Moves`
+
+    }
+
+    const defaultInfo = () => {
+
+      if (checkedPlayer) {
+
+        if (winner) return null;
+
+        return `check to ${checkedPlayer}`
+      }
+
+      return null;
+    }
+
     return {
-      turn: {
-        // message: turn === player ? 'Your Move'
-        //   : `${turn[0].toUpperCase() + turn.slice(1)} Moves`,
-        message: (turn === player && !offline) ? 'Your Move'
-          : `${turn[0].toUpperCase() + turn.slice(1)} Moves`,
-        info: null,
+      default: {
+        message: defaultMessage(),
+        info: defaultInfo(),
         icon: null,
         action: null
       },
@@ -196,8 +216,8 @@ const Options = ({ player, setPlayer, socket, turn, offline,
         }
       }
     }
-  }, [player, turn, resetBoard, switchPlayer,
-    offline, setOffline, matchCode, history])
+  }, [history, matchCode, resetBoard, switchPlayer, setOffline,
+    player, offline, turn, winner, checkedPlayer])
 
   const statusDisplay = useMemo(() => {
     return (
@@ -217,7 +237,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
         <button key={value}
           onClick={animated ? null : data.action}
           onMouseEnter={() => setStatus(value)}
-          onMouseLeave={() => setStatus('turn')}
+          onMouseLeave={() => setStatus('default')}
           disabled={offline && value === 'switch'}>
           <i className={data.icon}></i>
         </button>
