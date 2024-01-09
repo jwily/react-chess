@@ -1,4 +1,4 @@
-import { pieceData, toNotation } from ".";
+import { belongsToPlayer, pieceData, toNotation } from ".";
 import { endangersKing } from "./king";
 
 const bishopMoves = (r, c, board, player, kingPosition) => {
@@ -22,7 +22,7 @@ const bishopMoves = (r, c, board, player, kingPosition) => {
 
       if (targetPiece === '.') {
         moves.push([newR, newC]);
-      } else if (player !== pieceData[targetPiece].player) {
+      } else if (!belongsToPlayer(targetPiece, player)) {
         // Add if enemy piece, then stop
         moves.push([newR, newC]);
         break

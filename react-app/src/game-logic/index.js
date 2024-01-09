@@ -107,3 +107,32 @@ export const toRowCol = (string) => {
 }
 
 export const isWhite = (player) => player === 'white';
+
+export const isCheckmated = (board, player, kingPosition) => {
+
+  let count = 0;
+  const pieces = isWhite(player) ? 'KQBNRP' : 'kqbnrp';
+
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+
+      const piece = board[r][c];
+      if (piece !== '.' && pieces.includes(piece)) {
+
+        const movesFunction = pieceData[piece].function;
+        const possibleMoves = movesFunction(r, c, board, player, kingPosition);
+        count += possibleMoves.length;
+      }
+    }
+  }
+
+  return count === 0;
+}
+
+export const belongsToPlayer = (piece, player) => {
+
+  const lowercased = piece.toLowerCase();
+  if (isWhite(player)) return lowercased !== piece;
+  else return lowercased === piece;
+
+}

@@ -1,4 +1,4 @@
-import { toNotation } from ".";
+import { toNotation, belongsToPlayer } from ".";
 import { endangersKing } from "./king";
 
 const knightMoves = (r, c, board, player, kingPosition) => {
@@ -29,13 +29,19 @@ const knightMoves = (r, c, board, player, kingPosition) => {
     const cCheck = 0 <= newC && newC < 8;
 
     if (rCheck && cCheck) {
-      moves.push([newR, newC])
+
+      const piece = board[newR][newC];
+      const impassable = piece !== '.' && belongsToPlayer(piece, player);
+
+      if (!impassable) moves.push([newR, newC])
     }
   });
 
   const legalMoves = moves.filter(([row, col]) => {
     return !endangersKing([row, col], [r, c], kingPosition, board, player)
   });
+
+  console.log(legalMoves);
 
   return legalMoves.map(([row, col]) => toNotation(row, col));
 }

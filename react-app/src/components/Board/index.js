@@ -5,7 +5,11 @@ import { io } from 'socket.io-client';
 import Square from './Square';
 import Options from './Options';
 
-import { pieceData, start, toRowCol, isWhite, toNotation, copyBoard } from '../../game-logic';
+import {
+  pieceData, start, toRowCol, isWhite,
+  toNotation, copyBoard, isCheckmated
+} from '../../game-logic';
+
 import { kingChecked } from '../../game-logic/king';
 
 let socket;
@@ -28,12 +32,13 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [whiteKing, setWhiteKing] = useState([7, 4]);
   const [blackKing, setBlackKing] = useState([0, 4]);
 
-  const [isChecked, setIsChecked] = useState('');
+  const [checkedPlayer, setCheckedPlayer] = useState('');
   const [winner, setWinner] = useState('');
 
   const { matchCode } = useParams();
 
   const updateGame = useCallback((board = start, turn = 'white') => {
+
     fetch(`/api/games/${matchCode}`, {
       method: 'PUT',
       headers: {
@@ -43,6 +48,7 @@ const Board = ({ freshGame, setFreshGame }) => {
         board, turn
       })
     })
+
   }, [matchCode])
 
   useEffect(() => {
@@ -80,9 +86,9 @@ const Board = ({ freshGame, setFreshGame }) => {
     socket.on("move", (gameState) => {
       if (freshGame === matchCode) setFreshGame('');
       setBoard(gameState.board);
+      setTurn(prev => prev === 'white' ? 'black' : 'white');
       setWhiteKing(gameState.whiteKing);
       setBlackKing(gameState.blackKing);
-      setTurn(prev => prev === 'white' ? 'black' : 'white');
     })
 
     // Fires in response to reset game button in options
@@ -102,23 +108,25 @@ const Board = ({ freshGame, setFreshGame }) => {
   useEffect(() => {
 
     // Checks if either king is checked after each move
-    if (kingChecked(...whiteKing, board, 'white')) {
-      setIsChecked('white');
-    } else if (kingChecked(...blackKing, board, 'black')) {
-      setIsChecked('black');
-    } else {
-      setIsChecked('');
-    }
+    if (kingChecked(...whiteKing, board, 'white')) setCheckedPlayer('white');
+    else if (kingChecked(...blackKing, board, 'black')) setCheckedPlayer('black');
+    else setCheckedPlayer('');
 
   }, [blackKing, whiteKing, board])
 
   useEffect(() => {
 
-    if (isChecked) {
+    if (checkedPlayer) {
 
-    }
+      const kingPosition = isWhite(checkedPlayer) ? whiteKing : blackKing
 
-  }, [isChecked])
+      if (isCheckmated(board, checkedPlayer, kingPosition)) {
+        setWinner(isWhite(checkedPlayer) ? 'black' : 'white');
+      }
+
+    } else setWinner('');
+
+  }, [board, whiteKing, blackKing, checkedPlayer])
 
   const executeMove = async (curr, target) => {
     const [currR, currC] = toRowCol(curr);
@@ -222,9 +230,12 @@ const Board = ({ freshGame, setFreshGame }) => {
 
           // Square status passed as booleans for memoization
           // Prevents re-renders if square does not change status
-          isSelectable={piece !== '.'
+          isSelectable={
+            !winner
+            && turn === player
+            && piece !== '.'
             && pieceData[piece].player === player
-            && turn === player}
+          }
           isSelected={selected === notation}
           isPossible={possibleMoves.has(notation)}
 
@@ -237,7 +248,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     return rows;
 
-  }, [board, player, possibleMoves, turn, selected])
+  }, [board, player, possibleMoves, turn, selected, winner])
 
   if (notFound) {
     return <div className='not-found fade-in-v-fast'>Match Not Found</div>
@@ -263,7 +274,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       <Options
         turn={turn}
         player={player}
-        isChecked={isChecked}
+        checkedPlayer={checkedPlayer}
         offline={offline}
 
         setPlayer={setPlayer}
@@ -271,8 +282,7 @@ const Board = ({ freshGame, setFreshGame }) => {
         setSelected={setSelected}
 
         socket={socket}
-        resetGame={updateGame}
-      />
+        resetGame={updateGame} />
     </div >
   )
 }

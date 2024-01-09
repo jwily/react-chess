@@ -1,4 +1,4 @@
-import { toNotation, isWhite, copyBoard } from ".";
+import { toNotation, isWhite, copyBoard, belongsToPlayer } from ".";
 
 // The various "Check" functions verify
 // whether a possible destination for the king
@@ -206,8 +206,13 @@ const kingMoves = (r, c, board, player, kingPosition) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
 
-    if (rCheck && cCheck && !kingChecked(newR, newC, board, player)) {
-      moves.push([newR, newC])
+    if (rCheck && cCheck) {
+
+      const piece = board[newR][newC];
+      const impassable = piece !== '.' && belongsToPlayer(piece, player);
+
+      if (!impassable && !kingChecked(newR, newC, board, player))
+        moves.push([newR, newC])
     }
   });
 
