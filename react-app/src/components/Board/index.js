@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { pieceData, start, toRowCol, isWhite, toNotation, copyBoard } from '../../game-logic';
+import { useParams } from 'react-router-dom';
+import { io } from 'socket.io-client';
+
 import Square from './Square';
 import Options from './Options';
-import { io } from 'socket.io-client';
-import { useParams } from 'react-router-dom';
 
+import { pieceData, start, toRowCol, isWhite, toNotation, copyBoard } from '../../game-logic';
 import { kingChecked } from '../../game-logic/king';
 
 let socket;
@@ -27,8 +28,8 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [whiteKing, setWhiteKing] = useState([7, 4]);
   const [blackKing, setBlackKing] = useState([0, 4]);
 
-  const [whiteChecked, setWhiteChecked] = useState(false);
-  const [blackChecked, setBlackChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState('');
+  const [winner, setWinner] = useState('');
 
   const { matchCode } = useParams();
 
@@ -101,10 +102,23 @@ const Board = ({ freshGame, setFreshGame }) => {
   useEffect(() => {
 
     // Checks if either king is checked after each move
-    setWhiteChecked(kingChecked(...whiteKing, board, 'white'));
-    setBlackChecked(kingChecked(...blackKing, board, 'black'));
+    if (kingChecked(...whiteKing, board, 'white')) {
+      setIsChecked('white');
+    } else if (kingChecked(...blackKing, board, 'black')) {
+      setIsChecked('black');
+    } else {
+      setIsChecked('');
+    }
 
   }, [blackKing, whiteKing, board])
+
+  useEffect(() => {
+
+    if (isChecked) {
+
+    }
+
+  }, [isChecked])
 
   const executeMove = async (curr, target) => {
     const [currR, currC] = toRowCol(curr);
@@ -171,7 +185,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     const [row, col] = toRowCol(selected);
     const piece = board[row][col];
-    const movesFunction = pieceData[piece].moves;
+    const movesFunction = pieceData[piece].function;
 
     const kingPosition = isWhite(player) ? whiteKing : blackKing;
 
@@ -247,16 +261,18 @@ const Board = ({ freshGame, setFreshGame }) => {
         {generateRows}
       </div>
       <Options
-        player={player}
-        setPlayer={setPlayer}
         turn={turn}
+        player={player}
+        isChecked={isChecked}
         offline={offline}
+
+        setPlayer={setPlayer}
         setOffline={setOffline}
         setSelected={setSelected}
+
         socket={socket}
         resetGame={updateGame}
-        whiteChecked={whiteChecked}
-        blackChecked={blackChecked} />
+      />
     </div >
   )
 }

@@ -13,7 +13,7 @@ const BUTTON_ORDER = [
 ]
 
 const Options = ({ player, setPlayer, socket, turn, offline,
-  setOffline, setSelected, resetGame, whiteChecked, blackChecked }) => {
+  setOffline, setSelected, resetGame, isChecked }) => {
 
   const copiedTimeout = useRef(null);
 
@@ -37,25 +37,25 @@ const Options = ({ player, setPlayer, socket, turn, offline,
   const [status, setStatus] = useState('turn');
 
   const resetBoard = useCallback((e) => {
-    if (!animated) {
-      if (offline) {
-        setPlayer('white')
-      }
-      socket.emit("reset");
 
-      resetGame();
-    }
-  }, [socket, animated, setPlayer, offline, resetGame]);
+    if (offline) setPlayer('white');
+    socket.emit("reset");
+    resetGame();
+
+  }, [socket, setPlayer, offline, resetGame]);
 
   const switchPlayer = useCallback((e) => {
-    if (!animated) {
-      setPlayer((prev) => prev === 'white' ? 'black' : 'white');
-    }
-  }, [setPlayer, animated])
+
+    setPlayer((prev) => prev === 'white' ? 'black' : 'white');
+
+  }, [setPlayer])
 
   useEffect(() => {
 
     const handleKeyPress = (e) => {
+
+      if (animated) return;
+
       if (e.shiftKey && e.key === 'R') {
         setSelected('')
         resetBoard()
@@ -88,7 +88,8 @@ const Options = ({ player, setPlayer, socket, turn, offline,
       clearTimeout(copiedTimeout.current);
     };
 
-  }, [resetBoard, switchPlayer, help, setOffline, setSelected, offline, matchCode])
+  }, [resetBoard, switchPlayer, help, setOffline,
+    setSelected, offline, matchCode, animated])
 
   useEffect(() => {
 
@@ -214,7 +215,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
 
       return (
         <button key={value}
-          onClick={data.action}
+          onClick={animated ? null : data.action}
           onMouseEnter={() => setStatus(value)}
           onMouseLeave={() => setStatus('turn')}
           disabled={offline && value === 'switch'}
@@ -223,7 +224,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
         </button>
       )
     })
-  }, [optionsData, offline])
+  }, [optionsData, offline, animated])
 
   if (help) {
     return (
