@@ -35,11 +35,7 @@ function App() {
     })
   }, [])
 
-  const allImagesLoaded = () => {
-    return imagePaths.every(path => imagesLoaded[path]);
-  }
-
-  if (!allImagesLoaded) return null;
+  if (!imagePaths.every(path => imagesLoaded[path])) return null;
 
   return (
     <>
