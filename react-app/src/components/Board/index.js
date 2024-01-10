@@ -201,7 +201,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [board, player, selected, blackKing, whiteKing]);
 
-  const generateRows = useMemo(() => {
+  const generateSquares = useMemo(() => {
 
     const rows = []
 
@@ -269,7 +269,7 @@ const Board = ({ freshGame, setFreshGame }) => {
         className='board'
         onClick={clickHandler}
       >
-        {generateRows}
+        {generateSquares}
       </div>
       <Options
         turn={turn}

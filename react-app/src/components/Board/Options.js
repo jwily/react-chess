@@ -75,8 +75,8 @@ const Options = ({ player, setPlayer, socket, turn, offline,
         navigator.clipboard.writeText(matchCode).then(() => {
           setStatus('copied');
           copiedTimeout.current = setTimeout(() => {
-            setStatus('turn');
-          }, 2500)
+            setStatus('default');
+          }, 2000)
         })
       }
     }
@@ -118,7 +118,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
     let closeAnimation;
 
     if (helpClosing) {
-      setStatus('turn');
+      setStatus('default');
       closeAnimation = setTimeout(() => {
         setHelp(false);
         setHelpClosing(false);
@@ -156,7 +156,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
     return {
       default: {
         message: defaultMessage(),
-        info: defaultInfo(),
+        info: null,
         icon: null,
         action: null
       },
