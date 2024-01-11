@@ -1,9 +1,16 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { pieceData, start, toRowCol, isWhite, toNotation, copyBoard } from '../../game-logic';
+import { useParams } from 'react-router-dom';
+import { io } from 'socket.io-client';
+
 import Square from './Square';
 import Options from './Options';
-import { io } from 'socket.io-client';
-import { useParams } from 'react-router-dom';
+
+import {
+  pieceData, start, toRowCol, isWhite,
+  toNotation, copyBoard, isCheckmated
+} from '../../game-logic';
+
+import { kingChecked } from '../../game-logic/king';
 
 let socket;
 
@@ -25,9 +32,13 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [whiteKing, setWhiteKing] = useState([7, 4]);
   const [blackKing, setBlackKing] = useState([0, 4]);
 
+  const [checkedPlayer, setCheckedPlayer] = useState('');
+  const [winner, setWinner] = useState('');
+
   const { matchCode } = useParams();
 
   const updateGame = useCallback((board = start, turn = 'white') => {
+
     fetch(`/api/games/${matchCode}`, {
       method: 'PUT',
       headers: {
@@ -37,16 +48,18 @@ const Board = ({ freshGame, setFreshGame }) => {
         board, turn
       })
     })
+
   }, [matchCode])
 
   useEffect(() => {
 
     (async () => {
+      // Grabs game state from database
       const res = await fetch(`/api/games/${matchCode}`);
       if (res.ok) {
         const data = await res.json();
 
-        // Sets king positions on game load
+        // Identifies where the kings are located
         for (let r = 0; r < 8; r++) {
           for (let c = 0; c < 8; c++) {
             const piece = data.board[r][c];
@@ -58,11 +71,12 @@ const Board = ({ freshGame, setFreshGame }) => {
           }
         }
 
-        // Updates state with data from back end
+        // Updates state with game data
         setBoard(data.board);
         setTurn(data.turn);
         setLoaded(true);
       } else {
+        // Shows error screen if no game data
         setNotFound(true);
       }
     })();
@@ -72,11 +86,12 @@ const Board = ({ freshGame, setFreshGame }) => {
     socket.on("move", (gameState) => {
       if (freshGame === matchCode) setFreshGame('');
       setBoard(gameState.board);
+      setTurn(prev => prev === 'white' ? 'black' : 'white');
       setWhiteKing(gameState.whiteKing);
       setBlackKing(gameState.blackKing);
-      setTurn(prev => prev === 'white' ? 'black' : 'white');
     })
 
+    // Fires in response to reset game button in options
     socket.on("reset", () => {
       setBoard(start);
       setTurn("white");
@@ -90,6 +105,39 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [])
 
+  useEffect(() => {
+
+    // Checks if either king is checked after each move
+
+    if (kingChecked(...whiteKing, board, 'white')) {
+      setCheckedPlayer('white');
+    }
+
+    else if (kingChecked(...blackKing, board, 'black')) {
+      setCheckedPlayer('black');
+    }
+
+    else setCheckedPlayer('');
+
+  }, [blackKing, whiteKing, board])
+
+  useEffect(() => {
+
+    // If a king is checked, performs a more
+    // elaborate "checkmate" verification
+
+    if (checkedPlayer) {
+
+      const kingPosition = isWhite(checkedPlayer) ? whiteKing : blackKing
+
+      if (isCheckmated(board, checkedPlayer, kingPosition)) {
+        setWinner(isWhite(checkedPlayer) ? 'black' : 'white');
+      }
+
+    } else setWinner('');
+
+  }, [board, whiteKing, blackKing, checkedPlayer])
+
   const executeMove = async (curr, target) => {
     const [currR, currC] = toRowCol(curr);
     const [targetR, targetC] = toRowCol(target);
@@ -98,46 +146,46 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     const newBoard = copyBoard(board);
 
+    // Piece is "moved" on the matrix
     newBoard[targetR][targetC] = currPiece;
     newBoard[currR][currC] = '.';
 
+    // Saves new game state to database
     updateGame(newBoard, turn === 'white' ? 'black' : 'white');
-
-    let whiteKingMoved = false;
-    let blackKingMoved = false;
-
-    if (currPiece === 'K') {
-      whiteKingMoved = true;
-      setWhiteKing([targetR, targetC]);
-    }
-    else if (currPiece === 'k') {
-      blackKingMoved = true;
-      setBlackKing([targetR, targetC]);
-    }
 
     const socketData = {
       board: newBoard,
-      whiteKing: whiteKingMoved ? [targetR, targetC] : whiteKing,
-      blackKing: blackKingMoved ? [targetR, targetC] : blackKing,
+      whiteKing: whiteKing,
+      blackKing: blackKing,
     }
 
+    if (currPiece === 'K') {
+      socketData.whiteKing = [targetR, targetC];
+      setWhiteKing([targetR, targetC]);
+    }
+
+    else if (currPiece === 'k') {
+      socketData.blackKing = [targetR, targetC];
+      setBlackKing([targetR, targetC]);
+    }
+
+    // Sends new game state to other player
     socket.emit("move", socketData);
 
     if (freshGame === matchCode) setFreshGame('');
 
+    // Local game state updated
     setSelected('');
     setBoard(newBoard);
     setTurn(prev => prev === 'white' ? 'black' : 'white');
   }
 
   const clickHandler = (e) => {
-
+    // Does different things depending on square's class
     e.stopPropagation();
-
     if (e.target.className.includes('selectable')) {
       setSelected(e.target.id);
-    } else if (e.target.className.includes('possible')
-      || e.target.className.includes('target')) {
+    } else if (e.target.className.includes('possible') || e.target.className.includes('target')) {
       executeMove(selected, e.target.id);
     } else {
       setSelected('');
@@ -146,14 +194,13 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const possibleMoves = useMemo(() => {
 
-    // All possible moves for the selected piece
-    // A Set is used for a tiny bit of optimization
+    // Returns a set of all possible moves given a selected piece
 
     if (!selected) return new Set();
 
     const [row, col] = toRowCol(selected);
     const piece = board[row][col];
-    const movesFunction = pieceData[piece].moves;
+    const movesFunction = pieceData[piece].function;
 
     const kingPosition = isWhite(player) ? whiteKing : blackKing;
 
@@ -161,7 +208,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [board, player, selected, blackKing, whiteKing]);
 
-  const generateRows = useMemo(() => {
+  const generateSquares = useMemo(() => {
 
     const rows = []
 
@@ -188,13 +235,17 @@ const Board = ({ freshGame, setFreshGame }) => {
           piece={piece !== '.' ? piece : null}
           color={(r + c) % 2 === 0 ? 'white square' : 'black square'}
 
-          isSelectable={piece !== '.'
+          // Square status passed as booleans for memoization
+          // Prevents re-renders if square does not change status
+          isSelectable={
+            !winner
+            && turn === player
+            && piece !== '.'
             && pieceData[piece].player === player
-            && turn === player}
+          }
           isSelected={selected === notation}
           isPossible={possibleMoves.has(notation)}
 
-          turn={turn}
           player={player}
         />))
       }
@@ -204,7 +255,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     return rows;
 
-  }, [board, player, possibleMoves, turn, selected])
+  }, [board, player, possibleMoves, turn, selected, winner])
 
   if (notFound) {
     return <div className='not-found fade-in-v-fast'>Match Not Found</div>
@@ -225,16 +276,20 @@ const Board = ({ freshGame, setFreshGame }) => {
         className='board'
         onClick={clickHandler}
       >
-        {generateRows}
+        {generateSquares}
       </div>
       <Options
-        player={player}
-        setPlayer={setPlayer}
         turn={turn}
-        offline={offline}
+        winner={winner}
+        player={player}
+        checkedPlayer={checkedPlayer}
+
+        setPlayer={setPlayer}
         setOffline={setOffline}
         setSelected={setSelected}
+
         socket={socket}
+        offline={offline}
         resetGame={updateGame} />
     </div >
   )

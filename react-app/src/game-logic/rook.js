@@ -1,4 +1,4 @@
-import { pieceData, toNotation } from ".";
+import { belongsToPlayer, toNotation } from ".";
 import { endangersKing } from "./king";
 
 const rookMoves = (r, c, board, player, kingPosition) => {
@@ -21,7 +21,7 @@ const rookMoves = (r, c, board, player, kingPosition) => {
 
       if (targetPiece === '.') {
         moves.push([newR, newC]);
-      } else if (player !== pieceData[targetPiece].player) {
+      } else if (!belongsToPlayer(targetPiece, player)) {
         // Add if enemy piece, then stop
         moves.push([newR, newC]);
         break

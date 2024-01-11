@@ -1,4 +1,4 @@
-import { pieceData, toNotation, isWhite } from ".";
+import { toNotation, isWhite, belongsToPlayer } from ".";
 import { endangersKing } from "./king";
 
 const pawnMoves = (r, c, board, player, kingPosition) => {
@@ -22,9 +22,13 @@ const pawnMoves = (r, c, board, player, kingPosition) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
     const targetAvailable = board[newR][newC] !== '.';
-    const isOpposing = pieceData[board[newR][newC]]?.player !== player
 
-    if (rCheck && cCheck && targetAvailable && isOpposing) moves.push([newR, newC])
+    if (rCheck && cCheck && targetAvailable) {
+
+      const piece = board[newR][newC];
+
+      if (!belongsToPlayer(piece, player)) moves.push([newR, newC])
+    }
   })
 
   const legalMoves = moves.filter(([row, col]) => {

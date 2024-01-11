@@ -12,7 +12,8 @@ const BUTTON_ORDER = [
   'home',
 ]
 
-const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSelected, resetGame }) => {
+const Options = ({ player, setPlayer, socket, turn, offline,
+  setOffline, setSelected, resetGame, checkedPlayer, winner }) => {
 
   const copiedTimeout = useRef(null);
 
@@ -33,28 +34,28 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
   }, [])
 
-  const [status, setStatus] = useState('turn');
+  const [status, setStatus] = useState('default');
 
   const resetBoard = useCallback((e) => {
-    if (!animated) {
-      if (offline) {
-        setPlayer('white')
-      }
-      socket.emit("reset");
 
-      resetGame();
-    }
-  }, [socket, animated, setPlayer, offline, resetGame]);
+    if (offline) setPlayer('white');
+    socket.emit("reset");
+    resetGame();
+
+  }, [socket, setPlayer, offline, resetGame]);
 
   const switchPlayer = useCallback((e) => {
-    if (!animated) {
-      setPlayer((prev) => prev === 'white' ? 'black' : 'white');
-    }
-  }, [setPlayer, animated])
+
+    setPlayer((prev) => prev === 'white' ? 'black' : 'white');
+
+  }, [setPlayer])
 
   useEffect(() => {
 
     const handleKeyPress = (e) => {
+
+      if (animated) return;
+
       if (e.shiftKey && e.key === 'R') {
         setSelected('')
         resetBoard()
@@ -74,8 +75,8 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
         navigator.clipboard.writeText(matchCode).then(() => {
           setStatus('copied');
           copiedTimeout.current = setTimeout(() => {
-            setStatus('turn');
-          }, 2500)
+            setStatus('default');
+          }, 2000)
         })
       }
     }
@@ -87,7 +88,8 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       clearTimeout(copiedTimeout.current);
     };
 
-  }, [resetBoard, switchPlayer, help, setOffline, setSelected, offline, matchCode])
+  }, [resetBoard, switchPlayer, help, setOffline,
+    setSelected, offline, matchCode, animated])
 
   useEffect(() => {
 
@@ -116,7 +118,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
     let closeAnimation;
 
     if (helpClosing) {
-      setStatus('turn');
+      setStatus('default');
       closeAnimation = setTimeout(() => {
         setHelp(false);
         setHelpClosing(false);
@@ -128,31 +130,51 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
   }, [helpClosing])
 
   const optionsData = useMemo(() => {
+
+    const defaultMessage = () => {
+
+      if (winner) {
+        return `${winner[0].toUpperCase() + winner.slice(1)}'s Victory`
+
+      } else return (turn === player && !offline) ? 'Your Move'
+        : `${turn[0].toUpperCase() + turn.slice(1)} Moves`
+
+    }
+
+    const defaultInfo = () => {
+
+      if (checkedPlayer) {
+
+        if (winner) return null;
+
+        return `check to ${checkedPlayer}`
+      }
+
+      return null;
+    }
+
     return {
-      turn: {
-        // message: turn === player ? 'Your Move'
-        //   : `${turn[0].toUpperCase() + turn.slice(1)} Moves`,
-        message: (turn === player && !offline) ? 'Your Move'
-          : `${turn[0].toUpperCase() + turn.slice(1)} Moves`,
-        hotkey: null,
+      default: {
+        message: defaultMessage(),
+        info: null,
         icon: null,
         action: null
       },
       reset: {
         message: 'Reset Game',
-        hotkey: 'shift + r',
+        info: 'shift + r',
         icon: "fa-solid fa-power-off",
         action: resetBoard,
       },
       switch: {
         message: `Switch to ${isWhite(player) ? 'Black' : 'White'}`,
-        hotkey: 'shift + s',
+        info: 'shift + s',
         icon: `fa-${isWhite(player) ? 'regular' : 'solid'} fa-chess-knight`,
         action: switchPlayer
       },
       help: {
         message: 'Help',
-        hotkey: 'shift + q',
+        info: 'shift + q',
         icon: "fa-solid fa-circle-question",
         action: (e) => {
           e.stopPropagation();
@@ -161,7 +183,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       },
       offline: {
         message: `${offline ? 'Disable' : 'Enable'} Offline Mode`,
-        hotkey: 'shift + f',
+        info: 'shift + f',
         icon: `fa-solid fa-${offline ? 'people-arrows' : 'street-view'}`,
         action: (e) => {
           e.stopPropagation();
@@ -170,7 +192,7 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       },
       copy: {
         message: 'Copy Code',
-        hotkey: 'shift + c',
+        info: 'shift + c',
         icon: 'fa-regular fa-copy',
         action: (e) => {
           e.stopPropagation();
@@ -181,28 +203,28 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
       },
       copied: {
         message: 'Copied',
-        hotkey: matchCode,
+        info: matchCode,
         icon: null,
         action: null
       },
       home: {
         message: 'Back Home',
-        hotkey: null,
+        info: null,
         icon: 'fa-solid fa-house',
         action: () => {
           history.push('/');
         }
       }
     }
-  }, [player, turn, resetBoard, switchPlayer,
-    offline, setOffline, matchCode, history])
+  }, [history, matchCode, resetBoard, switchPlayer, setOffline,
+    player, offline, turn, winner, checkedPlayer])
 
   const statusDisplay = useMemo(() => {
     return (
       <div>
         <span id='message'>{optionsData[status].message}</span>
-        {!!optionsData[status].hotkey &&
-          <span id='status'>{optionsData[status].hotkey}</span>}
+        {!!optionsData[status].info &&
+          <span id='status'>{optionsData[status].info}</span>}
       </div>
     )
   }, [optionsData, status])
@@ -213,16 +235,15 @@ const Options = ({ player, setPlayer, socket, turn, offline, setOffline, setSele
 
       return (
         <button key={value}
-          onClick={data.action}
+          onClick={animated ? null : data.action}
           onMouseEnter={() => setStatus(value)}
-          onMouseLeave={() => setStatus('turn')}
-          disabled={offline && value === 'switch'}
-        >
+          onMouseLeave={() => setStatus('default')}
+          disabled={offline && value === 'switch'}>
           <i className={data.icon}></i>
         </button>
       )
     })
-  }, [optionsData, offline])
+  }, [optionsData, offline, animated])
 
   if (help) {
     return (

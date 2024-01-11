@@ -1,14 +1,13 @@
-import { toNotation, isWhite, copyBoard } from ".";
+import { toNotation, isWhite, copyBoard, belongsToPlayer } from ".";
 
-// The various "Check" functions verify
+// The various "Check" functions are used to detect
 // whether a possible destination for the king
-// would place it in the attack path of an
-// enemy piece
-
-// They are in a sense variations of
-// the various movement algorithms
+// would place it in the attack path of an enemy piece
 
 const pawnCheck = (r, c, board, player) => {
+
+  // Checks whether a pawn exists in either of
+  // the two diagonal pieces in front of the king
 
   const direction = isWhite(player) ? -1 : 1;
   const leftPiece = board[direction + r][c + 1];
@@ -22,6 +21,9 @@ const pawnCheck = (r, c, board, player) => {
 }
 
 const knightCheck = (r, c, board, player) => {
+
+  // Checks whether an enemy knight exists
+  // in the various L-shaped directions
 
   const deltas = [
     [2, 1],
@@ -53,6 +55,9 @@ const knightCheck = (r, c, board, player) => {
 }
 
 const kingCheck = (r, c, board, player) => {
+
+  // Checks whether moving would place the king
+  // within one square of the enemy king
 
   const deltas = [
     [-1, 1],
@@ -96,6 +101,9 @@ const diagonalCheck = (r, c, board, player) => {
 
 const _diagonalCheck = (r, c, board, player, direction) => {
 
+  // Checks whether an enemy bishop or queen
+  // exists in the diagonal directions
+
   const enemyBishop = isWhite(player) ? 'b' : 'B';
   const enemyQueen = isWhite(player) ? 'q' : 'Q';
   const selfKing = isWhite(player) ? 'K' : 'k';
@@ -136,6 +144,9 @@ const verticalCheck = (r, c, board, player) => {
 
 const _verticalCheck = (r, c, board, player, direction) => {
 
+  // Checks whether an enemy rook or queen
+  // exists in the diagonal directions
+
   const enemyRook = isWhite(player) ? 'r' : 'R';
   const enemyQueen = isWhite(player) ? 'q' : 'Q';
   const selfKing = isWhite(player) ? 'K' : 'k';
@@ -164,15 +175,22 @@ const _verticalCheck = (r, c, board, player, direction) => {
 // All of the the "check" functions are
 // neatly packaged here, returns a boolean
 
-const kingChecked = (r, c, board, player) => {
-  return pawnCheck(r, c, board, player) ||
-    knightCheck(r, c, board, player) ||
+export const kingChecked = (r, c, board, player) => {
+  return verticalCheck(r, c, board, player) ||
     diagonalCheck(r, c, board, player) ||
-    verticalCheck(r, c, board, player) ||
+    knightCheck(r, c, board, player) ||
+    pawnCheck(r, c, board, player) ||
     kingCheck(r, c, board, player)
 }
 
 export const endangersKing = (newPosition, currPosition, kingPosition, board, player) => {
+
+  // When given a possible move,
+  // this function creates a copy of the board
+  // in which that move has taken place
+  // and then checks if the king is endangered
+
+  // This function is used to prohibit moves that would check one's own king
 
   const [newR, newC] = newPosition;
   const [currR, currC] = currPosition;
@@ -206,8 +224,13 @@ const kingMoves = (r, c, board, player, kingPosition) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
 
-    if (rCheck && cCheck && !kingChecked(newR, newC, board, player)) {
-      moves.push([newR, newC])
+    if (rCheck && cCheck) {
+
+      const piece = board[newR][newC];
+      const impassable = piece !== '.' && belongsToPlayer(piece, player);
+
+      if (!impassable && !kingChecked(newR, newC, board, player))
+        moves.push([newR, newC])
     }
   });
 
