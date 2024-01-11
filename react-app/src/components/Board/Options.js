@@ -253,7 +253,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
           setHelpClosing(true);
         }}>
         <div className='help-text'>
-          <h2>React Chess</h2>
+          <h2>Justo Chess</h2>
           <p>Press the [copy] button to save the match code to your clipboard</p>
           <p>Share the match code with a friend</p>
           <p>Determine together who will play black and who will play white</p>
