@@ -54,7 +54,6 @@ const Board = ({ freshGame, setFreshGame }) => {
   useEffect(() => {
 
     (async () => {
-
       // Grabs game state from database
       const res = await fetch(`/api/games/${matchCode}`);
       if (res.ok) {
@@ -77,6 +76,7 @@ const Board = ({ freshGame, setFreshGame }) => {
         setTurn(data.turn);
         setLoaded(true);
       } else {
+        // Shows error screen if no game data
         setNotFound(true);
       }
     })();
@@ -108,13 +108,23 @@ const Board = ({ freshGame, setFreshGame }) => {
   useEffect(() => {
 
     // Checks if either king is checked after each move
-    if (kingChecked(...whiteKing, board, 'white')) setCheckedPlayer('white');
-    else if (kingChecked(...blackKing, board, 'black')) setCheckedPlayer('black');
+
+    if (kingChecked(...whiteKing, board, 'white')) {
+      setCheckedPlayer('white');
+    }
+
+    else if (kingChecked(...blackKing, board, 'black')) {
+      setCheckedPlayer('black');
+    }
+
     else setCheckedPlayer('');
 
   }, [blackKing, whiteKing, board])
 
   useEffect(() => {
+
+    // If a king is checked, performs a more
+    // elaborate "checkmate" verification
 
     if (checkedPlayer) {
 
@@ -136,30 +146,27 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     const newBoard = copyBoard(board);
 
-    // Piece is "moved"
+    // Piece is "moved" on the matrix
     newBoard[targetR][targetC] = currPiece;
     newBoard[currR][currC] = '.';
 
-    // Game state saved to back end
+    // Saves new game state to database
     updateGame(newBoard, turn === 'white' ? 'black' : 'white');
-
-    let whiteKingMoved = false;
-    let blackKingMoved = false;
-
-    // Updates king position if king is moved
-    if (currPiece === 'K') {
-      whiteKingMoved = true;
-      setWhiteKing([targetR, targetC]);
-    }
-    else if (currPiece === 'k') {
-      blackKingMoved = true;
-      setBlackKing([targetR, targetC]);
-    }
 
     const socketData = {
       board: newBoard,
-      whiteKing: whiteKingMoved ? [targetR, targetC] : whiteKing,
-      blackKing: blackKingMoved ? [targetR, targetC] : blackKing,
+      whiteKing: whiteKing,
+      blackKing: blackKing,
+    }
+
+    if (currPiece === 'K') {
+      socketData.whiteKing = [targetR, targetC];
+      setWhiteKing([targetR, targetC]);
+    }
+
+    else if (currPiece === 'k') {
+      socketData.blackKing = [targetR, targetC];
+      setBlackKing([targetR, targetC]);
     }
 
     // Sends new game state to other player
@@ -167,6 +174,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     if (freshGame === matchCode) setFreshGame('');
 
+    // Local game state updated
     setSelected('');
     setBoard(newBoard);
     setTurn(prev => prev === 'white' ? 'black' : 'white');
@@ -177,8 +185,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     e.stopPropagation();
     if (e.target.className.includes('selectable')) {
       setSelected(e.target.id);
-    } else if (e.target.className.includes('possible')
-      || e.target.className.includes('target')) {
+    } else if (e.target.className.includes('possible') || e.target.className.includes('target')) {
       executeMove(selected, e.target.id);
     } else {
       setSelected('');
