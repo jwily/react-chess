@@ -4,9 +4,11 @@
 
 A personal project that I undertook to keep my React skills sharp and discover what it takes algorithmically to "play" on a chess board represented by a matrix.
 
-Play live with a friend through the power of Socket.IO, Flask, and SQLAlchemy.
+Live play implemented using Socket.IO, Flask, and SQLAlchemy.
 
 I love tabletop games, and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with the grandfather of them all.
+
+There was magic in the first moment that I clicked on a piece and saw the board light up with its possibilities.
 
 ### Why "justo"?
 
@@ -40,7 +42,7 @@ The board that you see and all the action that takes upon it renders off an 8 by
 ]
 ```
 
-I wanted to represent the board with a graph to practice the basics of traversal algorithms:
+I wanted to represent the board with a graph to make practical use of traversal algorithms:
 
 ```
 const bishopMoves = (r, c, board, player) => {
