@@ -2,7 +2,9 @@
 
 ![chrome_VyRTpsDt7n](https://github.com/jwily/react-chess/assets/87846621/3e69e7b6-b160-4fa0-89de-66f462369287)
 
-A personal project that I undertook to keep my React skills sharp and discover what it takes algorithmically to "play" on a chess board represented by a matrix. Live play with websockets and a Flask + PostgreSQL back end.
+A personal project that I undertook to keep my React skills sharp and discover what it takes algorithmically to "play" on a chess board represented by a matrix.
+
+Play live with a friend through the power of Socket.IO, Flask, and SQLAlchemy.
 
 I love tabletop games, and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with the grandfather of them all.
 
@@ -10,14 +12,14 @@ I love tabletop games, and while I am not an avid chess player myself, I can't h
 
 Before I learned JavaScript and Python, I spent years attaining fluency in Spanish. The process taught me much about myself and what I can accomplish, and changed my life in ways I could never have foreseen.
 
-I chose the name "justo chess" both for what it invokes in English-speakers' minds and what it denotes in Spanish, with its etymological link to the notions of fairness and rightness and the connotation that my project is nothing more than good old chess, plain and simple.
+I chose the name "justo chess" both for what it invokes in English-speakers' minds and what it denotes in Spanish, with its etymological root in fairness and rightness and the connotation that my project is nothing more than good old chess, plain and simple.
 
 ## Get Playing
 
 [justo awaits you](https://justochess.onrender.com/) ♞
 
-If you haven't played before, just hit "New Match" on the home page and click the [copy] button at the top right corner of the match screen.
-Once you've got your code, send it over to a friend, who can use the code they've received to join your match.
+If you haven't played before, just hit "New Match" on the home page and click the "Copy Code" button at the top right corner of the match screen.
+Once you've got your code, send it over to a friend, who can then use the code they've received to join your match.
 
 ## How It Works
 
