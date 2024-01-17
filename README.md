@@ -1,4 +1,4 @@
-# Justo Chess
+# justo chess
 
 ![chrome_GL61zxWGy4](https://github.com/jwily/react-chess/assets/87846621/148cf7b4-e494-4e8a-bab0-90310b27c527)
 
@@ -6,15 +6,15 @@ A personal project that I undertook to keep sharpen my React skills and discover
 
 I love tabletop games, and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with the grandfather of them all.
 
-### Why "Justo"?
+### Why "justo"?
 
 Before I learned JavaScript and Python, I spent years attaining fluency in Spanish. The process taught me much about myself and what I can accomplish, and changed my life in ways I could never have foreseen.
 
-I chose the name "Justo Chess" both for what it invokes in English-speakers' minds and what it denotes in Spanish, with its etymological link to the notions of fairness and rightness and the sense that my project is nothing more than good old chess, plain and simple.
+I chose the name "justo chess" both for what it invokes in English-speakers' minds and what it denotes in Spanish, with its etymological link to the notions of fairness and rightness and the connotation that my project is nothing more than good old chess, plain and simple.
 
 ## Get Playing
 
-[Justo Chess awaits](https://justochess.onrender.com/) ♞
+[justo awaits you](https://justochess.onrender.com/) ♞
 
 If you haven't played before, just hit "New Match" on the home page and click the [copy] button at the top right corner of the match screen.
 Once you've got your code, send it over to a friend, who can use the code they've received to join your match.
