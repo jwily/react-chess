@@ -160,7 +160,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       board: newBoard,
       whiteKing: whiteKing,
       blackKing: blackKing,
-      code: matchCode
+      room: matchCode
     }
 
     if (currPiece === 'K') {

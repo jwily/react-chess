@@ -15,19 +15,19 @@ socketio = SocketIO(cors_allowed_origins=origins)
 
 @socketio.on("move")
 def on_game(data):
-    emit("move", data, to=data['code'], include_self=False)
+    emit("move", data, to=data['room'], include_self=False)
 
 
 @socketio.on("reset")
-def on_reset(code):
-    emit("reset", to=code)
+def on_reset(room):
+    emit("reset", to=room)
 
 
 @socketio.on('join')
-def on_join(code):
-    join_room(code)
+def on_join(room):
+    join_room(room)
 
 
 @socketio.on('leave')
-def on_leave(code):
-    leave_room(code)
+def on_leave(room):
+    leave_room(room)
