@@ -16,7 +16,7 @@ I chose the name "justo chess" both for what it invokes in English-speakers' min
 
 ## Get Playing
 
-[justo awaits you](https://justochess.onrender.com/) ♞
+[justo awaits you](https://justochess.onrender.com/)
 
 If you haven't played before, just hit "New Match" on the home page and click the "Copy Code" button at the top right corner of the match screen.
 Once you've got your code, send it over to a friend, who can then use the code they've received to join your match.
@@ -109,3 +109,5 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
 - Implement castling and en passant.
 - Add a log of messages to communicate with and allow communication between players.
 - Implement persistent user profiles and all the possibilities they would open up.
+
+Background image credit to [Tyler Lastovich](https://unsplash.com/@lastly)
