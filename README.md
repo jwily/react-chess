@@ -2,7 +2,7 @@
 
 ![chrome_VyRTpsDt7n](https://github.com/jwily/react-chess/assets/87846621/3e69e7b6-b160-4fa0-89de-66f462369287)
 
-A personal project that I undertook to keep sharpen my React skills and discover what it takes algorithmically to "play" on a chess board represented by a matrix. Live play with websockets and a Flask + PostgreSQL back end.
+A personal project that I undertook to keep my React skills sharp and discover what it takes algorithmically to "play" on a chess board represented by a matrix. Live play with websockets and a Flask + PostgreSQL back end.
 
 I love tabletop games, and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with the grandfather of them all.
 
