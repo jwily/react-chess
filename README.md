@@ -2,6 +2,13 @@
 
 ![chrome_VyRTpsDt7n](https://github.com/jwily/react-chess/assets/87846621/3e69e7b6-b160-4fa0-89de-66f462369287)
 
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Flask](https://img.shields.io/badge/flask-%23000.svg?style=for-the-badge&logo=flask&logoColor=white)
+![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+
 A personal project that I undertook to keep my React skills sharp and discover what it takes algorithmically to "play" on a chess board represented by a matrix.
 
 Live play implemented using Socket.IO, Flask, and SQLAlchemy.
