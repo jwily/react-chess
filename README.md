@@ -9,9 +9,9 @@
 ![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 
-I love tabletop games, and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with the grandfather of them all.
+I love tabletop games, from the way they look, feel, and even smell (!), and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with their greatest ancestor.
 
-There was magic in that first moment when I clicked on a piece and saw the board light up with its possibilities!
+There was magic, I tell you, in that first moment when I clicked on a piece and saw the board light up with its possibilities.
 
 ### Why "justo"?
 
@@ -21,7 +21,7 @@ I chose the name "justo chess" both for what it invokes in English-speakers' min
 
 ## Get Playing
 
-[justo awaits you](https://justochess.onrender.com/)
+[Visit justo chess](https://justochess.onrender.com/)
 
 If you haven't played before, just hit "New Match" on the home page and click the "Copy Code" button at the top right corner of the match screen.
 Once you've got your code, send it over to a friend, who can then use the code they've received to join your match.
@@ -30,7 +30,7 @@ If you'd like to just share a single screen with a friend in person, enable "Off
 
 ## How It Works
 
-The board that you see and all the action that takes upon it renders off an 8 by 8 graph:
+The board that you see and all the action that takes place upon it renders off of an 8 by 8 graph:
 
 ```
 [
@@ -110,8 +110,8 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
 }
 ```
 
-## To Do
-- Implement castling, en passant, and pawn promotion. Sorry, I know it's chess until it's got these!
+## Future Goals
+- Implement castling, en passant, and pawn promotion. Sorry, I know it's not chess until it's got these!
 - Add a log of messages to communicate with and allow communication between players.
 - Implement persistent user profiles and all the possibilities they would open up.
 
