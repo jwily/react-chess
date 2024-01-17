@@ -39,10 +39,10 @@ const Options = ({ player, setPlayer, socket, turn, offline,
   const resetBoard = useCallback((e) => {
 
     if (offline) setPlayer('white');
-    socket.emit("reset");
+    socket.emit("reset", matchCode);
     resetGame();
 
-  }, [socket, setPlayer, offline, resetGame]);
+  }, [socket, setPlayer, offline, resetGame, matchCode]);
 
   const switchPlayer = useCallback((e) => {
 

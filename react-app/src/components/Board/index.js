@@ -83,6 +83,8 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     socket = io();
 
+    socket.emit("join", matchCode);
+
     socket.on("move", (gameState) => {
       if (freshGame === matchCode) setFreshGame('');
       setBoard(gameState.board);
@@ -100,6 +102,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     })
 
     return (() => {
+      socket.emit("leave", matchCode)
       socket.disconnect();
     })
 
@@ -157,6 +160,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       board: newBoard,
       whiteKing: whiteKing,
       blackKing: blackKing,
+      code: matchCode
     }
 
     if (currPiece === 'K') {

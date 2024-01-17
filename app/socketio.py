@@ -1,4 +1,4 @@
-from flask_socketio import SocketIO, emit, join_room
+from flask_socketio import SocketIO, emit, join_room, leave_room
 import os
 
 if os.environ.get('FLASK_ENV') == 'production':
@@ -15,15 +15,19 @@ socketio = SocketIO(cors_allowed_origins=origins)
 
 @socketio.on("move")
 def on_game(data):
-    emit("move", data, broadcast=True, include_self=False)
+    emit("move", data, to=data['code'], include_self=False)
 
 
 @socketio.on("reset")
-def on_reset():
-    emit("reset", broadcast=True)
+def on_reset(code):
+    emit("reset", to=code)
 
 
 @socketio.on('join')
-def on_join(data):
-    room = data['room']
-    join_room[room]
+def on_join(code):
+    join_room(code)
+
+
+@socketio.on('leave')
+def on_leave(code):
+    leave_room(code)
