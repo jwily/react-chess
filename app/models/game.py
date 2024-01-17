@@ -23,10 +23,10 @@ class Game(db.Model):
 
     turn = db.Column(db.String(5), nullable=False, default='white')
 
-    white_long_ok = db.Column(db.Boolean, nullable=False, default=True)
-    white_short_ok = db.Column(db.Boolean, nullable=False, default=True)
-    black_long_ok = db.Column(db.Boolean, nullable=False, default=True)
-    black_short_ok = db.Column(db.Boolean, nullable=False, default=True)
+    white_can_long = db.Column(db.Boolean, nullable=False, default=True)
+    white_can_short = db.Column(db.Boolean, nullable=False, default=True)
+    black_can_long = db.Column(db.Boolean, nullable=False, default=True)
+    black_can_short = db.Column(db.Boolean, nullable=False, default=True)
 
     completed = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -51,8 +51,10 @@ class Game(db.Model):
             'id': self.id,
             'code': self.code,
             'board': self.board,
-            'white': self.white_id,
-            'black': self.black_id,
+            'whiteCanLong': self.white_long_ok,
+            'whiteCanShort': self.white_short_ok,
+            'blackCanLong': self.black_long_ok,
+            'blackCanShort': self.black_short_ok,
             'turn': self.turn,
             'createdAt': self.created_at,
             'updatedAt': self.updated_at

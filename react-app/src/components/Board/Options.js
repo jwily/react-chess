@@ -141,17 +141,6 @@ const Options = ({ player, setPlayer, socket, turn, offline,
 
     }
 
-    const defaultInfo = () => {
-
-      if (checkedPlayer) {
-
-        if (winner) return null;
-
-        return `check to ${checkedPlayer}`
-      }
-
-      return null;
-    }
 
     return {
       default: {

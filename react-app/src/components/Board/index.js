@@ -32,6 +32,11 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [whiteKing, setWhiteKing] = useState([7, 4]);
   const [blackKing, setBlackKing] = useState([0, 4]);
 
+  const [whiteCanLong, setWhiteCanLong] = useState(true);
+  const [whiteCanShort, setWhiteCanShort] = useState(true);
+  const [blackCanLong, setBlackCanLong] = useState(true);
+  const [blackCanShort, setBlackCanShort] = useState(true);
+
   const [checkedPlayer, setCheckedPlayer] = useState('');
   const [winner, setWinner] = useState('');
 
@@ -74,6 +79,10 @@ const Board = ({ freshGame, setFreshGame }) => {
         // Updates state with game data
         setBoard(data.board);
         setTurn(data.turn);
+        setWhiteCanLong(data.whiteCanLong);
+        setWhiteCanShort(data.whiteCanShort);
+        setBlackCanLong(data.blackCanLong);
+        setBlackCanShort(data.blackCanShort);
         setLoaded(true);
       } else {
         // Shows error screen if no game data
