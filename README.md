@@ -6,6 +6,12 @@ A personal project that I undertook to keep sharpen my React skills and discover
 
 I love tabletop games, and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with the grandfather of them all.
 
+### Why "Justo"?
+
+Before I learned JavaScript and Python, I spent years trying to learn Spanish. The process taught me to much about myself and what I can accomplish, and changed my life in ways I could never have fathomed.
+
+I chose the name "Justo Chess" both for what it invokes in English-speakers' minds and what it denotes in Spanish, with its etymological link to the notions of fairness and rightness, as well as the connotation that my project is nothing more than good old chess, plain and simple.
+
 ## Get Playing
 
 [Justo Chess awaits](https://justochess.onrender.com/) ♞
