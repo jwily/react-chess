@@ -9,7 +9,7 @@
 ![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 
-I love tabletop games, from the way they look, feel, and even smell (!), and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with their greatest ancestor.
+I love tabletop games, from the way they look, feel, and even smell 🙃, and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with their greatest ancestor.
 
 There was magic, I tell you, in that first moment when I clicked on a piece and saw the board light up with its possibilities.
 
@@ -17,11 +17,11 @@ There was magic, I tell you, in that first moment when I clicked on a piece and 
 
 Before I learned JavaScript and Python, I spent years attaining fluency in Spanish. The process taught me much about myself and what I can accomplish, and changed my life in ways I could never have foreseen.
 
-I chose the name "justo chess" both for what it invokes in English-speakers' minds and what it denotes in Spanish, with its etymological root in fairness and rightness and the connotation that my project is nothing more than good old chess, plain and simple.
+I chose the name "justo chess" both for what it invokes in English-speakers' minds and what it denotes in Spanish, with its etymological root in fairness and rightness and the connotation that my project is nothing more or less than good old chess, plain and simple.
 
 ## Get Playing
 
-[Visit justo chess](https://justochess.onrender.com/)
+[Start Here](https://justochess.onrender.com/)
 
 If you haven't played before, just hit "New Match" on the home page and click the "Copy Code" button at the top right corner of the match screen.
 Once you've got your code, send it over to a friend, who can then use the code they've received to join your match.
@@ -110,7 +110,7 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
 }
 ```
 
-## Future Goals
+## Pending Goals
 - Implement castling, en passant, and pawn promotion. Sorry, I know it's not chess until it's got these!
 - Add a log of messages to communicate with and allow communication between players.
 - Implement persistent user profiles and all the possibilities they would open up.
