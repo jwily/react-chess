@@ -8,9 +8,9 @@ I love tabletop games, and while I am not an avid chess player myself, I can't h
 
 ### Why "Justo"?
 
-Before I learned JavaScript and Python, I spent years trying to learn Spanish. The process taught me to much about myself and what I can accomplish, and changed my life in ways I could never have fathomed.
+Before I learned JavaScript and Python, I spent years attaining fluency in Spanish. The process taught me much about myself and what I can accomplish, and changed my life in ways I could never have foreseen.
 
-I chose the name "Justo Chess" both for what it invokes in English-speakers' minds and what it denotes in Spanish, with its etymological link to the notions of fairness and rightness, as well as the connotation that my project is nothing more than good old chess, plain and simple.
+I chose the name "Justo Chess" both for what it invokes in English-speakers' minds and what it denotes in Spanish, with its etymological link to the notions of fairness and rightness and the sense that my project is nothing more than good old chess, plain and simple.
 
 ## Get Playing
 
