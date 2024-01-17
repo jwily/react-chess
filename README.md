@@ -106,7 +106,7 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
 ```
 
 ### To Do
-- Implement castling and en passant.
+- Implement castling, en passant, and pawn promotion. Sorry, I know it's chess until it's got these!
 - Add a log of messages to communicate with and allow communication between players.
 - Implement persistent user profiles and all the possibilities they would open up.
 
