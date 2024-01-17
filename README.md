@@ -86,7 +86,7 @@ const bishopMoves = (r, c, board, player) => {
 }
 ```
 
-The fun part was beginning to figure out what it would take to do things like prevent a playing from checking their own king!
+The best part was figuring out what it would take to do things like prevent a player from checking their own king!
 
 ```
 export const endangersKing = (newPosition, currPosition, kingPosition, board, player) => {
