@@ -21,6 +21,8 @@ I chose the name "justo chess" both for what it invokes in English-speakers' min
 If you haven't played before, just hit "New Match" on the home page and click the "Copy Code" button at the top right corner of the match screen.
 Once you've got your code, send it over to a friend, who can then use the code they've received to join your match.
 
+If you'd like to just share a single screen with a friend in person, enable "Offline Mode," which will simply rotate the board after every move.
+
 ## How It Works
 
 The board that you see and all the action that takes upon it renders off an 8 by 8 graph:
