@@ -1,6 +1,6 @@
 # justo chess
 
-![chrome_GL61zxWGy4](https://github.com/jwily/react-chess/assets/87846621/148cf7b4-e494-4e8a-bab0-90310b27c527)
+![chrome_VyRTpsDt7n](https://github.com/jwily/react-chess/assets/87846621/3e69e7b6-b160-4fa0-89de-66f462369287)
 
 A personal project that I undertook to keep sharpen my React skills and discover what it takes algorithmically to "play" on a chess board represented by a matrix. Live play with websockets and a Flask + PostgreSQL back end.
 
