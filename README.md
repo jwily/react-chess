@@ -11,7 +11,7 @@
 
 I love tabletop games, and while I am not an avid chess player myself, I can't help but be in awe of the history and mystique surrounding this legendary game. Thus, when I decided to make use of my programming skills to begin exploring the world of tabletop games, I chose to begin with the grandfather of them all.
 
-There was magic in the first moment that I clicked on a piece and saw the board light up with its possibilities.
+There was magic in that first moment when I clicked on a piece and saw the board light up with its possibilities!
 
 ### Why "justo"?
 
@@ -110,7 +110,7 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
 }
 ```
 
-### To Do
+## To Do
 - Implement castling, en passant, and pawn promotion. Sorry, I know it's chess until it's got these!
 - Add a log of messages to communicate with and allow communication between players.
 - Implement persistent user profiles and all the possibilities they would open up.
