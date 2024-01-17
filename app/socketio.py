@@ -3,8 +3,8 @@ import os
 
 if os.environ.get('FLASK_ENV') == 'production':
     origins = [
-        'http://reactchesstest.onrender.com',
-        'https://reactchesstest.onrender.com'
+        'http://justochess.onrender.com',
+        'https://justochess.onrender.com'
     ]
 else:
     origins = "*"
