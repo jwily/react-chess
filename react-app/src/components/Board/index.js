@@ -7,7 +7,7 @@ import Options from './Options';
 
 import {
   pieceData, start, toRowCol, isWhite,
-  toNotation, copyBoard, isCheckmated
+  toNotation, copyBoard, isCheckmated, belongsToPlayer
 } from '../../game-logic';
 
 import { kingChecked } from '../../game-logic/king';
@@ -39,6 +39,10 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const [checkedPlayer, setCheckedPlayer] = useState('');
   const [winner, setWinner] = useState('');
+
+  const fadeType = useMemo(() => {
+    return Math.floor(Math.random() * 6);
+  }, [])
 
   const { matchCode } = useParams();
 
@@ -294,11 +298,11 @@ const Board = ({ freshGame, setFreshGame }) => {
         isWhite(player) ? c <= 7 : c >= 0;
         isWhite(player) ? c++ : c--) {
 
-        const piece = board[r][c];
+        let piece = board[r][c];
         const notation = toNotation(r, c);
 
         squares.push((<Square
-          key={c}
+          key={notation}
 
           notation={notation}
           piece={piece !== '.' ? piece : null}
@@ -307,13 +311,12 @@ const Board = ({ freshGame, setFreshGame }) => {
           // Square status passed as booleans for memoization
           // Prevents re-renders if square does not change status
           isSelectable={
-            !winner
-            && turn === player
-            && piece !== '.'
-            && pieceData[piece].player === player
+            !winner && turn === player && piece !== '.' && belongsToPlayer(piece, player)
           }
           isSelected={selected === notation}
           isPossible={possibleMoves.has(notation)}
+
+          fadeType={fadeType}
 
           player={player}
         />))
@@ -322,10 +325,10 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     return squares;
 
-  }, [board, player, possibleMoves, turn, selected, winner])
+  }, [board, player, possibleMoves, turn, selected, winner, fadeType])
 
   if (notFound) {
-    return <div className='not-found fade-in-v-fast'>Match Not Found</div>
+    return <div className='not-found fade-in-error'>Match Not Found</div>
   }
 
   if (!loaded) return null;

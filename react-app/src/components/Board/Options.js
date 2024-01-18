@@ -13,7 +13,7 @@ const BUTTON_ORDER = [
 ]
 
 const Options = ({ player, setPlayer, socket, turn, offline,
-  setOffline, setSelected, resetGame, checkedPlayer, winner }) => {
+  setOffline, setSelected, resetGame, winner }) => {
 
   const copiedTimeout = useRef(null);
 
@@ -38,11 +38,10 @@ const Options = ({ player, setPlayer, socket, turn, offline,
 
   const resetBoard = useCallback((e) => {
 
-    if (offline) setPlayer('white');
     socket.emit("reset", matchCode);
     resetGame();
 
-  }, [socket, setPlayer, offline, resetGame, matchCode]);
+  }, [socket, resetGame, matchCode]);
 
   const switchPlayer = useCallback((e) => {
 
@@ -66,7 +65,6 @@ const Options = ({ player, setPlayer, socket, turn, offline,
           setHelpClosing(true);
         }
       } else if (e.shiftKey && e.key === 'F') {
-        // setSelected('')
         setOffline(prev => !prev);
       } else if (e.shiftKey && e.key === 'S' && !offline) {
         setSelected('')
@@ -140,7 +138,6 @@ const Options = ({ player, setPlayer, socket, turn, offline,
         : `${turn[0].toUpperCase() + turn.slice(1)} Moves`
 
     }
-
 
     return {
       default: {

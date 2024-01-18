@@ -340,7 +340,11 @@ body {
 }
 
 .fade-in-nav {
-  animation: fadeIn 1s ease-in-out 1 forwards;
+  animation: fadeIn .8s ease-in-out 1 forwards;
+}
+
+.fade-in-error {
+  animation: fadeIn .2s ease-in-out 1 forwards;
 }
 
 .fade-in-slow {
