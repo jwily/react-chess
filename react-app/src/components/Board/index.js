@@ -23,6 +23,7 @@ const Board = ({ freshGame, setFreshGame }) => {
   // Location of the selected piece as well as possible spaces
   // to move to are represented in algebraic notation (i.e. 'a8')
   // for ease of comparison in JavaScript
+
   const [selected, setSelected] = useState('');
 
   const [turn, setTurn] = useState('white');
@@ -31,6 +32,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const [whiteKing, setWhiteKing] = useState([7, 4]);
   const [blackKing, setBlackKing] = useState([0, 4]);
+  const [enPassant, setEnPassant] = useState([null, null])
 
   const [whiteCanLong, setWhiteCanLong] = useState(true);
   const [whiteCanShort, setWhiteCanShort] = useState(true);
@@ -42,6 +44,10 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const { matchCode } = useParams();
 
+  useEffect(() => {
+    console.log(board);
+  }, [board])
+
   const fadeType = useMemo(() => {
 
     // Generates a number that determines
@@ -52,7 +58,9 @@ const Board = ({ freshGame, setFreshGame }) => {
     for (let char of matchCode) {
       total += char.codePointAt()
     }
-    return total % 8;
+    return total % 4;
+
+    // return Math.floor(Math.random() * 4)
 
   }, [matchCode])
 
@@ -80,6 +88,7 @@ const Board = ({ freshGame, setFreshGame }) => {
         const data = await res.json();
 
         // Identifies where the kings are located
+        // as well as any pawns open to en passant
         for (let r = 0; r < 8; r++) {
           for (let c = 0; c < 8; c++) {
             const piece = data.board[r][c];
@@ -87,6 +96,8 @@ const Board = ({ freshGame, setFreshGame }) => {
               setWhiteKing([r, c]);
             } else if (piece === 'k') {
               setBlackKing([r, c]);
+            } else if (piece.toLowerCase() === 'e') {
+              setEnPassant([r, c]);
             }
           }
         }
@@ -119,6 +130,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       setBlackCanShort(gameState.blackCanShort);
       setWhiteKing(gameState.whiteKing);
       setBlackKing(gameState.blackKing);
+      setEnPassant(gameState.enPassant);
     })
 
     // Fires in response to reset game button in Options
@@ -131,6 +143,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       setBlackCanShort(true);
       setWhiteKing([7, 4]);
       setBlackKing([0, 4]);
+      setEnPassant([null, null])
     })
 
     return (() => {
@@ -178,8 +191,15 @@ const Board = ({ freshGame, setFreshGame }) => {
     const [targetR, targetC] = toRowCol(target);
 
     let currPiece = board[currR][currC];
-
     const newBoard = copyBoard(board);
+
+    // If a pawn was at risk of en passant last turn,
+    // it is reverted to its "safe" state
+    if (enPassant[0] !== null) {
+      const [row, col] = enPassant;
+      const pawn = newBoard[row][col]
+      newBoard[row][col] = belongsToPlayer(pawn, 'white') ? 'P' : 'p';
+    }
 
     // Piece is "moved" on the matrix
     newBoard[targetR][targetC] = currPiece;
@@ -193,58 +213,79 @@ const Board = ({ freshGame, setFreshGame }) => {
       whiteCanShort,
       blackCanLong,
       blackCanShort,
+      enPassant: [null, null],
       room: matchCode
     }
 
-    // Check if the moving piece is a king or rook
-    // to update castling viability booleans
-    if (currPiece === 'K') {
-      updatedData.whiteKing = [targetR, targetC];
-      setWhiteKing([targetR, targetC]);
-      if (whiteCanLong) {
-        updatedData.whiteCanLong = false;
-        setWhiteCanLong(false);
-      }
-      if (whiteCanShort) {
-        updatedData.whiteCanShort = false;
-        setWhiteCanShort(false);
+    let pawnFirstMove = false;
+
+    // If the moving piece is a king, rook, or a pawn
+    // then a few things are check and tweaked
+    const specialConditions = {
+
+      'P': () => {
+        if (Math.abs(currR - targetR) === 2) {
+          newBoard[targetR][targetC] = 'E';
+          pawnFirstMove = true;
+          updatedData.enPassant = [targetR, targetC];
+          setEnPassant([targetR, targetC])
+        }
+      },
+      'p': () => {
+        if (Math.abs(currR - targetR) === 2) {
+          newBoard[targetR][targetC] = 'e';
+          pawnFirstMove = true;
+          updatedData.enPassant = [targetR, targetC];
+          setEnPassant([targetR, targetC])
+        }
+      },
+      'K': () => {
+        updatedData.whiteKing = [targetR, targetC];
+        setWhiteKing([targetR, targetC]);
+        if (whiteCanLong) {
+          updatedData.whiteCanLong = false;
+          setWhiteCanLong(false);
+        }
+        if (whiteCanShort) {
+          updatedData.whiteCanShort = false;
+          setWhiteCanShort(false);
+        }
+      },
+      'k': () => {
+        updatedData.blackKing = [targetR, targetC];
+        setBlackKing([targetR, targetC]);
+        if (blackCanLong) {
+          updatedData.blackCanLong = false;
+          setBlackCanLong(false);
+        }
+        if (blackCanShort) {
+          updatedData.blackCanShort = false;
+          setBlackCanShort(false);
+        }
+      },
+      'R': () => {
+        if (whiteCanShort && currC === 7) {
+          updatedData.whiteCanShort = false;
+          setWhiteCanShort(false);
+        }
+        else if (whiteCanLong && currC === 0) {
+          updatedData.whiteCanLong = false;
+          setWhiteCanLong(false);
+        }
+      },
+      'r': () => {
+        if (blackCanShort && currC === 7) {
+          updatedData.blackCanShort = false;
+          setBlackCanShort(false);
+        }
+        else if (blackCanLong && currC === 0) {
+          updatedData.blackCanLong = false;
+          setBlackCanLong(false);
+        }
       }
     }
 
-    else if (currPiece === 'k') {
-      updatedData.blackKing = [targetR, targetC];
-      setBlackKing([targetR, targetC]);
-      if (blackCanLong) {
-        updatedData.blackCanLong = false;
-        setBlackCanLong(false);
-      }
-      if (blackCanShort) {
-        updatedData.blackCanShort = false;
-        setBlackCanShort(false);
-      }
-    }
-
-    else if (currPiece === 'R') {
-      if (whiteCanShort && curr === 'h1') {
-        updatedData.whiteCanShort = false;
-        setWhiteCanShort(false);
-      }
-      else if (whiteCanLong && curr === 'a1') {
-        updatedData.whiteCanLong = false;
-        setWhiteCanLong(false);
-      }
-    }
-
-    else if (currPiece === 'r') {
-      if (blackCanShort && curr === 'h8') {
-        updatedData.blackCanShort = false;
-        setBlackCanShort(false);
-      }
-      else if (blackCanLong && curr === 'a8') {
-        updatedData.blackCanLong = false;
-        setBlackCanLong(false);
-      }
-    }
+    if (specialConditions[currPiece]) specialConditions[currPiece]();
 
     // Saves new game state to database
     updateGame(newBoard, turn === 'white' ? 'black' : 'white',
@@ -259,7 +300,9 @@ const Board = ({ freshGame, setFreshGame }) => {
     // Local game state updated
     setSelected('');
     setBoard(newBoard);
+    if (!pawnFirstMove) setEnPassant([null, null]);
     setTurn(prev => prev === 'white' ? 'black' : 'white');
+
   }
 
   const clickHandler = (e) => {
@@ -315,14 +358,12 @@ const Board = ({ freshGame, setFreshGame }) => {
           key={notation}
 
           notation={notation}
-          piece={piece !== '.' ? piece : null}
-          color={(r + c) % 2 === 0 ? 'white square' : 'black square'}
+          piece={piece}
 
-          // Square status passed as booleans for memoization
+          // Square statuses passed as booleans for easier memoization
           // Prevents re-renders if square does not change status
-          isSelectable={
-            !winner && turn === player && piece !== '.' && belongsToPlayer(piece, player)
-          }
+
+          isSelectable={!winner && turn === player && piece !== '.' && pieceData[piece].player === player}
           isSelected={selected === notation}
           isPossible={possibleMoves.has(notation)}
 

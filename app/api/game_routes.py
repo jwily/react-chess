@@ -23,6 +23,10 @@ def update_game(code):
         data = request.json
         game.board = data['board']
         game.turn = data['turn']
+        game.white_can_long = data['whiteCanLong']
+        game.white_can_short = data['whiteCanShort']
+        game.black_can_long = data['blackCanLong']
+        game.black_can_short = data['blackCanShort']
         db.session.add(game)
         db.session.commit()
         return game.to_dict()

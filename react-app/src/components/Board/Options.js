@@ -205,7 +205,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
   }, [history, matchCode, resetBoard, switchPlayer, setOffline,
     player, offline, turn, winner])
 
-  const statusDisplay = useMemo(() => {
+  const StatusDisplay = () => {
     return (
       <div>
         <span id='message'>{optionsData[status].message}</span>
@@ -213,7 +213,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
           <span id='status'>{optionsData[status].info}</span>}
       </div>
     )
-  }, [optionsData, status])
+  }
 
   const optionButtons = useMemo(() => {
     return BUTTON_ORDER.map(value => {
@@ -255,7 +255,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
 
   return (
     <nav className={'game-options' + (animated ? ' fade-in-nav' : '')}>
-      {statusDisplay}
+      <StatusDisplay />
       <div>
         {optionButtons}
       </div>
