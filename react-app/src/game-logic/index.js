@@ -40,6 +40,11 @@ export const pieceData = {
     name: 'pawn',
     function: pawnMoves
   },
+  'E': {
+    player: 'white',
+    name: 'pawn',
+    function: pawnMoves
+  },
   'k': {
     player: 'black',
     name: 'king',
@@ -70,6 +75,11 @@ export const pieceData = {
     name: 'pawn',
     function: pawnMoves
   },
+  'e': {
+    player: 'black',
+    name: 'pawn',
+    function: pawnMoves
+  }
 }
 
 export const start = [

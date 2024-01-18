@@ -40,12 +40,17 @@ body {
   display: flex;
 }
 
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: 10px;
+}
+
 .square {
   height: 7rem;
   width: 7rem;
-  margin: 5px;
-
-  position: relative;
+  /* position: relative; */
 
   transition: border .15s;
 

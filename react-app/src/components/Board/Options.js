@@ -206,7 +206,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
       }
     }
   }, [history, matchCode, resetBoard, switchPlayer, setOffline,
-    player, offline, turn, winner, checkedPlayer])
+    player, offline, turn, winner])
 
   const statusDisplay = useMemo(() => {
     return (

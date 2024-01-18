@@ -42,7 +42,8 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const { matchCode } = useParams();
 
-  const updateGame = useCallback((board = start, turn = 'white') => {
+  const updateGame = useCallback((board = start, turn = 'white',
+    whiteCanLong = true, whiteCanShort = true, blackCanLong = true, blackCanShort = true) => {
 
     fetch(`/api/games/${matchCode}`, {
       method: 'PUT',
@@ -50,7 +51,7 @@ const Board = ({ freshGame, setFreshGame }) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        board, turn
+        board, turn, whiteCanLong, whiteCanShort, blackCanLong, blackCanShort
       })
     })
 
@@ -98,14 +99,22 @@ const Board = ({ freshGame, setFreshGame }) => {
       if (freshGame === matchCode) setFreshGame('');
       setBoard(gameState.board);
       setTurn(prev => prev === 'white' ? 'black' : 'white');
+      setWhiteCanLong(gameState.whiteCanLong);
+      setWhiteCanShort(gameState.whiteCanShort);
+      setBlackCanLong(gameState.blackCanLong);
+      setBlackCanShort(gameState.blackCanShort);
       setWhiteKing(gameState.whiteKing);
       setBlackKing(gameState.blackKing);
     })
 
-    // Fires in response to reset game button in options
+    // Fires in response to reset game button in Options
     socket.on("reset", () => {
       setBoard(start);
       setTurn("white");
+      setWhiteCanLong(true);
+      setWhiteCanShort(true);
+      setBlackCanLong(true);
+      setBlackCanShort(true);
       setWhiteKing([7, 4]);
       setBlackKing([0, 4]);
     })
@@ -154,7 +163,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     const [currR, currC] = toRowCol(curr);
     const [targetR, targetC] = toRowCol(target);
 
-    const currPiece = board[currR][currC];
+    let currPiece = board[currR][currC];
 
     const newBoard = copyBoard(board);
 
@@ -162,28 +171,74 @@ const Board = ({ freshGame, setFreshGame }) => {
     newBoard[targetR][targetC] = currPiece;
     newBoard[currR][currC] = '.';
 
-    // Saves new game state to database
-    updateGame(newBoard, turn === 'white' ? 'black' : 'white');
-
-    const socketData = {
+    const updatedData = {
       board: newBoard,
-      whiteKing: whiteKing,
-      blackKing: blackKing,
+      whiteKing,
+      blackKing,
+      whiteCanLong,
+      whiteCanShort,
+      blackCanLong,
+      blackCanShort,
       room: matchCode
     }
 
+    // Check if the moving piece is a king or rook
+    // to update castling viability booleans
     if (currPiece === 'K') {
-      socketData.whiteKing = [targetR, targetC];
+      updatedData.whiteKing = [targetR, targetC];
       setWhiteKing([targetR, targetC]);
+      if (whiteCanLong) {
+        updatedData.whiteCanLong = false;
+        setWhiteCanLong(false);
+      }
+      if (whiteCanShort) {
+        updatedData.whiteCanShort = false;
+        setWhiteCanShort(false);
+      }
     }
 
     else if (currPiece === 'k') {
-      socketData.blackKing = [targetR, targetC];
+      updatedData.blackKing = [targetR, targetC];
       setBlackKing([targetR, targetC]);
+      if (blackCanLong) {
+        updatedData.blackCanLong = false;
+        setBlackCanLong(false);
+      }
+      if (blackCanShort) {
+        updatedData.blackCanShort = false;
+        setBlackCanShort(false);
+      }
     }
 
+    else if (currPiece === 'R') {
+      if (whiteCanShort && curr === 'h1') {
+        updatedData.whiteCanShort = false;
+        setWhiteCanShort(false);
+      }
+      else if (whiteCanLong && curr === 'a1') {
+        updatedData.whiteCanLong = false;
+        setWhiteCanLong(false);
+      }
+    }
+
+    else if (currPiece === 'r') {
+      if (blackCanShort && curr === 'h8') {
+        updatedData.blackCanShort = false;
+        setBlackCanShort(false);
+      }
+      else if (blackCanLong && curr === 'a8') {
+        updatedData.blackCanLong = false;
+        setBlackCanLong(false);
+      }
+    }
+
+    // Saves new game state to database
+    updateGame(newBoard, turn === 'white' ? 'black' : 'white',
+      updatedData.whiteCanLong, updatedData.whiteCanShort,
+      updatedData.blackCanLong, updatedData.blackCanShort);
+
     // Sends new game state to other player
-    socket.emit("move", socketData);
+    socket.emit("move", updatedData);
 
     if (freshGame === matchCode) setFreshGame('');
 
@@ -216,14 +271,17 @@ const Board = ({ freshGame, setFreshGame }) => {
     const movesFunction = pieceData[piece].function;
 
     const kingPosition = isWhite(player) ? whiteKing : blackKing;
+    const canLong = isWhite(player) ? whiteCanLong : blackCanLong;
+    const canShort = isWhite(player) ? whiteCanShort : blackCanShort;
 
     return new Set(movesFunction(row, col, board, player, kingPosition));
 
-  }, [board, player, selected, blackKing, whiteKing]);
+  }, [board, player, selected, blackKing, whiteKing,
+    blackCanLong, blackCanShort, whiteCanLong, whiteCanShort]);
 
   const generateSquares = useMemo(() => {
 
-    const rows = []
+    const squares = []
 
     // Basically, the board matrix is traversed either
     // normally or in reverse depending on the player
@@ -232,8 +290,6 @@ const Board = ({ freshGame, setFreshGame }) => {
       isWhite(player) ? r <= 7 : r >= 0;
       isWhite(player) ? r++ : r--) {
 
-      const row = []
-
       for (let c = isWhite(player) ? 0 : 7;
         isWhite(player) ? c <= 7 : c >= 0;
         isWhite(player) ? c++ : c--) {
@@ -241,7 +297,7 @@ const Board = ({ freshGame, setFreshGame }) => {
         const piece = board[r][c];
         const notation = toNotation(r, c);
 
-        row.push((<Square
+        squares.push((<Square
           key={c}
 
           notation={notation}
@@ -262,11 +318,9 @@ const Board = ({ freshGame, setFreshGame }) => {
           player={player}
         />))
       }
-
-      rows.push(<div key={r} className='row'>{row}</div>);
     }
 
-    return rows;
+    return squares;
 
   }, [board, player, possibleMoves, turn, selected, winner])
 
