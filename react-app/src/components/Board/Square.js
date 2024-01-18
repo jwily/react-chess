@@ -63,6 +63,7 @@ const Square = React.memo(({ color, notation, piece, player, isSelectable, isSel
       }
       id={notation}
     >
+      {/* {chooseAnimation(notation, 0)} */}
     </span >
   )
 })

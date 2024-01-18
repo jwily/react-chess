@@ -40,11 +40,21 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [checkedPlayer, setCheckedPlayer] = useState('');
   const [winner, setWinner] = useState('');
 
-  const fadeType = useMemo(() => {
-    return Math.floor(Math.random() * 6);
-  }, [])
-
   const { matchCode } = useParams();
+
+  const fadeType = useMemo(() => {
+
+    // Generates a number that determines
+    // the fade-in animation of the board
+    // based on the match code
+
+    let total = 0;
+    for (let char of matchCode) {
+      total += char.codePointAt()
+    }
+    return total % 8;
+
+  }, [matchCode])
 
   const updateGame = useCallback((board = start, turn = 'white',
     whiteCanLong = true, whiteCanShort = true, blackCanLong = true, blackCanShort = true) => {
