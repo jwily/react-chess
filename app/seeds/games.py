@@ -14,17 +14,19 @@ def seed_games():
         if not match is None:
             db.session.delete(match)
 
+    db.session.commit()
+
     new_demo = Game(code='demonstrate')
     new_castling = Game(code='castling',
                         board=[
-                            ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+                            ['r', '_', '_', '_', 'k', '_', '_', 'r'],
                             ['_', '_', '_', '_', '_', '_', '_', '_'],
                             ['_', '_', '_', '_', '_', '_', '_', '_'],
                             ['_', '_', '_', '_', '_', '_', '_', '_'],
                             ['_', '_', '_', '_', '_', '_', '_', '_'],
                             ['_', '_', '_', '_', '_', '_', '_', '_'],
                             ['_', '_', '_', '_', '_', '_', '_', '_'],
-                            ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+                            ['R', '_', '_', '_', 'K', '_', '_', 'R']
                         ])
     new_en_passant = Game(code='enpassant',
                           board=[

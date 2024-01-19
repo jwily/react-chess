@@ -42,6 +42,12 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [checkedPlayer, setCheckedPlayer] = useState('');
   const [winner, setWinner] = useState('');
 
+  // Indicates either "long" or "short"
+  const [displayLongOrShort, setDisplayLongOrShort] = useState('');
+
+  // Indicates notation of target square
+  const [displayEnPassant, setDisplayEnPassant] = useState('');
+
   const { matchCode } = useParams();
 
   const fadeType = useMemo(() => {
@@ -238,6 +244,15 @@ const Board = ({ freshGame, setFreshGame }) => {
       'K': () => {
         updatedData.whiteKing = [targetR, targetC];
         setWhiteKing([targetR, targetC]);
+
+        if (targetC - currC === 2) {
+          newBoard[7][7] = '_';
+          newBoard[7][5] = 'R';
+        } else if (currC - targetC === 2) {
+          newBoard[7][0] = '_';
+          newBoard[7][3] = 'R';
+        }
+
         if (whiteCanLong) {
           updatedData.whiteCanLong = false;
           setWhiteCanLong(false);
@@ -250,6 +265,15 @@ const Board = ({ freshGame, setFreshGame }) => {
       'k': () => {
         updatedData.blackKing = [targetR, targetC];
         setBlackKing([targetR, targetC]);
+
+        if (targetC - currC === 2) {
+          newBoard[0][7] = '_';
+          newBoard[0][5] = 'r';
+        } else if (currC - targetC === 2) {
+          newBoard[0][0] = '_';
+          newBoard[0][3] = 'r';
+        }
+
         if (blackCanLong) {
           updatedData.blackCanLong = false;
           setBlackCanLong(false);
@@ -296,8 +320,9 @@ const Board = ({ freshGame, setFreshGame }) => {
     // Local game state updated
     setSelected('');
     setBoard(newBoard);
-    if (!pawnFirstMove) setEnPassant([null, null]);
     setTurn(prev => prev === 'white' ? 'black' : 'white');
+    if (!pawnFirstMove) setEnPassant([null, null]);
+    setDisplayLongOrShort('');
 
   }
 
@@ -312,6 +337,26 @@ const Board = ({ freshGame, setFreshGame }) => {
       setSelected('');
     }
   };
+
+  const hoverHandler = (e, mouseOver = true) => {
+    e.stopPropagation()
+
+    const canLong = isWhite(player) ? whiteCanLong : blackCanLong;
+    const canShort = isWhite(player) ? whiteCanShort : blackCanShort;
+
+    if (canLong || canShort) {
+      if (selected[0] === 'e' && e.target.className.includes('possible')) {
+
+        if (e.target.id[0] === 'g') {
+          mouseOver ? setDisplayLongOrShort('long') : setDisplayLongOrShort('');
+        }
+
+        else if (e.target.id[0] === 'c') {
+          mouseOver ? setDisplayLongOrShort('short') : setDisplayLongOrShort('');
+        }
+      }
+    }
+  }
 
   const possibleMoves = useMemo(() => {
 
@@ -350,45 +395,46 @@ const Board = ({ freshGame, setFreshGame }) => {
         let piece = board[r][c];
         const notation = toNotation(r, c);
 
-        const castlingData = {
-          canLong: isWhite(player) ? whiteCanLong : blackCanLong,
-          canShort: isWhite(player) ? whiteCanShort : blackCanShort,
-          rookToLong: c === 3 && (isWhite(player) ? r === 7 : r === 0),
-          kingToLong: c === 2 && (isWhite(player) ? r === 7 : r === 0),
-          rookToShort: c === 5 && (isWhite(player) ? r === 7 : r === 0),
-          kingToShort: c === 6 && (isWhite(player) ? r === 7 : r === 0),
-        }
+        const castleLongSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 7 || c === 5)
+        const castleShortSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 0 || c === 3)
 
-        squares.push((<Square
-          key={notation}
+        const displayCastling =
+          (castleLongSquare && displayLongOrShort === 'long') || (castleShortSquare && displayLongOrShort === 'short')
 
-          notation={notation}
-          piece={piece}
+        const [epRow, epCol] = enPassant;
 
-          // Square statuses passed as booleans for easier memoization
-          // Prevents re-renders if square does not change status
+        const enPassantTarget = epRow !== null && notation === toNotation(epRow, epCol)
+        const enPassantAttack = epRow !== null && r === (isWhite(player) ? epRow - 1 : epRow + 1 && epCol)
 
-          isSelectable={!winner && turn === player && piece !== '_' && pieceData[piece].player === player}
-          isSelected={selected === notation}
-          isPossible={possibleMoves.has(notation)}
+        squares.push((
+          <Square
+            key={notation}
 
-          rookToLong={castlingData.rookToLong && castlingData.canLong}
-          kingToLong={castlingData.kingToLong && castlingData.canLong}
-          rookToShort={castlingData.rookToShort && castlingData.canShort}
-          kingToShort={castlingData.kingToShort && castlingData.canShort}
-          enPassant={enPassant[0] !== null && notation === toNotation(...enPassant)}
+            notation={notation}
+            piece={piece}
 
-          fadeType={fadeType}
+            // Square statuses passed as booleans for easier memoization
+            // Prevents re-renders if square does not change status
 
-          player={player}
-        />))
+            isSelectable={!winner && turn === player && piece !== '_' && pieceData[piece].player === player}
+            isSelected={selected === notation}
+            isPossible={possibleMoves.has(notation)}
+
+            displayCastling={displayCastling}
+
+            enPassantTarget={enPassantTarget}
+            enPassantAttack={enPassantAttack}
+
+            fadeType={fadeType}
+
+            player={player}
+          />))
       }
     }
 
     return squares;
 
-  }, [board, player, possibleMoves, turn, selected, winner, fadeType,
-    whiteCanLong, whiteCanShort, blackCanLong, blackCanShort, enPassant])
+  }, [board, player, possibleMoves, turn, selected, winner, fadeType, displayLongOrShort, enPassant])
 
   if (notFound) {
     return <div className='not-found fade-in-error'>Match Not Found</div>
@@ -400,15 +446,13 @@ const Board = ({ freshGame, setFreshGame }) => {
     // Clicking "off" the board de-selects pieces
     <div className='off-board'
       onClick={(e) => {
-        if (selected !== '') {
-          setSelected('');
-        }
-      }}
-    >
+        if (selected !== '') setSelected('');
+      }}>
       <div
         className='board'
         onClick={clickHandler}
-      >
+        onMouseOver={hoverHandler}
+        onMouseOut={e => hoverHandler(e, false)}>
         {generateSquares}
       </div>
       <Options

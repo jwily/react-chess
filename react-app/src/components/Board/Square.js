@@ -10,8 +10,8 @@ const animationClasses = [
   ' fade-in-slow',
 ]
 
-const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, isPossible, fadeType,
-  rookToLong, kingToLong, rookToShort, kingToShort, enPassant }) => {
+const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, isPossible,
+  fadeType, displayCastling, enPassantTarget, enPassantAttack, displayEnPassant }) => {
 
   const [animated, setAnimated] = useState(true);
 
@@ -60,12 +60,13 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
     else return '';
   }
 
-  const determineCastling = () => {
-    if (rookToLong) return ' rook-to-long';
-    else if (kingToLong) return ' king-to-long';
-    else if (rookToShort) return ' rook-to-short';
-    else if (kingToShort) return ' king-to-short';
-    else return '';
+  const determingCastlingDisplay = () => {
+
+    if (!displayCastling) return '';
+
+    if (isPossible) return ` ${player} rook`
+    else return ' transparent'
+
   }
 
   return (
@@ -75,10 +76,9 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
         + determineStatus()
         + (piece !== '_' ? ` ${pieceData[piece].player + ' ' + pieceData[piece].name}` : '')
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
-        + (determineCastling())
-        + (enPassant ? ' en-passant' : '')
+        + determingCastlingDisplay()
       }
-      id={notation}>
+      id={notation} >
     </span >
   )
 })

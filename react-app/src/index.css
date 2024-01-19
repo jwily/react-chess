@@ -214,6 +214,11 @@ body {
   content: url('./images/no_shadow/b_pawn_svg_NoShadow.svg');
 }
 
+.white.transparent::before,
+.black.transparent::before {
+  opacity: .5;
+}
+
 .help-window {
   position: absolute;
   top: 2rem;
