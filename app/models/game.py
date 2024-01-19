@@ -83,19 +83,19 @@ class Game(db.Model):
     @board.setter
     def board(self, matrix):
         result = ''
-        period_count = 0
+        underscore_count = 0
 
         for row in matrix:
             for char in row:
                 if char == '_':
-                    period_count += 1
+                    underscore_count += 1
                 else:
-                    if period_count > 0:
-                        result += str(period_count)
-                        period_count = 0
+                    if underscore_count > 0:
+                        result += str(underscore_count)
+                        underscore_count = 0
                     result += char
 
-        if period_count > 0:
-            result += str(period_count)
+        if underscore_count > 0:
+            result += str(underscore_count)
 
         self._board = result
