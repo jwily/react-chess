@@ -23,10 +23,10 @@ class Game(db.Model):
 
     turn = db.Column(db.String(5), nullable=False, default='white')
 
-    white_long_ok = db.Column(db.Boolean, nullable=False, default=True)
-    white_short_ok = db.Column(db.Boolean, nullable=False, default=True)
-    black_long_ok = db.Column(db.Boolean, nullable=False, default=True)
-    black_short_ok = db.Column(db.Boolean, nullable=False, default=True)
+    white_can_long = db.Column(db.Boolean, nullable=False, default=True)
+    white_can_short = db.Column(db.Boolean, nullable=False, default=True)
+    black_can_long = db.Column(db.Boolean, nullable=False, default=True)
+    black_can_short = db.Column(db.Boolean, nullable=False, default=True)
 
     completed = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -51,8 +51,10 @@ class Game(db.Model):
             'id': self.id,
             'code': self.code,
             'board': self.board,
-            'white': self.white_id,
-            'black': self.black_id,
+            'whiteCanLong': self.white_can_long,
+            'whiteCanShort': self.white_can_short,
+            'blackCanLong': self.black_can_long,
+            'blackCanShort': self.black_can_short,
             'turn': self.turn,
             'createdAt': self.created_at,
             'updatedAt': self.updated_at
@@ -61,20 +63,20 @@ class Game(db.Model):
     @property
     def board(self):
         digits = '0123456789'
-        period_string = ''
+        spaces_string = ''
         decompressed_string = ''
 
         for char in self._board:
             if char in digits:
-                period_string += char
+                spaces_string += char
             else:
-                if period_string != '':
-                    decompressed_string += ('.' * int(period_string))
-                    period_string = ''
+                if spaces_string != '':
+                    decompressed_string += ('_' * int(spaces_string))
+                    spaces_string = ''
                 decompressed_string += char
 
-        if period_string != '':
-            decompressed_string += ('.' * int(period_string))
+        if spaces_string != '':
+            decompressed_string += ('_' * int(spaces_string))
 
         return [list(decompressed_string[i:i+8]) for i in range(0, 64, 8)]
 
@@ -85,7 +87,7 @@ class Game(db.Model):
 
         for row in matrix:
             for char in row:
-                if char == '.':
+                if char == '_':
                     period_count += 1
                 else:
                     if period_count > 0:

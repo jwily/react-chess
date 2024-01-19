@@ -13,7 +13,7 @@ const BUTTON_ORDER = [
 ]
 
 const Options = ({ player, setPlayer, socket, turn, offline,
-  setOffline, setSelected, resetGame, checkedPlayer, winner }) => {
+  setOffline, setSelected, resetGame, winner }) => {
 
   const copiedTimeout = useRef(null);
 
@@ -38,11 +38,10 @@ const Options = ({ player, setPlayer, socket, turn, offline,
 
   const resetBoard = useCallback((e) => {
 
-    if (offline) setPlayer('white');
     socket.emit("reset", matchCode);
     resetGame();
 
-  }, [socket, setPlayer, offline, resetGame, matchCode]);
+  }, [socket, resetGame, matchCode]);
 
   const switchPlayer = useCallback((e) => {
 
@@ -66,7 +65,6 @@ const Options = ({ player, setPlayer, socket, turn, offline,
           setHelpClosing(true);
         }
       } else if (e.shiftKey && e.key === 'F') {
-        // setSelected('')
         setOffline(prev => !prev);
       } else if (e.shiftKey && e.key === 'S' && !offline) {
         setSelected('')
@@ -141,18 +139,6 @@ const Options = ({ player, setPlayer, socket, turn, offline,
 
     }
 
-    const defaultInfo = () => {
-
-      if (checkedPlayer) {
-
-        if (winner) return null;
-
-        return `check to ${checkedPlayer}`
-      }
-
-      return null;
-    }
-
     return {
       default: {
         message: defaultMessage(),
@@ -217,9 +203,9 @@ const Options = ({ player, setPlayer, socket, turn, offline,
       }
     }
   }, [history, matchCode, resetBoard, switchPlayer, setOffline,
-    player, offline, turn, winner, checkedPlayer])
+    player, offline, turn, winner])
 
-  const statusDisplay = useMemo(() => {
+  const StatusDisplay = () => {
     return (
       <div>
         <span id='message'>{optionsData[status].message}</span>
@@ -227,7 +213,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
           <span id='status'>{optionsData[status].info}</span>}
       </div>
     )
-  }, [optionsData, status])
+  }
 
   const optionButtons = useMemo(() => {
     return BUTTON_ORDER.map(value => {
@@ -269,7 +255,7 @@ const Options = ({ player, setPlayer, socket, turn, offline,
 
   return (
     <nav className={'game-options' + (animated ? ' fade-in-nav' : '')}>
-      {statusDisplay}
+      <StatusDisplay />
       <div>
         {optionButtons}
       </div>

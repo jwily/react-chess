@@ -33,3 +33,8 @@ def undo():
 def reset():
     undo_games()
     seed_games()
+
+
+@seed_commands.command('testing')
+def testing():
+    seed_games()

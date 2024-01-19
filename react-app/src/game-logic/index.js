@@ -40,6 +40,11 @@ export const pieceData = {
     name: 'pawn',
     function: pawnMoves
   },
+  'E': {
+    player: 'white',
+    name: 'pawn',
+    function: pawnMoves
+  },
   'k': {
     player: 'black',
     name: 'king',
@@ -70,15 +75,20 @@ export const pieceData = {
     name: 'pawn',
     function: pawnMoves
   },
+  'e': {
+    player: 'black',
+    name: 'pawn',
+    function: pawnMoves
+  }
 }
 
 export const start = [
   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
   ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
+  ['_', '_', '_', '_', '_', '_', '_', '_'],
+  ['_', '_', '_', '_', '_', '_', '_', '_'],
+  ['_', '_', '_', '_', '_', '_', '_', '_'],
+  ['_', '_', '_', '_', '_', '_', '_', '_'],
   ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
 ]
@@ -117,7 +127,7 @@ export const isCheckmated = (board, player, kingPosition) => {
     for (let c = 0; c < 8; c++) {
 
       const piece = board[r][c];
-      if (piece !== '.' && pieces.includes(piece)) {
+      if (piece !== '_' && pieces.includes(piece)) {
 
         const movesFunction = pieceData[piece].function;
         const possibleMoves = movesFunction(r, c, board, player, kingPosition);

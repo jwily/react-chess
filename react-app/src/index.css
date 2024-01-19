@@ -40,12 +40,17 @@ body {
   display: flex;
 }
 
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: 10px;
+}
+
 .square {
   height: 7rem;
   width: 7rem;
-  margin: 5px;
-
-  position: relative;
+  /* position: relative; */
 
   transition: border .15s;
 
@@ -97,11 +102,11 @@ body {
   cursor: pointer;
 }
 
-.selectable.black:hover {
+.selectable.dark:hover {
   border: 3px solid rgba(200, 200, 200, .75);
 }
 
-.selectable.white:hover {
+.selectable.light:hover {
   border: 3px solid rgba(60, 50, 50, .75);
 }
 
@@ -129,84 +134,89 @@ body {
   border: 3px solid rgba(60, 50, 50, .75);
 }
 
-.white {
+.light {
   background-color: rgba(200, 200, 200, .75);
   color: rgb(60, 50, 50);
   border: 3px solid transparent
 }
 
-.black {
+.dark {
   background-color: rgba(60, 50, 50, .75);
   color: rgb(200, 200, 200);
   border: 3px solid transparent
 }
 
-.white-king::before,
-.white-queen::before,
-.white-bishop::before,
-.white-rook::before,
-.white-knight::before,
-.black-king::before,
-.black-queen::before,
-.black-bishop::before,
-.black-rook::before,
-.black-knight::before {
+.white.king::before,
+.white.queen::before,
+.white.bishop::before,
+.white.rook::before,
+.white.knight::before,
+.black.king::before,
+.black.queen::before,
+.black.bishop::before,
+.black.rook::before,
+.black.knight::before {
   /* padding-top: 5%; */
   width: 55%;
 }
 
-.black-pawn::before,
-.white-pawn::before {
+.black.pawn::before,
+.white.pawn::before {
   /* padding-top: 5%; */
   width: 45%;
 }
 
-.white-king::before {
+.white.king::before {
   content: url('./images/no_shadow/w_king_svg_NoShadow.svg');
 }
 
-.white-queen::before {
+.white.queen::before {
   content: url('./images/no_shadow/w_queen_svg_NoShadow.svg');
 }
 
-.white-bishop::before {
+.white.bishop::before {
   content: url('./images/no_shadow/w_bishop_svg_NoShadow.svg');
 }
 
-.white-rook::before {
+.white.rook::before {
   content: url('./images/no_shadow/w_rook_svg_NoShadow.svg');
 }
 
-.white-knight::before {
+.white.knight::before {
   content: url('./images/no_shadow/w_knight_svg_NoShadow.svg');
 }
 
-.white-pawn::before {
+.white.pawn::before {
   content: url('./images/no_shadow/w_pawn_svg_NoShadow.svg');
 }
 
-.black-king::before {
+.black.king::before {
   content: url('./images/no_shadow/b_king_svg_NoShadow.svg');
 }
 
-.black-queen::before {
+.black.queen::before {
   content: url('./images/no_shadow/b_queen_svg_NoShadow.svg');
 }
 
-.black-bishop::before {
+.black.bishop::before {
   content: url('./images/no_shadow/b_bishop_svg_NoShadow.svg');
 }
 
-.black-rook::before {
+.black.rook::before {
   content: url('./images/no_shadow/b_rook_svg_NoShadow.svg');
 }
 
-.black-knight::before {
+.black.knight::before {
   content: url('./images/no_shadow/b_knight_svg_NoShadow.svg');
 }
 
-.black-pawn::before {
+.black.pawn::before {
   content: url('./images/no_shadow/b_pawn_svg_NoShadow.svg');
+}
+
+.white.transparent::before,
+.black.transparent::before {
+  opacity: .5;
 }
 
 .help-window {
@@ -335,7 +345,11 @@ body {
 }
 
 .fade-in-nav {
-  animation: fadeIn 1s ease-in-out 1 forwards;
+  animation: fadeIn .8s ease-in-out 1 forwards;
+}
+
+.fade-in-error {
+  animation: fadeIn .2s ease-in-out 1 forwards;
 }
 
 .fade-in-slow {

@@ -19,7 +19,7 @@ const rookMoves = (r, c, board, player, kingPosition) => {
 
       const targetPiece = board[newR][newC]
 
-      if (targetPiece === '.') {
+      if (targetPiece === '_') {
         moves.push([newR, newC]);
       } else if (!belongsToPlayer(targetPiece, player)) {
         // Add if enemy piece, then stop

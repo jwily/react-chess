@@ -3,8 +3,48 @@ from sqlalchemy.sql import text
 
 
 def seed_games():
-    demo_game = Game(code='demonstrate')
-    db.session.add(demo_game)
+
+    old_demo = Game.query.filter(Game.code == 'demonstrate').first()
+    old_castling = Game.query.filter(Game.code == 'castling').first()
+    old_en_passant = Game.query.filter(Game.code == 'enpassant').first()
+
+    old_matches = [old_demo, old_castling, old_en_passant]
+
+    for match in old_matches:
+        if not match is None:
+            db.session.delete(match)
+
+    db.session.commit()
+
+    new_demo = Game(code='demonstrate')
+    new_castling = Game(code='castling',
+                        board=[
+                            ['r', '_', '_', '_', 'k', '_', '_', 'r'],
+                            ['_', '_', '_', '_', '_', '_', '_', '_'],
+                            ['_', '_', '_', '_', '_', '_', '_', '_'],
+                            ['_', '_', '_', '_', '_', '_', '_', '_'],
+                            ['_', '_', '_', '_', '_', '_', '_', '_'],
+                            ['_', '_', '_', '_', '_', '_', '_', '_'],
+                            ['_', '_', '_', '_', '_', '_', '_', '_'],
+                            ['R', '_', '_', '_', 'K', '_', '_', 'R']
+                        ])
+    new_en_passant = Game(code='enpassant',
+                          board=[
+                              ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+                              ['p', '_', 'p', '_', 'p', 'p', 'p', 'p'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', 'P', '_', 'P', '_'],
+                              ['_', 'p', '_', 'p', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['P', 'P', 'P', 'P', '_', 'P', '_', 'P'],
+                              ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+                          ])
+
+    new_matches = [new_demo, new_castling, new_en_passant]
+
+    for match in new_matches:
+        db.session.add(match)
+
     db.session.commit()
 
 

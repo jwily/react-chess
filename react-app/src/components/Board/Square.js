@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from "react";
 
-import { pieceData } from '../../game-logic';
+import { pieceData, toRowCol } from '../../game-logic';
+import determineAnimation from "./animations";
 
 const animationClasses = [
-  'fade-in-slow',
-  'fade-in-med',
-  'fade-in-fast',
+  ' fade-in-v-fast',
+  ' fade-in-fast',
+  ' fade-in-med',
+  ' fade-in-slow',
 ]
 
-const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, isPossible, player }) => {
-
-  // console.log('Squares rendered');
+const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, isPossible,
+  fadeType, displayCastling, enPassantTarget, enPassantAttack, displayEnPassant }) => {
 
   const [animated, setAnimated] = useState(true);
+
+  console.log('Square Rendered');
 
   useEffect(() => {
 
@@ -28,7 +31,8 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
 
     // Determines whether the square
     // is a potential target of an offensive move
-    if (isPossible && piece) {
+
+    if (isPossible && piece !== '_') {
 
       const movingPlayer = player;
       const occupyingPlayer = pieceData[piece].player;
@@ -42,25 +46,39 @@ const Square = React.memo(({ color, notation, piece, isSelectable, isSelected, i
 
   })();
 
+  const determineColor = () => {
+    const [row, col] = toRowCol(notation);
+    return (row + col) % 2 === 0 ? 'light square' : 'dark square'
+  }
+
   const determineStatus = () => {
     // These statuses must be checked for in this order
     if (isAttackable) return ' targeted';
-    else if (!piece && isPossible) return ' possible';
+    else if (piece === '_' && isPossible) return ' possible';
     else if (isSelected) return ' selected';
     else if (isSelectable) return ' selectable';
     else return '';
   }
 
+  const determingCastlingDisplay = () => {
+
+    if (!displayCastling) return '';
+
+    if (isPossible) return ` ${player} rook`
+    else return ' transparent'
+
+  }
+
   return (
     <span
       className={
-        color
+        determineColor()
         + determineStatus()
-        + (piece ? ` ${pieceData[piece].player + '-' + pieceData[piece].name}` : '')
-        + (` ${animated ? animationClasses[Math.floor(Math.random() * 3)] : ''}`)
+        + (piece !== '_' ? ` ${pieceData[piece].player + ' ' + pieceData[piece].name}` : '')
+        + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
+        + determingCastlingDisplay()
       }
-      id={notation}
-    >
+      id={notation} >
     </span >
   )
 })
