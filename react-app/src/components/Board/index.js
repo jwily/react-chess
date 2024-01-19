@@ -44,10 +44,6 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const { matchCode } = useParams();
 
-  useEffect(() => {
-    console.log(board);
-  }, [board])
-
   const fadeType = useMemo(() => {
 
     // Generates a number that determines
@@ -60,24 +56,24 @@ const Board = ({ freshGame, setFreshGame }) => {
     }
     return total % 4;
 
-    // return Math.floor(Math.random() * 4)
-
   }, [matchCode])
 
-  const updateGame = useCallback((board = start, turn = 'white',
-    whiteCanLong = true, whiteCanShort = true, blackCanLong = true, blackCanShort = true) => {
+  const updateGame = useCallback(
+    (board = start, turn = 'white',
+      whiteCanLong = true, whiteCanShort = true,
+      blackCanLong = true, blackCanShort = true) => {
 
-    fetch(`/api/games/${matchCode}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        board, turn, whiteCanLong, whiteCanShort, blackCanLong, blackCanShort
+      fetch(`/api/games/${matchCode}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          board, turn, whiteCanLong, whiteCanShort, blackCanLong, blackCanShort
+        })
       })
-    })
 
-  }, [matchCode])
+    }, [matchCode])
 
   useEffect(() => {
 
@@ -203,7 +199,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     // Piece is "moved" on the matrix
     newBoard[targetR][targetC] = currPiece;
-    newBoard[currR][currC] = '.';
+    newBoard[currR][currC] = ' ';
 
     const updatedData = {
       board: newBoard,
@@ -354,6 +350,15 @@ const Board = ({ freshGame, setFreshGame }) => {
         let piece = board[r][c];
         const notation = toNotation(r, c);
 
+        const castlingData = {
+          canLong: isWhite(player) ? whiteCanLong : blackCanLong,
+          canShort: isWhite(player) ? whiteCanShort : blackCanShort,
+          castleToLong: c === 2 && (isWhite(player) ? r === 7 : r === 0),
+          castleFromLong: c === 0 && (isWhite(player) ? r === 7 : r === 0),
+          castleToShort: c === 6 && (isWhite(player) ? r === 7 : r === 0),
+          castleFromShort: c === 7 && (isWhite(player) ? r === 7 : r === 0),
+        }
+
         squares.push((<Square
           key={notation}
 
@@ -363,9 +368,15 @@ const Board = ({ freshGame, setFreshGame }) => {
           // Square statuses passed as booleans for easier memoization
           // Prevents re-renders if square does not change status
 
-          isSelectable={!winner && turn === player && piece !== '.' && pieceData[piece].player === player}
+          isSelectable={!winner && turn === player && piece !== ' ' && pieceData[piece].player === player}
           isSelected={selected === notation}
           isPossible={possibleMoves.has(notation)}
+
+          castleToLong={castlingData.castleToLong && castlingData.canLong}
+          castleFromLong={castlingData.castleFromLong && castlingData.canLong}
+          castleToShort={castlingData.castleToShort && castlingData.canShort}
+          castleFromShort={castlingData.castleFromShort && castlingData.canShort}
+          enPassant={enPassant[0] !== null && notation === toNotation(...enPassant)}
 
           fadeType={fadeType}
 
@@ -376,7 +387,8 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     return squares;
 
-  }, [board, player, possibleMoves, turn, selected, winner, fadeType])
+  }, [board, player, possibleMoves, turn, selected, winner, fadeType,
+    whiteCanLong, whiteCanShort, blackCanLong, blackCanShort, enPassant])
 
   if (notFound) {
     return <div className='not-found fade-in-error'>Match Not Found</div>

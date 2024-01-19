@@ -85,10 +85,10 @@ export const pieceData = {
 export const start = [
   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
   ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
 ]
@@ -127,7 +127,7 @@ export const isCheckmated = (board, player, kingPosition) => {
     for (let c = 0; c < 8; c++) {
 
       const piece = board[r][c];
-      if (piece !== '.' && pieces.includes(piece)) {
+      if (piece !== ' ' && pieces.includes(piece)) {
 
         const movesFunction = pieceData[piece].function;
         const possibleMoves = movesFunction(r, c, board, player, kingPosition);

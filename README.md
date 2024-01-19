@@ -36,10 +36,10 @@ The board that you see and all the action that takes place upon it renders off o
 [
   ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
   ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
-  ['.', '.', '.', '.', '.', '.', '.', '.'],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+  [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
   ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
 ]
@@ -67,7 +67,7 @@ const bishopMoves = (r, c, board, player) => {
 
       const targetPiece = board[newR][newC]
 
-      if (targetPiece === '.') {
+      if (targetPiece === ' ') {
         moves.push([newR, newC]);
       } else if (!belongsToPlayer(targetPiece, player)) {
         // Add if enemy piece, then stop
@@ -104,7 +104,7 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
 
   const newBoard = copyBoard(board);
   newBoard[newR][newC] = newBoard[currR][currC];
-  newBoard[currR][currC] = '.';
+  newBoard[currR][currC] = ' ';
 
   return kingChecked(kingR, kingC, newBoard, player);
 }

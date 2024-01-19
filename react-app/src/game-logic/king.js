@@ -116,7 +116,7 @@ const _diagonalCheck = (r, c, board, player, direction) => {
 
     const piece = board[newR][newC];
 
-    if (piece !== '.' && piece !== enemyBishop && piece !== enemyQueen && piece !== selfKing) {
+    if (piece !== ' ' && piece !== enemyBishop && piece !== enemyQueen && piece !== selfKing) {
       return false;
     };
 
@@ -159,7 +159,7 @@ const _verticalCheck = (r, c, board, player, direction) => {
 
     const piece = board[newR][newC];
 
-    if (piece !== '.' && piece !== enemyRook && piece !== enemyQueen && piece !== selfKing) {
+    if (piece !== ' ' && piece !== enemyRook && piece !== enemyQueen && piece !== selfKing) {
       return false;
     };
 
@@ -198,12 +198,29 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
 
   const newBoard = copyBoard(board);
   newBoard[newR][newC] = newBoard[currR][currC];
-  newBoard[currR][currC] = '.';
+  newBoard[currR][currC] = ' ';
 
   return kingChecked(kingR, kingC, newBoard, player);
 }
 
-const kingMoves = (r, c, board, player, kingPosition) => {
+const castleCheck = (board, player, isLong = true) => {
+
+  const row = isWhite(player) ? 7 : 0;
+  const columns = isLong ? [2, 3] : [5, 6];
+
+  if (kingChecked(row, 4, board, player)) return false;
+
+  for (let col of columns) {
+    if (board[row][col] !== ' ' || kingChecked(row, col, board, player)) {
+      return false
+    }
+  }
+
+  return true
+}
+
+
+const kingMoves = (r, c, board, player, kingPosition, canLong, canShort) => {
 
   const deltas = [
     [-1, 1],
@@ -227,12 +244,15 @@ const kingMoves = (r, c, board, player, kingPosition) => {
     if (rCheck && cCheck) {
 
       const piece = board[newR][newC];
-      const impassable = piece !== '.' && belongsToPlayer(piece, player);
+      const impassable = piece !== ' ' && belongsToPlayer(piece, player);
 
       if (!impassable && !kingChecked(newR, newC, board, player))
         moves.push([newR, newC])
     }
   });
+
+  if (canLong && castleCheck(board, player)) moves.push(isWhite(player) ? [7, 2] : [0, 2]);
+  if (canShort && castleCheck(board, player, false)) moves.push(isWhite(player) ? [7, 6] : [0, 6]);
 
   return moves.map(([row, col]) => toNotation(row, col));
 }
