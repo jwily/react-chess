@@ -31,7 +31,7 @@ const knightMoves = (r, c, board, player, kingPosition) => {
     if (rCheck && cCheck) {
 
       const piece = board[newR][newC];
-      const alliedPiece = piece !== ' ' && belongsToPlayer(piece, player);
+      const alliedPiece = piece !== '_' && belongsToPlayer(piece, player);
 
       if (!alliedPiece) moves.push([newR, newC])
     }

@@ -14,14 +14,14 @@ const pawnMoves = (r, c, board, player, kingPosition) => {
 
   if (nextR < 0) return moves;
 
-  if (board[nextR][c] === ' ') moves.push([nextR, c]);
+  if (board[nextR][c] === '_') moves.push([nextR, c]);
 
-  if (moves.length && firstMove && board[firstMoveR][c] === ' ') moves.push([firstMoveR, c]);
+  if (moves.length && firstMove && board[firstMoveR][c] === '_') moves.push([firstMoveR, c]);
 
   attacks.forEach(([newR, newC]) => {
     const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
-    const targetAvailable = board[newR][newC] !== ' ';
+    const targetAvailable = board[newR][newC] !== '_';
 
     if (rCheck && cCheck && targetAvailable) {
 

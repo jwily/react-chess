@@ -32,7 +32,7 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
     // Determines whether the square
     // is a potential target of an offensive move
 
-    if (isPossible && piece !== ' ') {
+    if (isPossible && piece !== '_') {
 
       const movingPlayer = player;
       const occupyingPlayer = pieceData[piece].player;
@@ -54,7 +54,7 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
   const determineStatus = () => {
     // These statuses must be checked for in this order
     if (isAttackable) return ' targeted';
-    else if (piece === ' ' && isPossible) return ' possible';
+    else if (piece === '_' && isPossible) return ' possible';
     else if (isSelected) return ' selected';
     else if (isSelectable) return ' selectable';
     else return '';
@@ -73,7 +73,7 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
       className={
         determineColor()
         + determineStatus()
-        + (piece !== ' ' ? ` ${pieceData[piece].player + '-' + pieceData[piece].name}` : '')
+        + (piece !== '_' ? ` ${pieceData[piece].player + '-' + pieceData[piece].name}` : '')
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
         + (determineCastling())
         + (enPassant ? ' en-passant' : '')

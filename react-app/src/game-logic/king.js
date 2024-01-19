@@ -116,7 +116,7 @@ const _diagonalCheck = (r, c, board, player, direction) => {
 
     const piece = board[newR][newC];
 
-    if (piece !== ' ' && piece !== enemyBishop && piece !== enemyQueen && piece !== selfKing) {
+    if (piece !== '_' && piece !== enemyBishop && piece !== enemyQueen && piece !== selfKing) {
       return false;
     };
 
@@ -159,7 +159,7 @@ const _verticalCheck = (r, c, board, player, direction) => {
 
     const piece = board[newR][newC];
 
-    if (piece !== ' ' && piece !== enemyRook && piece !== enemyQueen && piece !== selfKing) {
+    if (piece !== '_' && piece !== enemyRook && piece !== enemyQueen && piece !== selfKing) {
       return false;
     };
 
@@ -198,7 +198,7 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
 
   const newBoard = copyBoard(board);
   newBoard[newR][newC] = newBoard[currR][currC];
-  newBoard[currR][currC] = ' ';
+  newBoard[currR][currC] = '_';
 
   return kingChecked(kingR, kingC, newBoard, player);
 }
@@ -211,7 +211,7 @@ const castleCheck = (board, player, isLong = true) => {
   if (kingChecked(row, 4, board, player)) return false;
 
   for (let col of columns) {
-    if (board[row][col] !== ' ' || kingChecked(row, col, board, player)) {
+    if (board[row][col] !== '_' || kingChecked(row, col, board, player)) {
       return false
     }
   }
@@ -244,7 +244,7 @@ const kingMoves = (r, c, board, player, kingPosition, canLong, canShort) => {
     if (rCheck && cCheck) {
 
       const piece = board[newR][newC];
-      const impassable = piece !== ' ' && belongsToPlayer(piece, player);
+      const impassable = piece !== '_' && belongsToPlayer(piece, player);
 
       if (!impassable && !kingChecked(newR, newC, board, player))
         moves.push([newR, newC])

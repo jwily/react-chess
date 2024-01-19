@@ -71,12 +71,12 @@ class Game(db.Model):
                 spaces_string += char
             else:
                 if spaces_string != '':
-                    decompressed_string += (' ' * int(spaces_string))
+                    decompressed_string += ('_' * int(spaces_string))
                     spaces_string = ''
                 decompressed_string += char
 
         if spaces_string != '':
-            decompressed_string += (' ' * int(spaces_string))
+            decompressed_string += ('_' * int(spaces_string))
 
         return [list(decompressed_string[i:i+8]) for i in range(0, 64, 8)]
 
@@ -87,7 +87,7 @@ class Game(db.Model):
 
         for row in matrix:
             for char in row:
-                if char == ' ':
+                if char == '_':
                     period_count += 1
                 else:
                     if period_count > 0:

@@ -199,7 +199,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     // Piece is "moved" on the matrix
     newBoard[targetR][targetC] = currPiece;
-    newBoard[currR][currC] = ' ';
+    newBoard[currR][currC] = '_';
 
     const updatedData = {
       board: newBoard,
@@ -327,7 +327,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     const canLong = isWhite(player) ? whiteCanLong : blackCanLong;
     const canShort = isWhite(player) ? whiteCanShort : blackCanShort;
 
-    return new Set(movesFunction(row, col, board, player, kingPosition));
+    return new Set(movesFunction(row, col, board, player, kingPosition, canLong, canShort));
 
   }, [board, player, selected, blackKing, whiteKing,
     blackCanLong, blackCanShort, whiteCanLong, whiteCanShort]);
@@ -368,7 +368,7 @@ const Board = ({ freshGame, setFreshGame }) => {
           // Square statuses passed as booleans for easier memoization
           // Prevents re-renders if square does not change status
 
-          isSelectable={!winner && turn === player && piece !== ' ' && pieceData[piece].player === player}
+          isSelectable={!winner && turn === player && piece !== '_' && pieceData[piece].player === player}
           isSelected={selected === notation}
           isPossible={possibleMoves.has(notation)}
 
