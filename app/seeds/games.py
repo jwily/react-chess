@@ -38,6 +38,11 @@ def seed_games():
                               ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
                           ])
 
+    new_matches = [new_demo, new_castling, new_en_passant]
+
+    for match in new_matches:
+        db.session.add(match)
+
     db.session.commit()
 
 

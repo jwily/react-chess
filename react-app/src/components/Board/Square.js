@@ -11,7 +11,7 @@ const animationClasses = [
 ]
 
 const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, isPossible, fadeType,
-  castleToLong, castleFromLong, castleToShort, castleFromShort, enPassant }) => {
+  rookToLong, kingToLong, rookToShort, kingToShort, enPassant }) => {
 
   const [animated, setAnimated] = useState(true);
 
@@ -48,7 +48,7 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
 
   const determineColor = () => {
     const [row, col] = toRowCol(notation);
-    return (row + col) % 2 === 0 ? 'white square' : 'black square'
+    return (row + col) % 2 === 0 ? 'light square' : 'dark square'
   }
 
   const determineStatus = () => {
@@ -61,10 +61,10 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
   }
 
   const determineCastling = () => {
-    if (castleToLong) return ' castle-to-long';
-    else if (castleFromLong) return ' castle-from-long';
-    else if (castleToShort) return ' castle-to-short';
-    else if (castleFromShort) return ' castle-from-short';
+    if (rookToLong) return ' rook-to-long';
+    else if (kingToLong) return ' king-to-long';
+    else if (rookToShort) return ' rook-to-short';
+    else if (kingToShort) return ' king-to-short';
     else return '';
   }
 
@@ -73,7 +73,7 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
       className={
         determineColor()
         + determineStatus()
-        + (piece !== '_' ? ` ${pieceData[piece].player + '-' + pieceData[piece].name}` : '')
+        + (piece !== '_' ? ` ${pieceData[piece].player + ' ' + pieceData[piece].name}` : '')
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
         + (determineCastling())
         + (enPassant ? ' en-passant' : '')

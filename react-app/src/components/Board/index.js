@@ -353,10 +353,10 @@ const Board = ({ freshGame, setFreshGame }) => {
         const castlingData = {
           canLong: isWhite(player) ? whiteCanLong : blackCanLong,
           canShort: isWhite(player) ? whiteCanShort : blackCanShort,
-          castleToLong: c === 2 && (isWhite(player) ? r === 7 : r === 0),
-          castleFromLong: c === 0 && (isWhite(player) ? r === 7 : r === 0),
-          castleToShort: c === 6 && (isWhite(player) ? r === 7 : r === 0),
-          castleFromShort: c === 7 && (isWhite(player) ? r === 7 : r === 0),
+          rookToLong: c === 3 && (isWhite(player) ? r === 7 : r === 0),
+          kingToLong: c === 2 && (isWhite(player) ? r === 7 : r === 0),
+          rookToShort: c === 5 && (isWhite(player) ? r === 7 : r === 0),
+          kingToShort: c === 6 && (isWhite(player) ? r === 7 : r === 0),
         }
 
         squares.push((<Square
@@ -372,10 +372,10 @@ const Board = ({ freshGame, setFreshGame }) => {
           isSelected={selected === notation}
           isPossible={possibleMoves.has(notation)}
 
-          castleToLong={castlingData.castleToLong && castlingData.canLong}
-          castleFromLong={castlingData.castleFromLong && castlingData.canLong}
-          castleToShort={castlingData.castleToShort && castlingData.canShort}
-          castleFromShort={castlingData.castleFromShort && castlingData.canShort}
+          rookToLong={castlingData.rookToLong && castlingData.canLong}
+          kingToLong={castlingData.kingToLong && castlingData.canLong}
+          rookToShort={castlingData.rookToShort && castlingData.canShort}
+          kingToShort={castlingData.kingToShort && castlingData.canShort}
           enPassant={enPassant[0] !== null && notation === toNotation(...enPassant)}
 
           fadeType={fadeType}
