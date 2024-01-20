@@ -10,12 +10,11 @@ const animationClasses = [
   ' fade-in-slow',
 ]
 
-const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, isPossible,
-  fadeType, displayCastling, enPassantTarget, enPassantAttack, displayEnPassant }) => {
+const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, isPossible, fadeType, displayCastling }) => {
 
   const [animated, setAnimated] = useState(true);
 
-  console.log('Square Rendered');
+  // console.log('Square Rendered');
 
   useEffect(() => {
 
@@ -27,24 +26,7 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
 
   }, [])
 
-  const isAttackable = (() => {
-
-    // Determines whether the square
-    // is a potential target of an offensive move
-
-    if (isPossible && piece !== '_') {
-
-      const movingPlayer = player;
-      const occupyingPlayer = pieceData[piece].player;
-
-      if (movingPlayer !== occupyingPlayer) {
-        return true;
-      }
-    }
-
-    return false;
-
-  })();
+  const isAttackable = isPossible && piece !== '_';
 
   const determineColor = () => {
     const [row, col] = toRowCol(notation);
