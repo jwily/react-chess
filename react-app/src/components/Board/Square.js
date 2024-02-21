@@ -10,11 +10,12 @@ const animationClasses = [
   ' fade-in-slow',
 ]
 
-const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, isPossible, fadeType, displayCastling }) => {
+const Square = React.memo(({ notation, piece, player,
+  isSelectable, isSelected, isPossible, fadeType, displayCastling, displayEnPassant }) => {
 
   const [animated, setAnimated] = useState(true);
 
-  // console.log('Square Rendered');
+  console.log('Square Rendered');
 
   useEffect(() => {
 
@@ -59,6 +60,7 @@ const Square = React.memo(({ notation, piece, player, isSelectable, isSelected, 
         + (piece !== '_' ? ` ${pieceData[piece].player + ' ' + pieceData[piece].name}` : '')
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
         + determingCastlingDisplay()
+        + (displayEnPassant ? ' transparent' : '')
       }
       id={notation} >
     </span >
