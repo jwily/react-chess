@@ -111,7 +111,7 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
 ```
 
 ## Pending Goals
-- Implement en passant and pawn promotion. Sorry, I know it's not chess until it's got these!
+- Implement pawn promotion. Sorry, I know it's not chess until it's got this!
 - Add a log of messages to communicate with and allow communication between players.
 - Implement persistent user profiles and all the possibilities they would open up.
 
