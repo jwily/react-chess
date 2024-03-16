@@ -10,7 +10,7 @@ const animationClasses = [
   ' fade-in-slow',
 ]
 
-const Square = React.memo(({ notation, piece, player,
+const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
   isSelectable, isSelected, isPossible, fadeType, displayCastling, displayEnPassant }) => {
 
   const [animated, setAnimated] = useState(true);
@@ -27,7 +27,7 @@ const Square = React.memo(({ notation, piece, player,
 
   }, [])
 
-  const isAttackable = isPossible && piece !== '_';
+  const isAttackable = isPossible && (piece !== '_' || isEnPassantTarget);
 
   const determineColor = () => {
     const [row, col] = toRowCol(notation);
