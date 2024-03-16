@@ -45,10 +45,15 @@ const Board = ({ freshGame, setFreshGame }) => {
   // Indicates either "long" or "short"
   const [displayLongOrShort, setDisplayLongOrShort] = useState('');
 
-  // Indicates notation of target square
+  // Is the en passant target square currently hovered?
   const [enPassantHovered, setEnPassantHovered] = useState(false);
 
   const { matchCode } = useParams();
+
+  useEffect(() => {
+    console.log('Pawn', enPassant);
+    console.log('Target', enPassantTarget);
+  }, [enPassant, enPassantTarget]);
 
   const fadeType = useMemo(() => {
 
@@ -193,7 +198,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [board, whiteKing, blackKing, checkedPlayer])
 
-  const executeMove = async (curr, target) => {
+  const executeMove = (curr, target) => {
     const [currR, currC] = toRowCol(curr);
     const [targetR, targetC] = toRowCol(target);
 
@@ -359,6 +364,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     if (mouseOut) {
       setDisplayLongOrShort('');
+      setEnPassantHovered(false);
       return;
     }
 
@@ -377,6 +383,14 @@ const Board = ({ freshGame, setFreshGame }) => {
           setDisplayLongOrShort('short')
         }
       }
+    }
+
+    if (enPassantTarget[0]) {
+
+      if (toNotation(...enPassantTarget) === e.target.id) {
+        setEnPassantHovered(true);
+      }
+
     }
   }
 

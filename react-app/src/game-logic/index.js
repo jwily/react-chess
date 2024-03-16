@@ -146,3 +146,12 @@ export const belongsToPlayer = (piece, player) => {
   else return lowercased === piece;
 
 }
+
+export const determineEPTarget = (r, c, board) => {
+
+  const pawn = board[r][c];
+
+  if (pawn === 'e') return [r - 1, c];
+  else if (pawn === 'E') return [r + 1, c];
+
+}
