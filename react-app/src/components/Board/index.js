@@ -301,7 +301,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       }
     }
 
-    if (specialConditions[currPiece]) specialConditions[currPiece]()
+    if (specialConditions[currPiece]) specialConditions[currPiece]();
 
     if (enPassantTarget[0]) {
       const [row, col] = enPassantTarget;
