@@ -200,6 +200,12 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
   newBoard[newR][newC] = newBoard[currR][currC];
   newBoard[currR][currC] = '_';
 
+  // Checking to see if it's an en passant scenario
+  if (board[currR][currC].toLowerCase() === 'p'
+    && board[currR][newC].toLowerCase() === 'e') {
+    newBoard[currR][newC] = '_';
+  }
+
   return kingChecked(kingR, kingC, newBoard, player);
 }
 
