@@ -209,7 +209,8 @@ const Board = ({ freshGame, setFreshGame }) => {
       whiteCanShort,
       blackCanLong,
       blackCanShort,
-      enPassantTarget: [null, null]
+      enPassantTarget: [null, null],
+      room: matchCode
     }
 
     let pawnFirstMoveColor = '';
