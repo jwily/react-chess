@@ -13,72 +13,86 @@ export const pieceData = {
   'K': {
     player: 'white',
     name: 'king',
-    function: kingMoves
+    function: kingMoves,
+    special: null
   },
   'Q': {
     player: 'white',
     name: 'queen',
-    function: queenMoves
+    function: queenMoves,
+    special: null
   },
   'B': {
     player: 'white',
     name: 'bishop',
-    function: bishopMoves
+    function: bishopMoves,
+    special: null
   },
   'N': {
     player: 'white',
     name: 'knight',
-    function: knightMoves
+    function: knightMoves,
+    special: null
   },
   'R': {
     player: 'white',
     name: 'rook',
-    function: rookMoves
+    function: rookMoves,
+    special: null
   },
   'P': {
     player: 'white',
     name: 'pawn',
-    function: pawnMoves
+    function: pawnMoves,
+    special: null
   },
   'E': {
     player: 'white',
     name: 'pawn',
-    function: pawnMoves
+    function: pawnMoves,
+    special: null
   },
   'k': {
     player: 'black',
     name: 'king',
-    function: kingMoves
+    function: kingMoves,
+    special: null
   },
   'q': {
     player: 'black',
     name: 'queen',
-    function: queenMoves
+    function: queenMoves,
+    special: null
   },
   'b': {
     player: 'black',
     name: 'bishop',
-    function: bishopMoves
+    function: bishopMoves,
+    special: null
   },
   'n': {
     player: 'black',
     name: 'knight',
-    function: knightMoves
+    function: knightMoves,
+    special: null
   },
   'r': {
     player: 'black',
     name: 'rook',
-    function: rookMoves
+    function: rookMoves,
+    special: null
   },
   'p': {
     player: 'black',
     name: 'pawn',
-    function: pawnMoves
+    function: pawnMoves,
+    special: null
   },
   'e': {
     player: 'black',
     name: 'pawn',
-    function: pawnMoves
+    function: pawnMoves,
+    special: null
   }
 }
 
@@ -106,7 +120,8 @@ export const copyBoard = (board) => {
 const nums = '87654321';
 const letters = 'abcdefgh';
 
-export const toNotation = (row, col) => {
+export const toNotation = (coordinates) => {
+  const [row, col] = coordinates;
   return letters[col] + nums[row];
 }
 

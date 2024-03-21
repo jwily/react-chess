@@ -1,7 +1,9 @@
 import { toNotation, isWhite, belongsToPlayer } from ".";
 import { endangersKing } from "./king";
 
-const pawnMoves = (r, c, board, player, kingPosition) => {
+const pawnMoves = (r, c, board, player, kingPosition, options) => {
+
+  const { enPassant } = options;
 
   // Figure out which direction
   // the pawn should go based on the player
@@ -14,9 +16,6 @@ const pawnMoves = (r, c, board, player, kingPosition) => {
   const attacks = [[nextR, c - 1], [nextR, c + 1]]
 
   const moves = []
-
-  // Is this necessary? Shouldn't be once I implement promotion.
-  if (nextR < 0) return moves;
 
   if (board[nextR][c] === '_') moves.push([nextR, c]);
 
@@ -43,7 +42,7 @@ const pawnMoves = (r, c, board, player, kingPosition) => {
     return !endangersKing([row, col], [r, c], kingPosition, board, player)
   });
 
-  return legalMoves.map(([row, col]) => toNotation(row, col));
+  return legalMoves.map((coords) => toNotation(coords));
 }
 
 export default pawnMoves;

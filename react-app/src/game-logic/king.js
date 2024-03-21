@@ -226,7 +226,9 @@ const castleCheck = (board, player, isLong = true) => {
 }
 
 
-const kingMoves = (r, c, board, player, kingPosition, canLong, canShort) => {
+const kingMoves = (r, c, board, player, kingPosition, options) => {
+
+  const { canLong, canShort } = options;
 
   const deltas = [
     [-1, 1],
@@ -260,7 +262,7 @@ const kingMoves = (r, c, board, player, kingPosition, canLong, canShort) => {
   if (canLong && castleCheck(board, player)) moves.push(isWhite(player) ? [7, 2] : [0, 2]);
   if (canShort && castleCheck(board, player, false)) moves.push(isWhite(player) ? [7, 6] : [0, 6]);
 
-  return moves.map(([row, col]) => toNotation(row, col));
+  return moves.map((coords) => toNotation(coords));
 }
 
 export default kingMoves;
