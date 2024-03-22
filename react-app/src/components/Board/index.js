@@ -7,7 +7,7 @@ import Options from './Options';
 
 import {
   pieceData, start, toRowCol, isWhite,
-  toNotation, copyBoard, isCheckmated
+  toNotation, copyBoard, isCheckmated, movePiece
 } from '../../game-logic';
 
 import { kingChecked } from '../../game-logic/king';
@@ -193,18 +193,46 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [board, whiteKing, blackKing, checkedPlayer, enPassantTarget])
 
+  const updateStateAfterMove = (data) => {
+
+    const {
+      board,
+      whiteKing,
+      blackKing,
+      whiteCanLong,
+      whiteCanShort,
+      blackCanLong,
+      blackCanShort,
+      enPassantTarget,
+    } = data;
+
+    setBoard(board);
+    setWhiteKing(whiteKing);
+    setBlackKing(blackKing);
+    setWhiteCanLong(whiteCanLong);
+    setWhiteCanShort(whiteCanShort);
+    setBlackCanLong(blackCanLong);
+    setBlackCanShort(blackCanShort);
+    setEnPassantTarget(enPassantTarget);
+
+    setSelected('');
+    setDisplayLongOrShort('');
+    setTurn(prev => prev === 'white' ? 'black' : 'white');
+
+  };
+
   const executeMove = (curr, target) => {
-    const [currR, currC] = toRowCol(curr);
-    const [targetR, targetC] = toRowCol(target);
 
-    let currPiece = board[currR][currC];
+    const currRC = toRowCol(curr);
+    const targetRC = toRowCol(target);
+
+    const [currR, currC] = currRC;
+    const currPiece = board[currR][currC];
+
     const newBoard = copyBoard(board);
+    movePiece(currRC, targetRC, newBoard);
 
-    // Piece is "moved" on the matrix
-    newBoard[targetR][targetC] = currPiece;
-    newBoard[currR][currC] = '_';
-
-    const updatedData = {
+    const newData = {
       board: newBoard,
       whiteKing,
       blackKing,
@@ -212,116 +240,30 @@ const Board = ({ freshGame, setFreshGame }) => {
       whiteCanShort,
       blackCanLong,
       blackCanShort,
+      prevEnPassantTarget: enPassantTarget,
       enPassantTarget: '',
       room: matchCode
     }
 
-    // If the moving piece is a king, rook, or a pawn
-    // then a few things are check and tweaked
-    const specialConditions = {
-
-      'P': () => {
-        if (Math.abs(currR - targetR) === 2) {
-          updatedData.enPassantTarget = toNotation([targetR + 1, targetC])
-        } else if (toNotation([targetR, targetC]) === enPassantTarget) {
-          newBoard[currR][targetC] = '_';
-        }
-      },
-
-      'p': () => {
-        if (Math.abs(currR - targetR) === 2) {
-          updatedData.enPassantTarget = toNotation([targetR - 1, targetC])
-        } else if (toNotation([targetR, targetC]) === enPassantTarget) {
-          newBoard[currR][targetC] = '_';
-        }
-      },
-
-      'K': () => {
-        updatedData.whiteKing = [targetR, targetC];
-        setWhiteKing([targetR, targetC]);
-
-        if (targetC - currC === 2) {
-          newBoard[7][7] = '_';
-          newBoard[7][5] = 'R';
-        } else if (currC - targetC === 2) {
-          newBoard[7][0] = '_';
-          newBoard[7][3] = 'R';
-        }
-
-        if (whiteCanLong) {
-          updatedData.whiteCanLong = false;
-          setWhiteCanLong(false);
-        }
-
-        if (whiteCanShort) {
-          updatedData.whiteCanShort = false;
-          setWhiteCanShort(false);
-        }
-      },
-
-      'k': () => {
-        updatedData.blackKing = [targetR, targetC];
-        setBlackKing([targetR, targetC]);
-
-        if (targetC - currC === 2) {
-          newBoard[0][7] = '_';
-          newBoard[0][5] = 'r';
-        } else if (currC - targetC === 2) {
-          newBoard[0][0] = '_';
-          newBoard[0][3] = 'r';
-        }
-
-        if (blackCanLong) {
-          updatedData.blackCanLong = false;
-          setBlackCanLong(false);
-        }
-
-        if (blackCanShort) {
-          updatedData.blackCanShort = false;
-          setBlackCanShort(false);
-        }
-      },
-
-      'R': () => {
-        if (whiteCanShort && currC === 7) {
-          updatedData.whiteCanShort = false;
-          setWhiteCanShort(false);
-        } else if (whiteCanLong && currC === 0) {
-          updatedData.whiteCanLong = false;
-          setWhiteCanLong(false);
-        }
-      },
-
-      'r': () => {
-        if (blackCanShort && currC === 7) {
-          updatedData.blackCanShort = false;
-          setBlackCanShort(false);
-        } else if (blackCanLong && currC === 0) {
-          updatedData.blackCanLong = false;
-          setBlackCanLong(false);
-        }
-      }
+    if (pieceData[currPiece].special) {
+      const specialFunction = pieceData[currPiece].special;
+      specialFunction(currRC, targetRC, newData, player);
+      console.log(newData);
     }
-
-    if (specialConditions[currPiece]) specialConditions[currPiece]();
 
     // Saves new game state to database
     updateGame(newBoard, turn === 'white' ? 'black' : 'white',
-      updatedData.whiteCanLong, updatedData.whiteCanShort,
-      updatedData.blackCanLong, updatedData.blackCanShort,
-      updatedData.enPassantTarget);
+      newData.whiteCanLong, newData.whiteCanShort,
+      newData.blackCanLong, newData.blackCanShort,
+      newData.enPassantTarget);
 
     // Sends new game state to other player
-    socket.emit("move", updatedData);
+    socket.emit("move", newData);
 
     if (freshGame === matchCode) setFreshGame('');
 
-    // Local game state updated
-    setSelected('');
-    setBoard(newBoard);
-    setTurn(prev => prev === 'white' ? 'black' : 'white');
-    setEnPassantTarget(updatedData.enPassantTarget)
-    setDisplayLongOrShort('');
+    // Updates local state
+    updateStateAfterMove(newData);
   }
 
   const clickHandler = (e) => {

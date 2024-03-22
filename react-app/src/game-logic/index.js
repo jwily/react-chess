@@ -5,6 +5,72 @@ import knightMoves from "./knight";
 import rookMoves from "./rook";
 import pawnMoves from "./pawn";
 
+const pawnMoveEffects = (currRC, targetRC, data, player) => {
+
+  const currR = currRC[0];
+  const [targetR, targetC] = targetRC;
+
+  const dir = isWhite(player) ? 1 : -1;
+
+  if (Math.abs(currR - targetR) === 2) {
+    data.enPassantTarget = toNotation([targetR + dir, targetC])
+  } else if (toNotation([targetR, targetC]) === data.prevEnPassantTarget) {
+    data.board[currR][targetC] = '_';
+  }
+
+  return data;
+}
+
+const kingMoveEffects = (currRC, targetRC, data, player) => {
+
+  const currC = currRC[1];
+  const targetC = targetRC[1];
+
+  const kingPosition = `${player}King`;
+  const canLong = `${player}CanLong`;
+  const canShort = `${player}CanShort`;
+
+  const startingRow = isWhite(player) ? 7 : 0;
+  const rookPiece = isWhite(player) ? 'R' : 'r';
+
+  data[kingPosition] = targetRC;
+
+  if (targetC - currC === 2) {
+    data.board[startingRow][7] = '_';
+    data.board[startingRow][5] = rookPiece;
+  } else if (currC - targetC === 2) {
+    data.board[startingRow][0] = '_';
+    data.board[startingRow][3] = rookPiece;
+  }
+
+  if (data[canLong]) {
+    data[canLong] = false;
+  }
+
+  if (data[canShort]) {
+    data[canShort] = false;
+  }
+
+  return data;
+}
+
+const rookMoveEffects = (currRC, targetRC, data, player) => {
+
+  const currC = currRC[0];
+
+  const canLong = `${player}CanLong`;
+  const canShort = `${player}CanShort`;
+
+  if (data[canShort] && currC === 7) {
+    data[canShort] = false;
+  } else if (data[canLong] && currC === 0) {
+    data[canLong] = false;
+  }
+
+  return data;
+}
+
+
 // Traditionally, uppercase denotes white
 // while lowercase denotes black
 
@@ -14,7 +80,7 @@ export const pieceData = {
     player: 'white',
     name: 'king',
     function: kingMoves,
-    special: null
+    special: kingMoveEffects
   },
   'Q': {
     player: 'white',
@@ -38,19 +104,19 @@ export const pieceData = {
     player: 'white',
     name: 'rook',
     function: rookMoves,
-    special: null
+    special: rookMoveEffects
   },
   'P': {
     player: 'white',
     name: 'pawn',
     function: pawnMoves,
-    special: null
+    special: pawnMoveEffects
   },
   'k': {
     player: 'black',
     name: 'king',
     function: kingMoves,
-    special: null
+    special: kingMoveEffects
   },
   'q': {
     player: 'black',
@@ -74,13 +140,13 @@ export const pieceData = {
     player: 'black',
     name: 'rook',
     function: rookMoves,
-    special: null
+    special: rookMoveEffects
   },
   'p': {
     player: 'black',
     name: 'pawn',
     function: pawnMoves,
-    special: null
+    special: pawnMoveEffects
   }
 }
 
@@ -99,6 +165,21 @@ export const start = [
 
 export const copyBoard = (board) => {
   return board.map((row) => [...row]);
+}
+
+export const movePiece = (currRC, targetRC, board) => {
+
+  const [currR, currC] = currRC;
+  const [targetR, targetC] = targetRC;
+
+  let currPiece = board[currR][currC];
+
+  // Piece is "moved" on the matrix
+  board[targetR][targetC] = currPiece;
+  board[currR][currC] = '_';
+
+  return board;
+
 }
 
 // These two functions convert from
