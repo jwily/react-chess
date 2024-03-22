@@ -57,7 +57,7 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
       className={
         determineColor()
         + determineStatus()
-        + (piece !== '_' ? ` ${pieceData[piece].player + ' ' + pieceData[piece].name}` : '')
+        + (piece !== '_' ? ` ${pieceData[piece]['player'] + ' ' + pieceData[piece]['name']}` : '')
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
         + determingCastlingDisplay()
         + (displayEnPassant ? ' transparent' : '')

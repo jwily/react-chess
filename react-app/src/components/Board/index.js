@@ -7,7 +7,7 @@ import Options from './Options';
 
 import {
   pieceData, start, toRowCol, isWhite,
-  toNotation, copyBoard, isCheckmated
+  toNotation, copyBoard, isCheckmated, movePiece
 } from '../../game-logic';
 
 import { kingChecked } from '../../game-logic/king';
@@ -20,40 +20,35 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [board, setBoard] = useState(start);
   const [offline, setOffline] = useState(false);
 
-  // Location of the selected piece as well as possible spaces
-  // to move to are represented in algebraic notation (i.e. 'a8')
-  // for ease of comparison in JavaScript
+  // Location of the selected piece as well as the en passant target
+  // space are represented in algebraic notation (i.e. 'a8')
   const [selected, setSelected] = useState('');
+  const [enPassantTarget, setEnPassantTarget] = useState('');
 
-  const [turn, setTurn] = useState('white');
   const [loaded, setLoaded] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
   const [whiteKing, setWhiteKing] = useState([7, 4]);
   const [blackKing, setBlackKing] = useState([0, 4]);
-  const [enPassantTarget, setEnPassantTarget] = useState('');
 
   const [whiteCanLong, setWhiteCanLong] = useState(true);
   const [whiteCanShort, setWhiteCanShort] = useState(true);
   const [blackCanLong, setBlackCanLong] = useState(true);
   const [blackCanShort, setBlackCanShort] = useState(true);
 
-  const [checkedPlayer, setCheckedPlayer] = useState('');
+  const [turn, setTurn] = useState('white');
   const [winner, setWinner] = useState('');
+  const [checkedPlayer, setCheckedPlayer] = useState('');
 
-  // Indicates either "long" or "short"
-  const [displayLongOrShort, setDisplayLongOrShort] = useState('');
-
-  // Is the en passant target square currently hovered?
-  const [enPassantHovered, setEnPassantHovered] = useState(false);
+  // Set to 'long', 'short', or 'ep'
+  const [hoverState, setHoverState] = useState('');
 
   const { matchCode } = useParams();
 
   const fadeType = useMemo(() => {
 
-    // Generates a number that determines
-    // the fade-in animation of the board
-    // based on the match code
+    // Generates an integer based on the match code
+    // that determines the board's animation pattern
 
     let total = 0;
     for (let char of matchCode) {
@@ -63,58 +58,73 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [matchCode])
 
-  const updateGame = useCallback(
-    (board = start, turn = 'white',
-      whiteCanLong = true, whiteCanShort = true,
-      blackCanLong = true, blackCanShort = true,
-      enPassantTarget = '') => {
+  const updateGame = useCallback((
+    board = start,
+    turn = 'white',
+    whiteCanLong = true,
+    whiteCanShort = true,
+    blackCanLong = true,
+    blackCanShort = true,
+    enPassantTarget = '') => {
 
-      fetch(`/api/games/${matchCode}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          board, turn, whiteCanLong, whiteCanShort,
-          blackCanLong, blackCanShort, enPassantTarget
-        })
+    // Needs error handling
+    fetch(`/api/games/${matchCode}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        board, turn, whiteCanLong, whiteCanShort,
+        blackCanLong, blackCanShort, enPassantTarget
       })
+    })
 
-    }, [matchCode])
+  }, [matchCode])
 
   useEffect(() => {
 
     (async () => {
+
       // Grabs game state from database
       const res = await fetch(`/api/games/${matchCode}`);
+
       if (res.ok) {
         const data = await res.json();
 
         // Identifies where the kings are located
         for (let r = 0; r < 8; r++) {
           for (let c = 0; c < 8; c++) {
+
             const piece = data.board[r][c];
+
             if (piece === 'K') {
               setWhiteKing([r, c]);
-            } else if (piece === 'k') {
+            }
+
+            else if (piece === 'k') {
               setBlackKing([r, c]);
             }
           }
         }
 
+        // setWhiteKing(findPieceBFS('e1', 'K', data.board));
+        // setBlackKing(findPieceBFS('e8', 'k', data.board));
+
         // Updates state with game data
-        setBoard(data.board);
         setTurn(data.turn);
+        setBoard(data.board);
         setWhiteCanLong(data.whiteCanLong);
         setWhiteCanShort(data.whiteCanShort);
         setBlackCanLong(data.blackCanLong);
         setBlackCanShort(data.blackCanShort);
         setEnPassantTarget(data.enPassantTarget);
         setLoaded(true);
+
       } else {
         // Shows error screen if no game data
         setNotFound(true);
       }
+
     })();
 
     socket = io();
@@ -124,26 +134,26 @@ const Board = ({ freshGame, setFreshGame }) => {
     socket.on("move", (gameState) => {
       if (freshGame === matchCode) setFreshGame('');
       setBoard(gameState.board);
-      setTurn(prev => prev === 'white' ? 'black' : 'white');
+      setWhiteKing(gameState.whiteKing);
+      setBlackKing(gameState.blackKing);
       setWhiteCanLong(gameState.whiteCanLong);
       setWhiteCanShort(gameState.whiteCanShort);
       setBlackCanLong(gameState.blackCanLong);
       setBlackCanShort(gameState.blackCanShort);
-      setWhiteKing(gameState.whiteKing);
-      setBlackKing(gameState.blackKing);
       setEnPassantTarget(gameState.enPassantTarget);
+      setTurn(prev => prev === 'white' ? 'black' : 'white');
     })
 
     // Fires in response to reset game button in Options
     socket.on("reset", () => {
       setBoard(start);
       setTurn("white");
+      setWhiteKing([7, 4]);
+      setBlackKing([0, 4]);
       setWhiteCanLong(true);
       setWhiteCanShort(true);
       setBlackCanLong(true);
       setBlackCanShort(true);
-      setWhiteKing([7, 4]);
-      setBlackKing([0, 4]);
       setEnPassantTarget('');
     })
 
@@ -152,27 +162,26 @@ const Board = ({ freshGame, setFreshGame }) => {
       socket.disconnect();
     })
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
 
-    // Checks if either king is checked after each move
+    // Checks if the moving player's king is checked after each move
 
-    if (kingChecked(...whiteKing, board, 'white')) {
-      setCheckedPlayer('white');
-    }
+    const kingPosition = isWhite(turn) ? whiteKing : blackKing;
 
-    else if (kingChecked(...blackKing, board, 'black')) {
-      setCheckedPlayer('black');
+    if (kingChecked(...kingPosition, board, turn)) {
+      setCheckedPlayer(turn);
     }
 
     else setCheckedPlayer('');
 
-  }, [blackKing, whiteKing, board])
+  }, [blackKing, whiteKing, turn, board])
 
   useEffect(() => {
 
-    // If a king is checked, performs a more
+    // If a king is in check, performs a more
     // elaborate "checkmate" verification
 
     if (checkedPlayer) {
@@ -193,18 +202,47 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [board, whiteKing, blackKing, checkedPlayer, enPassantTarget])
 
+  const updateStateAfterMove = (data) => {
+
+    const {
+      board,
+      whiteKing,
+      blackKing,
+      whiteCanLong,
+      whiteCanShort,
+      blackCanLong,
+      blackCanShort,
+      enPassantTarget,
+    } = data;
+
+    setBoard(board);
+    setWhiteKing(whiteKing);
+    setBlackKing(blackKing);
+    setWhiteCanLong(whiteCanLong);
+    setWhiteCanShort(whiteCanShort);
+    setBlackCanLong(blackCanLong);
+    setBlackCanShort(blackCanShort);
+    setEnPassantTarget(enPassantTarget);
+
+    setSelected('');
+    setHoverState('');
+    // Do we need to reset the hover state? Probably not
+    setTurn(prev => prev === 'white' ? 'black' : 'white');
+
+  };
+
   const executeMove = (curr, target) => {
-    const [currR, currC] = toRowCol(curr);
-    const [targetR, targetC] = toRowCol(target);
 
-    let currPiece = board[currR][currC];
+    const currRC = toRowCol(curr);
+    const targetRC = toRowCol(target);
+
+    const [currR, currC] = currRC;
+    const currPiece = board[currR][currC];
+
     const newBoard = copyBoard(board);
+    movePiece(currRC, targetRC, newBoard);
 
-    // Piece is "moved" on the matrix
-    newBoard[targetR][targetC] = currPiece;
-    newBoard[currR][currC] = '_';
-
-    const updatedData = {
+    const data = {
       board: newBoard,
       whiteKing,
       blackKing,
@@ -212,116 +250,30 @@ const Board = ({ freshGame, setFreshGame }) => {
       whiteCanShort,
       blackCanLong,
       blackCanShort,
+      room: matchCode,
       enPassantTarget: '',
-      room: matchCode
+      prevEnPassantTarget: enPassantTarget
     }
 
-    // If the moving piece is a king, rook, or a pawn
-    // then a few things are check and tweaked
-    const specialConditions = {
-
-      'P': () => {
-        if (Math.abs(currR - targetR) === 2) {
-          updatedData.enPassantTarget = toNotation([targetR + 1, targetC])
-        } else if (toNotation([targetR, targetC]) === enPassantTarget) {
-          newBoard[currR][targetC] = '_';
-        }
-      },
-
-      'p': () => {
-        if (Math.abs(currR - targetR) === 2) {
-          updatedData.enPassantTarget = toNotation([targetR - 1, targetC])
-        } else if (toNotation([targetR, targetC]) === enPassantTarget) {
-          newBoard[currR][targetC] = '_';
-        }
-      },
-
-      'K': () => {
-        updatedData.whiteKing = [targetR, targetC];
-        setWhiteKing([targetR, targetC]);
-
-        if (targetC - currC === 2) {
-          newBoard[7][7] = '_';
-          newBoard[7][5] = 'R';
-        } else if (currC - targetC === 2) {
-          newBoard[7][0] = '_';
-          newBoard[7][3] = 'R';
-        }
-
-        if (whiteCanLong) {
-          updatedData.whiteCanLong = false;
-          setWhiteCanLong(false);
-        }
-
-        if (whiteCanShort) {
-          updatedData.whiteCanShort = false;
-          setWhiteCanShort(false);
-        }
-      },
-
-      'k': () => {
-        updatedData.blackKing = [targetR, targetC];
-        setBlackKing([targetR, targetC]);
-
-        if (targetC - currC === 2) {
-          newBoard[0][7] = '_';
-          newBoard[0][5] = 'r';
-        } else if (currC - targetC === 2) {
-          newBoard[0][0] = '_';
-          newBoard[0][3] = 'r';
-        }
-
-        if (blackCanLong) {
-          updatedData.blackCanLong = false;
-          setBlackCanLong(false);
-        }
-
-        if (blackCanShort) {
-          updatedData.blackCanShort = false;
-          setBlackCanShort(false);
-        }
-      },
-
-      'R': () => {
-        if (whiteCanShort && currC === 7) {
-          updatedData.whiteCanShort = false;
-          setWhiteCanShort(false);
-        } else if (whiteCanLong && currC === 0) {
-          updatedData.whiteCanLong = false;
-          setWhiteCanLong(false);
-        }
-      },
-
-      'r': () => {
-        if (blackCanShort && currC === 7) {
-          updatedData.blackCanShort = false;
-          setBlackCanShort(false);
-        } else if (blackCanLong && currC === 0) {
-          updatedData.blackCanLong = false;
-          setBlackCanLong(false);
-        }
-      }
-    }
-
-    if (specialConditions[currPiece]) specialConditions[currPiece]();
+    // Checks if moving piece involves other state changes
+    // Relevant for pawns, kings, and rooks
+    const effectsFunction = pieceData[currPiece]['effects'];
+    if (effectsFunction) effectsFunction(currRC, targetRC, data);
 
     // Saves new game state to database
-    updateGame(newBoard, turn === 'white' ? 'black' : 'white',
-      updatedData.whiteCanLong, updatedData.whiteCanShort,
-      updatedData.blackCanLong, updatedData.blackCanShort,
-      updatedData.enPassantTarget);
+    updateGame(data.board,
+      turn === 'white' ? 'black' : 'white',
+      data.whiteCanLong, data.whiteCanShort,
+      data.blackCanLong, data.blackCanShort,
+      data.enPassantTarget);
 
     // Sends new game state to other player
-    socket.emit("move", updatedData);
+    socket.emit("move", data);
 
     if (freshGame === matchCode) setFreshGame('');
 
-    // Local game state updated
-    setSelected('');
-    setBoard(newBoard);
-    setTurn(prev => prev === 'white' ? 'black' : 'white');
-    setEnPassantTarget(updatedData.enPassantTarget)
-    setDisplayLongOrShort('');
+    // Updates local state
+    updateStateAfterMove(data);
   }
 
   const clickHandler = (e) => {
@@ -336,51 +288,36 @@ const Board = ({ freshGame, setFreshGame }) => {
     }
   };
 
-  const hoverHandler = (e, mouseOut = false) => {
-    e.stopPropagation()
+  const hoverHandler = (e) => {
 
-    if (mouseOut) {
-      setDisplayLongOrShort('');
-      setEnPassantHovered(false);
-      return;
-    }
+    e.stopPropagation()
 
     const canLong = isWhite(player) ? whiteCanLong : blackCanLong;
     const canShort = isWhite(player) ? whiteCanShort : blackCanShort;
 
     if (canLong || canShort) {
-
-      // Row 'e' under these conditions would contain an un-moved king
+      // Row 'e' under either of these conditions would house an un-moved king
       if (selected[0] === 'e' && e.target.className.includes('possible')) {
-
-        if (e.target.id[0] === 'g') {
-          setDisplayLongOrShort('long')
-        }
-
-        else if (e.target.id[0] === 'c') {
-          setDisplayLongOrShort('short')
-        }
+        if (e.target.id[0] === 'g') setHoverState('long');
+        else if (e.target.id[0] === 'c') setHoverState('short');
       }
     }
 
     if (enPassantTarget) {
-
-      if (enPassantTarget === e.target.id && e.target.className.includes('targeted')) {
-        setEnPassantHovered(true);
-      }
-
+      if (enPassantTarget === e.target.id
+        && e.target.className.includes('targeted')) setHoverState('ep');
     }
   }
 
   const possibleMoves = useMemo(() => {
 
-    // Returns a set of all possible moves given a selected piece
+    // Returns a set of all possible moves depending on the selected piece
 
     if (!selected) return new Set();
 
     const [row, col] = toRowCol(selected);
     const piece = board[row][col];
-    const movesFunction = pieceData[piece].function;
+    const movesFunction = pieceData[piece]['moves'];
 
     const kingPosition = isWhite(player) ? whiteKing : blackKing;
     const canLong = isWhite(player) ? whiteCanLong : blackCanLong;
@@ -412,20 +349,20 @@ const Board = ({ freshGame, setFreshGame }) => {
         isWhite(player) ? c <= 7 : c >= 0;
         isWhite(player) ? c++ : c--) {
 
-        let piece = board[r][c];
+        const piece = board[r][c];
         const notation = toNotation([r, c]);
 
-        const isSelectable = !winner && turn === player && piece !== '_' && pieceData[piece].player === player;
+        const isSelectable = !winner && turn === player && piece !== '_' && pieceData[piece]['player'] === player;
 
-        const castleLongSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 7 || c === 5)
-        const castleShortSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 0 || c === 3)
+        const castleLongSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 7 || c === 5);
+        const castleShortSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 0 || c === 3);
 
         const displayCastling =
-          (castleLongSquare && displayLongOrShort === 'long') || (castleShortSquare && displayLongOrShort === 'short')
+          (castleLongSquare && hoverState === 'long') || (castleShortSquare && hoverState === 'short');
 
         const isEnPassantTarget = enPassantTarget === notation;
         const enPassantPawn = enPassantTarget && notation[0] === enPassantTarget[0] && notation[1] === selected[1];
-        const displayEnPassant = enPassantPawn && enPassantHovered;
+        const displayEnPassant = enPassantPawn && hoverState === 'ep';
 
         squares.push((
           <Square
@@ -457,8 +394,8 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     return squares;
 
-  }, [board, player, possibleMoves, turn, selected, winner, fadeType,
-    displayLongOrShort, enPassantTarget, enPassantHovered])
+  }, [board, player, possibleMoves, turn, selected,
+    winner, fadeType, enPassantTarget, hoverState])
 
   if (notFound) {
     return <div className='not-found fade-in-error'>Match Not Found</div>
@@ -467,16 +404,16 @@ const Board = ({ freshGame, setFreshGame }) => {
   if (!loaded) return null;
 
   return (
-    // Clicking "off" the board de-selects pieces
     <div className='off-board'
       onClick={(e) => {
+        // Clicking "off" the board de-selects pieces
         if (selected !== '') setSelected('');
       }}>
       <div
         className='board'
         onClick={clickHandler}
         onMouseOver={hoverHandler}
-        onMouseOut={e => hoverHandler(e, true)}>
+        onMouseOut={e => setHoverState('')}>
         {generateSquares}
       </div>
       <Options
