@@ -380,8 +380,6 @@ const Board = ({ freshGame, setFreshGame }) => {
     const canLong = isWhite(player) ? whiteCanLong : blackCanLong;
     const canShort = isWhite(player) ? whiteCanShort : blackCanShort;
 
-    console.log(enPassantTarget);
-
     const options = {
       canLong,
       canShort,
@@ -412,7 +410,6 @@ const Board = ({ freshGame, setFreshGame }) => {
         const notation = toNotation([r, c]);
 
         const isSelectable = !winner && turn === player && piece !== '_' && pieceData[piece].player === player;
-        // const isEnPassantTarget = enPassantTarget[0] && r === enPassantTarget[0] && c === enPassantTarget[1];
 
         const castleLongSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 7 || c === 5)
         const castleShortSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 0 || c === 3)
@@ -420,7 +417,9 @@ const Board = ({ freshGame, setFreshGame }) => {
         const displayCastling =
           (castleLongSquare && displayLongOrShort === 'long') || (castleShortSquare && displayLongOrShort === 'short')
 
-        // const displayEnPassant = piece.toLowerCase() === 'e' && enPassantHovered;
+        const isEnPassantTarget = enPassantTarget === notation;
+        const enPassantPawn = enPassantTarget && notation[0] === enPassantTarget[0] && notation[1] === selected[1];
+        const displayEnPassant = enPassantPawn && enPassantHovered;
 
         squares.push((
           <Square
@@ -436,12 +435,12 @@ const Board = ({ freshGame, setFreshGame }) => {
             isSelected={selected === notation}
             isPossible={possibleMoves.has(notation)}
 
-            // isEnPassantTarget={isEnPassantTarget}
+            isEnPassantTarget={isEnPassantTarget}
 
             // These two props will turn to 'true' under specific conditions
             // adding a class to the relevant squares to visually represent special moves
             displayCastling={displayCastling}
-            // displayEnPassant={displayEnPassant}
+            displayEnPassant={displayEnPassant}
 
             fadeType={fadeType}
 
@@ -452,7 +451,8 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     return squares;
 
-  }, [board, player, possibleMoves, turn, selected, winner, fadeType, displayLongOrShort])
+  }, [board, player, possibleMoves, turn, selected, winner, fadeType,
+    displayLongOrShort, enPassantTarget, enPassantHovered])
 
   if (notFound) {
     return <div className='not-found fade-in-error'>Match Not Found</div>

@@ -201,10 +201,8 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
   newBoard[currR][currC] = '_';
 
   // Checking to see if it's an en passant scenario
-  if (enPassantTarget) {
-    if (toNotation(newPosition) === enPassantTarget) {
-      newBoard[currR][newC] = '_';
-    }
+  if (enPassantTarget && toNotation(newPosition) === enPassantTarget) {
+    newBoard[currR][newC] = '_';
   }
 
   return kingChecked(kingR, kingC, newBoard, player);
