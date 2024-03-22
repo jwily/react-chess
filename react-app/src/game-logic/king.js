@@ -183,7 +183,7 @@ export const kingChecked = (r, c, board, player) => {
     kingCheck(r, c, board, player)
 }
 
-export const endangersKing = (newPosition, currPosition, kingPosition, board, player) => {
+export const endangersKing = (newPosition, currPosition, kingPosition, board, player, enPassantTarget) => {
 
   // When given a possible move,
   // this function creates a copy of the board
@@ -201,9 +201,10 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
   newBoard[currR][currC] = '_';
 
   // Checking to see if it's an en passant scenario
-  if (board[currR][currC].toLowerCase() === 'p'
-    && board[currR][newC].toLowerCase() === 'e') {
-    newBoard[currR][newC] = '_';
+  if (enPassantTarget) {
+    if (toNotation(newPosition) === enPassantTarget) {
+      newBoard[currR][newC] = '_';
+    }
   }
 
   return kingChecked(kingR, kingC, newBoard, player);
