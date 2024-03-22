@@ -3,7 +3,7 @@ import { endangersKing } from "./king";
 
 const pawnMoves = (r, c, board, player, kingPosition, options) => {
 
-  const { enPassant } = options;
+  const { enPassantTarget } = options;
 
   // Figure out which direction
   // the pawn should go based on the player
