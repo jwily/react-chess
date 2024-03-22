@@ -28,7 +28,7 @@ class Game(db.Model):
     black_can_long = db.Column(db.Boolean, nullable=False, default=True)
     black_can_short = db.Column(db.Boolean, nullable=False, default=True)
 
-    en_passant = db.Column(db.String(2), nullable=False, default='')
+    en_passant_target = db.Column(db.String(2), nullable=False, default='')
 
     completed = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -57,7 +57,7 @@ class Game(db.Model):
             'whiteCanShort': self.white_can_short,
             'blackCanLong': self.black_can_long,
             'blackCanShort': self.black_can_short,
-            'enPassant': self.en_passant,
+            'enPassantTarget': self.en_passant_target,
             'turn': self.turn,
             'createdAt': self.created_at,
             'updatedAt': self.updated_at
