@@ -170,17 +170,15 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     // Checks if either king is checked after each move
 
-    if (kingChecked(...whiteKing, board, 'white')) {
-      setCheckedPlayer('white');
-    }
+    const kingPosition = isWhite(turn) ? whiteKing : blackKing;
 
-    else if (kingChecked(...blackKing, board, 'black')) {
-      setCheckedPlayer('black');
+    if (kingChecked(...kingPosition, board, turn)) {
+      setCheckedPlayer(turn);
     }
 
     else setCheckedPlayer('');
 
-  }, [blackKing, whiteKing, board])
+  }, [blackKing, whiteKing, turn, board])
 
   useEffect(() => {
 
