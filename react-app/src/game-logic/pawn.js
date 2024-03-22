@@ -5,41 +5,43 @@ const pawnMoves = (r, c, board, player, kingPosition, options) => {
 
   const { enPassantTarget } = options;
 
-  // Figure out which direction
-  // the pawn should go based on the player
-  const nextR = isWhite(player) ? r - 1 : r + 1;
-  const firstMoveR = isWhite(player) ? r - 2 : r + 2;
+  // Pawn's direction based on player
+  const dir = isWhite(player) ? -1 : 1
 
-  const startRow = isWhite(player) ? r === 6 : r === 1;
+  if (r + dir < 0 || r + dir > 7) return;
+
+  const unmoved = isWhite(player) ? r === 6 : r === 1;
 
   // The two spaces a pawn could possibly attack.
-  const attacks = [[nextR, c - 1], [nextR, c + 1]]
+  const attacks = [[r + dir, c - 1], [r + dir, c + 1]]
 
   const moves = []
 
-  if (board[nextR][c] === '_') moves.push([nextR, c]);
+  if (board[r + dir][c] === '_') {
+    moves.push([r + dir, c]);
 
-  // If the pawn can move forward and is in its starting row,
-  // it can move an additional space.
-  if (moves.length && startRow && board[firstMoveR][c] === '_') moves.push([firstMoveR, c]);
+    if (unmoved && board[r + dir * 2][c] === '_') {
+      moves.push([r + dir * 2, c]);
+    }
+  }
 
   attacks.forEach(([newR, newC]) => {
 
-    // With pawn promotion, row and col limit checks should be unnecessary.
-    const rCheck = 0 <= newR && newR < 8;
     const cCheck = 0 <= newC && newC < 8;
 
-    if (rCheck && cCheck) {
+    if (cCheck) {
       const targetPiece = board[newR][newC];
-      const enPassantPossible = board[r][newC].toLowerCase() === 'e';
-      if ((targetPiece !== '_' && !belongsToPlayer(targetPiece, player)) || enPassantPossible) {
+      const targetNotation = toNotation([newR, newC])
+
+      if ((targetPiece !== '_' && !belongsToPlayer(targetPiece, player))
+        || enPassantTarget === targetNotation) {
         moves.push([newR, newC])
       }
     }
   })
 
   const legalMoves = moves.filter(([row, col]) => {
-    return !endangersKing([row, col], [r, c], kingPosition, board, player)
+    return !endangersKing([row, col], [r, c], kingPosition, board, player, enPassantTarget)
   });
 
   return legalMoves.map((coords) => toNotation(coords));

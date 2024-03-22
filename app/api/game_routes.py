@@ -27,7 +27,7 @@ def update_game(code):
         game.white_can_short = data['whiteCanShort']
         game.black_can_long = data['blackCanLong']
         game.black_can_short = data['blackCanShort']
-        game.en_passant = data['enPassant']
+        game.en_passant_target = data['enPassantTarget']
         db.session.add(game)
         db.session.commit()
         return game.to_dict()
