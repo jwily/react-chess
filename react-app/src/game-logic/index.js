@@ -79,74 +79,74 @@ export const pieceData = {
   'K': {
     player: 'white',
     name: 'king',
-    function: kingMoves,
-    special: kingMoveEffects
+    moves: kingMoves,
+    effects: kingMoveEffects
   },
   'Q': {
     player: 'white',
     name: 'queen',
-    function: queenMoves,
-    special: null
+    moves: queenMoves,
+    effects: null
   },
   'B': {
     player: 'white',
     name: 'bishop',
-    function: bishopMoves,
-    special: null
+    moves: bishopMoves,
+    effects: null
   },
   'N': {
     player: 'white',
     name: 'knight',
-    function: knightMoves,
-    special: null
+    moves: knightMoves,
+    effects: null
   },
   'R': {
     player: 'white',
     name: 'rook',
-    function: rookMoves,
-    special: rookMoveEffects
+    moves: rookMoves,
+    effects: rookMoveEffects
   },
   'P': {
     player: 'white',
     name: 'pawn',
-    function: pawnMoves,
-    special: pawnMoveEffects
+    moves: pawnMoves,
+    effects: pawnMoveEffects
   },
   'k': {
     player: 'black',
     name: 'king',
-    function: kingMoves,
-    special: kingMoveEffects
+    moves: kingMoves,
+    effects: kingMoveEffects
   },
   'q': {
     player: 'black',
     name: 'queen',
-    function: queenMoves,
-    special: null
+    moves: queenMoves,
+    effects: null
   },
   'b': {
     player: 'black',
     name: 'bishop',
-    function: bishopMoves,
-    special: null
+    moves: bishopMoves,
+    effects: null
   },
   'n': {
     player: 'black',
     name: 'knight',
-    function: knightMoves,
-    special: null
+    moves: knightMoves,
+    effects: null
   },
   'r': {
     player: 'black',
     name: 'rook',
-    function: rookMoves,
-    special: rookMoveEffects
+    moves: rookMoves,
+    effects: rookMoveEffects
   },
   'p': {
     player: 'black',
     name: 'pawn',
-    function: pawnMoves,
-    special: pawnMoveEffects
+    moves: pawnMoves,
+    effects: pawnMoveEffects
   }
 }
 
@@ -213,7 +213,7 @@ export const isCheckmated = (board, player, kingPosition, options) => {
       const piece = board[r][c];
       if (piece !== '_' && pieces.includes(piece)) {
 
-        const movesFunction = pieceData[piece].function;
+        const movesFunction = pieceData[piece]['moves'];
         const possibleMoves = movesFunction(r, c, board, player, kingPosition, options);
         count += possibleMoves.length;
       }

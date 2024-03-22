@@ -249,9 +249,8 @@ const Board = ({ freshGame, setFreshGame }) => {
       room: matchCode
     }
 
-    const specialFunction = pieceData[currPiece].special;
-
-    if (specialFunction) specialFunction(currRC, targetRC, newData, player);
+    const effectsFunction = pieceData[currPiece]['effects'];
+    if (effectsFunction) effectsFunction(currRC, targetRC, newData, player);
 
     // Saves new game state to database
     updateGame(newBoard, turn === 'white' ? 'black' : 'white',
@@ -324,7 +323,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     const [row, col] = toRowCol(selected);
     const piece = board[row][col];
-    const movesFunction = pieceData[piece].function;
+    const movesFunction = pieceData[piece]['moves'];
 
     const kingPosition = isWhite(player) ? whiteKing : blackKing;
     const canLong = isWhite(player) ? whiteCanLong : blackCanLong;
