@@ -70,7 +70,6 @@ const rookMoveEffects = (currRC, targetRC, data, player) => {
   return data;
 }
 
-
 // Traditionally, uppercase denotes white
 // while lowercase denotes black
 
@@ -162,7 +161,6 @@ export const start = [
 ]
 
 // Creates a deep copy of the board state matrix
-
 export const copyBoard = (board) => {
   return board.map((row) => [...row]);
 }
@@ -172,10 +170,7 @@ export const movePiece = (currRC, targetRC, board) => {
   const [currR, currC] = currRC;
   const [targetR, targetC] = targetRC;
 
-  let currPiece = board[currR][currC];
-
-  // Piece is "moved" on the matrix
-  board[targetR][targetC] = currPiece;
+  board[targetR][targetC] = board[currR][currC];
   board[currR][currC] = '_';
 
   return board;
