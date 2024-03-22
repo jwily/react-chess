@@ -179,13 +179,19 @@ const Board = ({ freshGame, setFreshGame }) => {
 
       const kingPosition = isWhite(checkedPlayer) ? whiteKing : blackKing
 
-      if (isCheckmated(board, checkedPlayer, kingPosition)) {
+      const options = {
+        canLong: false,
+        canShort: false,
+        enPassantTarget
+      }
+
+      if (isCheckmated(board, checkedPlayer, kingPosition, options)) {
         setWinner(isWhite(checkedPlayer) ? 'black' : 'white');
       }
 
     } else setWinner('');
 
-  }, [board, whiteKing, blackKing, checkedPlayer])
+  }, [board, whiteKing, blackKing, checkedPlayer, enPassantTarget])
 
   const executeMove = (curr, target) => {
     const [currR, currC] = toRowCol(curr);

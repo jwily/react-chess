@@ -133,7 +133,7 @@ export const toRowCol = (string) => {
 
 export const isWhite = (player) => player === 'white';
 
-export const isCheckmated = (board, player, kingPosition) => {
+export const isCheckmated = (board, player, kingPosition, options) => {
 
   let count = 0;
   const pieces = isWhite(player) ? 'KQBNRP' : 'kqbnrp';
@@ -145,7 +145,7 @@ export const isCheckmated = (board, player, kingPosition) => {
       if (piece !== '_' && pieces.includes(piece)) {
 
         const movesFunction = pieceData[piece].function;
-        const possibleMoves = movesFunction(r, c, board, player, kingPosition);
+        const possibleMoves = movesFunction(r, c, board, player, kingPosition, options);
         count += possibleMoves.length;
       }
     }
