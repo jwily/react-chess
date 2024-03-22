@@ -201,6 +201,7 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
   newBoard[currR][currC] = '_';
 
   // Checking to see if it's an en passant scenario
+  // The "enPassantTarget" argument is only passed during pawn moves
   if (enPassantTarget && toNotation(newPosition) === enPassantTarget) {
     newBoard[currR][newC] = '_';
   }

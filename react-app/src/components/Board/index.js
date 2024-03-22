@@ -90,13 +90,12 @@ const Board = ({ freshGame, setFreshGame }) => {
 
       if (res.ok) {
         const data = await res.json();
-        const board = data.board;
 
         // Identifies where the kings are located
         for (let r = 0; r < 8; r++) {
           for (let c = 0; c < 8; c++) {
 
-            const piece = board[r][c];
+            const piece = data.board[r][c];
 
             if (piece === 'K') {
               setWhiteKing([r, c]);
@@ -108,8 +107,8 @@ const Board = ({ freshGame, setFreshGame }) => {
           }
         }
 
-        // setWhiteKing(findPieceBFS('e1', 'K', board));
-        // setBlackKing(findPieceBFS('e8', 'k', board));
+        // setWhiteKing(findPieceBFS('e1', 'K', data.board));
+        // setBlackKing(findPieceBFS('e8', 'k', data.board));
 
         // Updates state with game data
         setTurn(data.turn);
@@ -262,7 +261,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     if (effectsFunction) effectsFunction(currRC, targetRC, data);
 
     // Saves new game state to database
-    updateGame(newBoard,
+    updateGame(data.board,
       turn === 'white' ? 'black' : 'white',
       data.whiteCanLong, data.whiteCanShort,
       data.blackCanLong, data.blackCanShort,
@@ -350,10 +349,10 @@ const Board = ({ freshGame, setFreshGame }) => {
         isWhite(player) ? c <= 7 : c >= 0;
         isWhite(player) ? c++ : c--) {
 
-        let piece = board[r][c];
+        const piece = board[r][c];
         const notation = toNotation([r, c]);
 
-        const isSelectable = !winner && turn === player && piece !== '_' && pieceData[piece].player === player;
+        const isSelectable = !winner && turn === player && piece !== '_' && pieceData[piece]['player'] === player;
 
         const castleLongSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 7 || c === 5);
         const castleShortSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 0 || c === 3);
