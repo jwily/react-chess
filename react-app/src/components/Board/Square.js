@@ -15,7 +15,7 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
 
   const [animated, setAnimated] = useState(true);
 
-  console.log('Square Rendered');
+  // console.log('Square Rendered');
 
   useEffect(() => {
 

@@ -41,7 +41,7 @@ const knightMoves = (r, c, board, player, kingPosition) => {
     return !endangersKing([row, col], [r, c], kingPosition, board, player)
   });
 
-  return legalMoves.map(([row, col]) => toNotation(row, col));
+  return legalMoves.map((coords) => toNotation(coords));
 }
 
 export default knightMoves;

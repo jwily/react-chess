@@ -14,7 +14,7 @@ class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(12), nullable=False, unique=True, index=True)
     _board = db.Column(
-        db.String(255), nullable=False, default='rnbqkbnrpppppppp32PPPPPPPPRNBQKBNR')
+        db.String(255), nullable=False, default='rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR')
 
     white_id = db.Column(db.Integer, db.ForeignKey(
         add_prefix_for_prod('users.id')))
@@ -27,6 +27,8 @@ class Game(db.Model):
     white_can_short = db.Column(db.Boolean, nullable=False, default=True)
     black_can_long = db.Column(db.Boolean, nullable=False, default=True)
     black_can_short = db.Column(db.Boolean, nullable=False, default=True)
+
+    en_passant_target = db.Column(db.String(2), nullable=False, default='')
 
     completed = db.Column(db.Boolean, nullable=False, default=False)
 
@@ -55,6 +57,7 @@ class Game(db.Model):
             'whiteCanShort': self.white_can_short,
             'blackCanLong': self.black_can_long,
             'blackCanShort': self.black_can_short,
+            'enPassantTarget': self.en_passant_target,
             'turn': self.turn,
             'createdAt': self.created_at,
             'updatedAt': self.updated_at
@@ -62,40 +65,37 @@ class Game(db.Model):
 
     @property
     def board(self):
-        digits = '0123456789'
-        spaces_string = ''
-        decompressed_string = ''
 
-        for char in self._board:
-            if char in digits:
-                spaces_string += char
-            else:
-                if spaces_string != '':
-                    decompressed_string += ('_' * int(spaces_string))
-                    spaces_string = ''
-                decompressed_string += char
+        def decompress_row(string):
+            digits = '0123456789'
+            decompressed = []
+            for char in string:
+                if not char in digits:
+                    decompressed.append(char)
+                else:
+                    for i in range(int(char)):
+                        decompressed.append('_')
+            return decompressed
 
-        if spaces_string != '':
-            decompressed_string += ('_' * int(spaces_string))
-
-        return [list(decompressed_string[i:i+8]) for i in range(0, 64, 8)]
+        rows = self._board.split('/')
+        return [decompress_row(row) for row in rows]
 
     @board.setter
     def board(self, matrix):
-        result = ''
-        underscore_count = 0
 
-        for row in matrix:
+        def compress_row(row):
+            space_count = 0
+            compressed = ''
             for char in row:
-                if char == '_':
-                    underscore_count += 1
+                if char != '_':
+                    if space_count:
+                        compressed += str(space_count)
+                        space_count = 0
+                    compressed += char
                 else:
-                    if underscore_count > 0:
-                        result += str(underscore_count)
-                        underscore_count = 0
-                    result += char
+                    space_count += 1
+            if space_count:
+                compressed += str(space_count)
+            return compressed
 
-        if underscore_count > 0:
-            result += str(underscore_count)
-
-        self._board = result
+        self._board = '/'.join([compress_row(row) for row in matrix])
