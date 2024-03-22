@@ -63,24 +63,28 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [matchCode])
 
-  const updateGame = useCallback(
-    (board = start, turn = 'white',
-      whiteCanLong = true, whiteCanShort = true,
-      blackCanLong = true, blackCanShort = true,
-      enPassantTarget = '') => {
+  const updateGame = useCallback((
+    board = start,
+    turn = 'white',
+    whiteCanLong = true,
+    whiteCanShort = true,
+    blackCanLong = true,
+    blackCanShort = true,
+    enPassantTarget = '') => {
 
-      fetch(`/api/games/${matchCode}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          board, turn, whiteCanLong, whiteCanShort,
-          blackCanLong, blackCanShort, enPassantTarget
-        })
+    // Needs error handling
+    fetch(`/api/games/${matchCode}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        board, turn, whiteCanLong, whiteCanShort,
+        blackCanLong, blackCanShort, enPassantTarget
       })
+    })
 
-    }, [matchCode])
+  }, [matchCode])
 
   useEffect(() => {
 
@@ -245,11 +249,9 @@ const Board = ({ freshGame, setFreshGame }) => {
       room: matchCode
     }
 
-    if (pieceData[currPiece].special) {
-      const specialFunction = pieceData[currPiece].special;
-      specialFunction(currRC, targetRC, newData, player);
-      console.log(newData);
-    }
+    const specialFunction = pieceData[currPiece].special;
+
+    if (specialFunction) specialFunction(currRC, targetRC, newData, player);
 
     // Saves new game state to database
     updateGame(newBoard, turn === 'white' ? 'black' : 'white',
@@ -359,11 +361,11 @@ const Board = ({ freshGame, setFreshGame }) => {
 
         const isSelectable = !winner && turn === player && piece !== '_' && pieceData[piece].player === player;
 
-        const castleLongSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 7 || c === 5)
-        const castleShortSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 0 || c === 3)
+        const castleLongSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 7 || c === 5);
+        const castleShortSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 0 || c === 3);
 
         const displayCastling =
-          (castleLongSquare && displayLongOrShort === 'long') || (castleShortSquare && displayLongOrShort === 'short')
+          (castleLongSquare && displayLongOrShort === 'long') || (castleShortSquare && displayLongOrShort === 'short');
 
         const isEnPassantTarget = enPassantTarget === notation;
         const enPassantPawn = enPassantTarget && notation[0] === enPassantTarget[0] && notation[1] === selected[1];
@@ -402,16 +404,16 @@ const Board = ({ freshGame, setFreshGame }) => {
   }, [board, player, possibleMoves, turn, selected, winner, fadeType,
     displayLongOrShort, enPassantTarget, enPassantHovered])
 
+  if (!loaded) return null;
+
   if (notFound) {
     return <div className='not-found fade-in-error'>Match Not Found</div>
   }
 
-  if (!loaded) return null;
-
   return (
-    // Clicking "off" the board de-selects pieces
     <div className='off-board'
       onClick={(e) => {
+        // Clicking "off" the board de-selects pieces
         if (selected !== '') setSelected('');
       }}>
       <div
