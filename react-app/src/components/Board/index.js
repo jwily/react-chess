@@ -20,36 +20,35 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [board, setBoard] = useState(start);
   const [offline, setOffline] = useState(false);
 
-  // Location of the selected piece as well as possible spaces
-  // to move to are represented in algebraic notation (i.e. 'a8')
-  // for ease of comparison in JavaScript
+  // Location of the selected piece as well as the en passant target
+  // space are represented in algebraic notation (i.e. 'a8')
   const [selected, setSelected] = useState('');
+  const [enPassantTarget, setEnPassantTarget] = useState('');
 
-  const [turn, setTurn] = useState('white');
   const [loaded, setLoaded] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
   const [whiteKing, setWhiteKing] = useState([7, 4]);
   const [blackKing, setBlackKing] = useState([0, 4]);
-  const [enPassantTarget, setEnPassantTarget] = useState('');
 
   const [whiteCanLong, setWhiteCanLong] = useState(true);
   const [whiteCanShort, setWhiteCanShort] = useState(true);
   const [blackCanLong, setBlackCanLong] = useState(true);
   const [blackCanShort, setBlackCanShort] = useState(true);
 
-  const [checkedPlayer, setCheckedPlayer] = useState('');
+  const [turn, setTurn] = useState('white');
   const [winner, setWinner] = useState('');
+  const [checkedPlayer, setCheckedPlayer] = useState('');
 
-  // Indicates either "long" or "short"
+  // Set to 'long', 'short', or 'ep'
   const [hoverState, setHoverState] = useState('');
 
   const { matchCode } = useParams();
 
   const fadeType = useMemo(() => {
 
-    // Generates a number that determines the animation
-    // pattern of the board based on the match code
+    // Generates an integer based on the match code
+    // that determines the board's animation pattern
 
     let total = 0;
     for (let char of matchCode) {
@@ -85,22 +84,32 @@ const Board = ({ freshGame, setFreshGame }) => {
   useEffect(() => {
 
     (async () => {
+
       // Grabs game state from database
       const res = await fetch(`/api/games/${matchCode}`);
+
       if (res.ok) {
         const data = await res.json();
+        const board = data.board;
 
         // Identifies where the kings are located
         for (let r = 0; r < 8; r++) {
           for (let c = 0; c < 8; c++) {
-            const piece = data.board[r][c];
+
+            const piece = board[r][c];
+
             if (piece === 'K') {
               setWhiteKing([r, c]);
-            } else if (piece === 'k') {
+            }
+
+            else if (piece === 'k') {
               setBlackKing([r, c]);
             }
           }
         }
+
+        // setWhiteKing(findPieceBFS('e1', 'K', board));
+        // setBlackKing(findPieceBFS('e8', 'k', board));
 
         // Updates state with game data
         setTurn(data.turn);
@@ -111,10 +120,12 @@ const Board = ({ freshGame, setFreshGame }) => {
         setBlackCanShort(data.blackCanShort);
         setEnPassantTarget(data.enPassantTarget);
         setLoaded(true);
+
       } else {
         // Shows error screen if no game data
         setNotFound(true);
       }
+
     })();
 
     socket = io();

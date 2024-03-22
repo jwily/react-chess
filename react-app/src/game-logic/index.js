@@ -237,3 +237,52 @@ export const belongsToPlayer = (piece, player) => {
   else return lowercased === piece;
 
 }
+
+// export const findPieceBFS = (start, target, board) => {
+
+//   const queue = [start];
+//   const visited = new Set([start]);
+
+//   const deltas = [
+//     [0, 1],
+//     [0, -1],
+//     [1, 0],
+//     [-1, 0],
+//     [1, 1],
+//     [-1, -1],
+//     [-1, 1],
+//     [1, -1],
+//   ]
+
+//   while (queue.length) {
+
+//     const curr = queue.shift();
+//     const [currR, currC] = toRowCol(curr);
+
+//     const piece = board[currR][currC];
+//     if (piece === target) return [currR, currC];
+
+//     for (const [diffR, diffC] of deltas) {
+
+//       const newR = currR - diffR;
+//       const newC = currC - diffC;
+
+//       const rowCheck = newR > -1 && newR < 8;
+//       const colCheck = newC > -1 && newC < 8;
+
+//       if (rowCheck && colCheck) {
+
+//         const square = toNotation([newR, newC]);
+
+//         if (!visited.has(square)) {
+
+//           visited.add(square);
+//           queue.push(square);
+
+//         }
+//       }
+//     }
+//   }
+
+//   return [null, null];
+// }
