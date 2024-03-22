@@ -46,12 +46,6 @@ export const pieceData = {
     function: pawnMoves,
     special: null
   },
-  'E': {
-    player: 'white',
-    name: 'pawn',
-    function: pawnMoves,
-    special: null
-  },
   'k': {
     player: 'black',
     name: 'king',
@@ -83,12 +77,6 @@ export const pieceData = {
     special: null
   },
   'p': {
-    player: 'black',
-    name: 'pawn',
-    function: pawnMoves,
-    special: null
-  },
-  'e': {
     player: 'black',
     name: 'pawn',
     function: pawnMoves,
