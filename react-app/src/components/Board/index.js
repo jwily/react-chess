@@ -167,7 +167,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   useEffect(() => {
 
-    // Checks if either king is checked after each move
+    // Checks if the moving player's king is checked after each move
 
     const kingPosition = isWhite(turn) ? whiteKing : blackKing;
 
@@ -181,7 +181,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   useEffect(() => {
 
-    // If a king is checked, performs a more
+    // If a king is in check, performs a more
     // elaborate "checkmate" verification
 
     if (checkedPlayer) {
@@ -250,9 +250,9 @@ const Board = ({ freshGame, setFreshGame }) => {
       whiteCanShort,
       blackCanLong,
       blackCanShort,
-      prevEnPassantTarget: enPassantTarget,
+      room: matchCode,
       enPassantTarget: '',
-      room: matchCode
+      prevEnPassantTarget: enPassantTarget
     }
 
     // Checks if moving piece involves other state changes
@@ -296,7 +296,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     const canShort = isWhite(player) ? whiteCanShort : blackCanShort;
 
     if (canLong || canShort) {
-      // Row 'e' under these conditions would contain an un-moved king
+      // Row 'e' under either of these conditions would house an un-moved king
       if (selected[0] === 'e' && e.target.className.includes('possible')) {
         if (e.target.id[0] === 'g') setHoverState('long');
         else if (e.target.id[0] === 'c') setHoverState('short');
@@ -311,7 +311,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const possibleMoves = useMemo(() => {
 
-    // Returns a set of all possible moves given a selected piece
+    // Returns a set of all possible moves depending on the selected piece
 
     if (!selected) return new Set();
 
@@ -397,11 +397,11 @@ const Board = ({ freshGame, setFreshGame }) => {
   }, [board, player, possibleMoves, turn, selected,
     winner, fadeType, enPassantTarget, hoverState])
 
-  if (!loaded) return null;
-
   if (notFound) {
     return <div className='not-found fade-in-error'>Match Not Found</div>
   }
+
+  if (!loaded) return null;
 
   return (
     <div className='off-board'
