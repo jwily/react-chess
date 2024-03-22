@@ -5,26 +5,29 @@ import knightMoves from "./knight";
 import rookMoves from "./rook";
 import pawnMoves from "./pawn";
 
-const pawnMoveEffects = (currRC, targetRC, data, player) => {
+export const isWhite = (player) => player === 'white';
 
-  const currR = currRC[0];
-  const [targetR, targetC] = targetRC;
+const pawnMoveEffects = (player) => {
 
   const dir = isWhite(player) ? 1 : -1;
 
-  if (Math.abs(currR - targetR) === 2) {
-    data.enPassantTarget = toNotation([targetR + dir, targetC])
-  } else if (toNotation([targetR, targetC]) === data.prevEnPassantTarget) {
-    data.board[currR][targetC] = '_';
-  }
+  return (currRC, targetRC, data) => {
 
-  return data;
+    const currR = currRC[0];
+    const [targetR, targetC] = targetRC;
+
+    if (Math.abs(currR - targetR) === 2) {
+      data.enPassantTarget = toNotation([targetR + dir, targetC])
+    } else if (toNotation([targetR, targetC]) === data.prevEnPassantTarget) {
+      data.board[currR][targetC] = '_';
+    }
+
+    return data;
+
+  }
 }
 
-const kingMoveEffects = (currRC, targetRC, data, player) => {
-
-  const currC = currRC[1];
-  const targetC = targetRC[1];
+const kingMoveEffects = (player) => {
 
   const kingPosition = `${player}King`;
   const canLong = `${player}CanLong`;
@@ -33,41 +36,52 @@ const kingMoveEffects = (currRC, targetRC, data, player) => {
   const startingRow = isWhite(player) ? 7 : 0;
   const rookPiece = isWhite(player) ? 'R' : 'r';
 
-  data[kingPosition] = targetRC;
+  return (currRC, targetRC, data) => {
 
-  if (targetC - currC === 2) {
-    data.board[startingRow][7] = '_';
-    data.board[startingRow][5] = rookPiece;
-  } else if (currC - targetC === 2) {
-    data.board[startingRow][0] = '_';
-    data.board[startingRow][3] = rookPiece;
+    const currC = currRC[1];
+    const targetC = targetRC[1];
+
+    data[kingPosition] = targetRC;
+
+    if (targetC - currC === 2) {
+      data.board[startingRow][7] = '_';
+      data.board[startingRow][5] = rookPiece;
+    } else if (currC - targetC === 2) {
+      data.board[startingRow][0] = '_';
+      data.board[startingRow][3] = rookPiece;
+    }
+
+    if (data[canLong]) {
+      data[canLong] = false;
+    }
+
+    if (data[canShort]) {
+      data[canShort] = false;
+    }
+
+    return data;
+
   }
-
-  if (data[canLong]) {
-    data[canLong] = false;
-  }
-
-  if (data[canShort]) {
-    data[canShort] = false;
-  }
-
-  return data;
 }
 
-const rookMoveEffects = (currRC, targetRC, data, player) => {
-
-  const currC = currRC[0];
+const rookMoveEffects = (player) => {
 
   const canLong = `${player}CanLong`;
   const canShort = `${player}CanShort`;
 
-  if (data[canShort] && currC === 7) {
-    data[canShort] = false;
-  } else if (data[canLong] && currC === 0) {
-    data[canLong] = false;
-  }
+  return (currRC, targetRC, data) => {
 
-  return data;
+    const currC = currRC[1];
+
+    if (data[canShort] && currC === 7) {
+      data[canShort] = false;
+    } else if (data[canLong] && currC === 0) {
+      data[canLong] = false;
+    }
+
+    return data;
+
+  }
 }
 
 // Traditionally, uppercase denotes white
@@ -79,7 +93,7 @@ export const pieceData = {
     player: 'white',
     name: 'king',
     moves: kingMoves,
-    effects: kingMoveEffects
+    effects: kingMoveEffects('white')
   },
   'Q': {
     player: 'white',
@@ -103,19 +117,19 @@ export const pieceData = {
     player: 'white',
     name: 'rook',
     moves: rookMoves,
-    effects: rookMoveEffects
+    effects: rookMoveEffects('white')
   },
   'P': {
     player: 'white',
     name: 'pawn',
     moves: pawnMoves,
-    effects: pawnMoveEffects
+    effects: pawnMoveEffects('white')
   },
   'k': {
     player: 'black',
     name: 'king',
     moves: kingMoves,
-    effects: kingMoveEffects
+    effects: kingMoveEffects('black')
   },
   'q': {
     player: 'black',
@@ -139,13 +153,13 @@ export const pieceData = {
     player: 'black',
     name: 'rook',
     moves: rookMoves,
-    effects: rookMoveEffects
+    effects: rookMoveEffects('black')
   },
   'p': {
     player: 'black',
     name: 'pawn',
     moves: pawnMoves,
-    effects: pawnMoveEffects
+    effects: pawnMoveEffects('black')
   }
 }
 
@@ -194,8 +208,6 @@ export const toRowCol = (string) => {
   const num = parseInt(string[1]);
   return [nums.indexOf(num), letters.indexOf(letter)];
 }
-
-export const isWhite = (player) => player === 'white';
 
 export const isCheckmated = (board, player, kingPosition, options) => {
 

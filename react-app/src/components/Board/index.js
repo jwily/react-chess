@@ -217,6 +217,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     setSelected('');
     setHoverState('');
+    // Do we need to reset the hover state? Probably not
     setTurn(prev => prev === 'white' ? 'black' : 'white');
 
   };
@@ -248,10 +249,11 @@ const Board = ({ freshGame, setFreshGame }) => {
     // Checks if moving piece involves other state changes
     // Relevant for pawns, kings, and rooks
     const effectsFunction = pieceData[currPiece]['effects'];
-    if (effectsFunction) effectsFunction(currRC, targetRC, data, player);
+    if (effectsFunction) effectsFunction(currRC, targetRC, data);
 
     // Saves new game state to database
-    updateGame(newBoard, turn === 'white' ? 'black' : 'white',
+    updateGame(newBoard,
+      turn === 'white' ? 'black' : 'white',
       data.whiteCanLong, data.whiteCanShort,
       data.blackCanLong, data.blackCanShort,
       data.enPassantTarget);
@@ -285,7 +287,6 @@ const Board = ({ freshGame, setFreshGame }) => {
     const canShort = isWhite(player) ? whiteCanShort : blackCanShort;
 
     if (canLong || canShort) {
-
       // Row 'e' under these conditions would contain an un-moved king
       if (selected[0] === 'e' && e.target.className.includes('possible')) {
         if (e.target.id[0] === 'g') setHoverState('long');
