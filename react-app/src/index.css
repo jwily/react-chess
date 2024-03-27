@@ -154,8 +154,14 @@ body {
   width: 45%;
 }
 
-.transparent {
+.piece.transparent,
+.pawn.transparent {
   opacity: .5;
+}
+
+.piece,
+.pawn {
+  pointer-events: none;
 }
 
 .black * {

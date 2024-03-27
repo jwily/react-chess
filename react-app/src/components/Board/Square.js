@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { pieceData, toRowCol } from '../../game-logic';
+import { isWhite, pieceData, toRowCol } from '../../game-logic';
 import determineAnimation from "./animations";
 
 import { ReactComponent as WhiteKing } from '../../images/no_shadow/w_king_svg_NoShadow.svg'
@@ -58,6 +58,10 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
   }, [])
 
   let PieceComponent = SVG_MAP[piece];
+  if (isPossible && displayCastling) {
+    if (isWhite(player)) PieceComponent = WhiteRook;
+    else PieceComponent = BlackRook;
+  }
 
   const determinePieceClass = () => {
 
@@ -73,6 +77,10 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
       classString += ' pawn';
     } else {
       classString += ' piece';
+    }
+
+    if (displayEnPassant || (!isPossible && displayCastling)) {
+      classString += ' transparent';
     }
 
     return classString
@@ -112,7 +120,6 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
         // + (piece !== '_' ? ` ${pieceData[piece]['player'] + ' ' + pieceData[piece]['name']}` : '')
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
         + determingCastlingDisplay()
-        + (displayEnPassant ? ' transparent' : '')
       }
       id={notation} >
       {PieceComponent && <PieceComponent
