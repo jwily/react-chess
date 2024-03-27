@@ -73,6 +73,10 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
       classString += 'white';
     }
 
+    if (isPossible && displayCastling) {
+      classString += `${player}`;
+    }
+
     if (piece.toLowerCase() === 'p') {
       classString += ' pawn';
     } else {
@@ -103,27 +107,15 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
     else return '';
   }
 
-  const determingCastlingDisplay = () => {
-
-    if (!displayCastling) return '';
-
-    if (isPossible) return ` ${player} rook`
-    else return ' transparent'
-
-  }
-
   return (
     <span
       className={
         determineColor()
         + determineStatus()
-        // + (piece !== '_' ? ` ${pieceData[piece]['player'] + ' ' + pieceData[piece]['name']}` : '')
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
-        + determingCastlingDisplay()
       }
       id={notation} >
-      {PieceComponent && <PieceComponent
-        className={determinePieceClass(piece)} />}
+      {PieceComponent && <PieceComponent className={determinePieceClass(piece)} />}
     </span >
   )
 })
