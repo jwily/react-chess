@@ -146,7 +146,29 @@ body {
   border: 3px solid transparent
 }
 
-.white.king::before,
+.piece {
+  width: 55%;
+}
+
+.pawn {
+  width: 45%;
+}
+
+.transparent {
+  opacity: .5;
+}
+
+.black * {
+  fill: #000 !important;
+  stroke: #e6e6e6 !important;
+}
+
+.white * {
+  stroke: #000 !important;
+  fill: #e6e6e6 !important;
+}
+
+/* .white.king::before,
 .white.queen::before,
 .white.bishop::before,
 .white.rook::before,
@@ -156,13 +178,11 @@ body {
 .black.bishop::before,
 .black.rook::before,
 .black.knight::before {
-  /* padding-top: 5%; */
   width: 55%;
 }
 
 .black.pawn::before,
 .white.pawn::before {
-  /* padding-top: 5%; */
   width: 45%;
 }
 
@@ -217,7 +237,7 @@ body {
 .white.transparent::before,
 .black.transparent::before {
   opacity: .5;
-}
+} */
 
 .help-window {
   position: absolute;
