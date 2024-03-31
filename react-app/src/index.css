@@ -1,8 +1,6 @@
-/* TODO Add site wide styles */
-
 *,
 *::before,
-*::before {
+*::after {
   box-sizing: inherit;
   margin: 0;
   padding: 0;
@@ -146,77 +144,31 @@ body {
   border: 3px solid transparent
 }
 
-.white.king::before,
-.white.queen::before,
-.white.bishop::before,
-.white.rook::before,
-.white.knight::before,
-.black.king::before,
-.black.queen::before,
-.black.bishop::before,
-.black.rook::before,
-.black.knight::before {
-  /* padding-top: 5%; */
+.piece {
   width: 55%;
 }
 
-.black.pawn::before,
-.white.pawn::before {
-  /* padding-top: 5%; */
+.pawn {
   width: 45%;
 }
 
-.white.king::before {
-  content: url('./images/no_shadow/w_king_svg_NoShadow.svg');
-}
-
-.white.queen::before {
-  content: url('./images/no_shadow/w_queen_svg_NoShadow.svg');
-}
-
-.white.bishop::before {
-  content: url('./images/no_shadow/w_bishop_svg_NoShadow.svg');
-}
-
-.white.rook::before {
-  content: url('./images/no_shadow/w_rook_svg_NoShadow.svg');
-}
-
-.white.knight::before {
-  content: url('./images/no_shadow/w_knight_svg_NoShadow.svg');
-}
-
-.white.pawn::before {
-  content: url('./images/no_shadow/w_pawn_svg_NoShadow.svg');
-}
-
-.black.king::before {
-  content: url('./images/no_shadow/b_king_svg_NoShadow.svg');
-}
-
-.black.queen::before {
-  content: url('./images/no_shadow/b_queen_svg_NoShadow.svg');
-}
-
-.black.bishop::before {
-  content: url('./images/no_shadow/b_bishop_svg_NoShadow.svg');
-}
-
-.black.rook::before {
-  content: url('./images/no_shadow/b_rook_svg_NoShadow.svg');
-}
-
-.black.knight::before {
-  content: url('./images/no_shadow/b_knight_svg_NoShadow.svg');
-}
-
-.black.pawn::before {
-  content: url('./images/no_shadow/b_pawn_svg_NoShadow.svg');
-}
-
-.white.transparent::before,
-.black.transparent::before {
+.transparent {
   opacity: .5;
+}
+
+.piece,
+.pawn {
+  pointer-events: none;
+}
+
+.black * {
+  fill: #000 !important;
+  stroke: #e6e6e6 !important;
+}
+
+.white * {
+  stroke: #000 !important;
+  fill: #e6e6e6 !important;
 }
 
 .help-window {
