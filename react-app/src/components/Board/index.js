@@ -165,9 +165,10 @@ const Board = ({ freshGame, setFreshGame }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+
+  // Checks if the moving player's king is checked after each move
   useEffect(() => {
 
-    // Checks if the moving player's king is checked after each move
 
     const kingPosition = isWhite(turn) ? whiteKing : blackKing;
 
@@ -179,10 +180,10 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [blackKing, whiteKing, turn, board])
 
-  useEffect(() => {
 
-    // If a king is in check, performs a more
-    // elaborate "checkmate" verification
+  // If a king is in check, performs a more
+  // elaborate "checkmate" verification
+  useEffect(() => {
 
     if (checkedPlayer) {
 
@@ -201,6 +202,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     } else setWinner('');
 
   }, [board, whiteKing, blackKing, checkedPlayer, enPassantTarget])
+
 
   const updateStateAfterMove = (data) => {
 
@@ -277,12 +279,16 @@ const Board = ({ freshGame, setFreshGame }) => {
   }
 
   const clickHandler = (e) => {
+
     // Does different things depending on square's class
     e.stopPropagation();
+
     if (e.target.className.includes('selectable')) {
       setSelected(e.target.id);
+
     } else if (e.target.className.includes('possible') || e.target.className.includes('target')) {
       executeMove(selected, e.target.id);
+
     } else {
       setSelected('');
     }

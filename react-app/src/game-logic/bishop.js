@@ -5,8 +5,7 @@ const bishopMoves = (r, c, board, player, kingPosition) => {
 
   const moves = [];
 
-  // Define diagonal directions:
-  // top-left, top-right, bottom-left, bottom-right
+  // Define diagonal directions
   const directions = [
     [-1, -1], [-1, 1], [1, -1], [1, 1]
   ];

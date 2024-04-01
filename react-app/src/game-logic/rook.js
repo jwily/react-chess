@@ -5,7 +5,7 @@ const rookMoves = (r, c, board, player, kingPosition) => {
 
   const moves = [];
 
-  // Define diagonal directions: top-left, top-right, bottom-left, bottom-right
+  // Define cardinal directions
   const directions = [
     [-1, 0], [1, 0], [0, -1], [0, 1]
   ];
