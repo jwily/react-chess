@@ -1,36 +1,83 @@
 import React, { useEffect, useState } from "react";
 
+import './pieces.css';
+
 import { isWhite, toRowCol } from '../../game-logic';
 import determineAnimation from "./animations";
 
-import { ReactComponent as WhiteKing } from '../../images/no_shadow/w_king_svg_NoShadow.svg'
-import { ReactComponent as WhiteQueen } from '../../images/no_shadow/w_queen_svg_NoShadow.svg'
-import { ReactComponent as WhiteBishop } from '../../images/no_shadow/w_bishop_svg_NoShadow.svg'
-import { ReactComponent as WhiteRook } from '../../images/no_shadow/w_rook_svg_NoShadow.svg'
-import { ReactComponent as WhiteKnight } from '../../images/no_shadow/w_knight_svg_NoShadow.svg'
-import { ReactComponent as WhitePawn } from '../../images/no_shadow/w_pawn_svg_NoShadow.svg'
+import { ReactComponent as King } from '../../images/king.svg'
+import { ReactComponent as Queen } from '../../images/queen.svg'
+import { ReactComponent as Bishop } from '../../images/bishop.svg'
+import { ReactComponent as Rook } from '../../images/rook.svg'
+import { ReactComponent as Knight } from '../../images/knight.svg'
+import { ReactComponent as Pawn } from '../../images/pawn.svg'
 
-import { ReactComponent as BlackKing } from '../../images/no_shadow/b_king_svg_NoShadow.svg'
-import { ReactComponent as BlackQueen } from '../../images/no_shadow/b_queen_svg_NoShadow.svg'
-import { ReactComponent as BlackBishop } from '../../images/no_shadow/b_bishop_svg_NoShadow.svg'
-import { ReactComponent as BlackRook } from '../../images/no_shadow/b_rook_svg_NoShadow.svg'
-import { ReactComponent as BlackKnight } from '../../images/no_shadow/b_knight_svg_NoShadow.svg'
-import { ReactComponent as BlackPawn } from '../../images/no_shadow/b_pawn_svg_NoShadow.svg'
-
-const SVG_MAP = {
-  'K': WhiteKing,
-  'Q': WhiteQueen,
-  'B': WhiteBishop,
-  'R': WhiteRook,
-  'N': WhiteKnight,
-  'P': WhitePawn,
-  'k': BlackKing,
-  'q': BlackQueen,
-  'b': BlackBishop,
-  'r': BlackRook,
-  'n': BlackKnight,
-  'p': BlackPawn,
-  '_': null,
+const RENDER_DATA = {
+  'K': {
+    color: 'white',
+    name: 'king',
+    image: King,
+  },
+  'Q': {
+    color: 'white',
+    name: 'queen',
+    image: Queen,
+  },
+  'B': {
+    color: 'white',
+    name: 'bishop',
+    image: Bishop,
+  },
+  'R': {
+    color: 'white',
+    name: 'rook',
+    image: Rook,
+  },
+  'N': {
+    color: 'white',
+    name: 'knight',
+    image: Knight,
+  },
+  'P': {
+    color: 'white',
+    name: 'pawn',
+    image: Pawn,
+  },
+  'k': {
+    color: 'black',
+    name: 'king',
+    image: King,
+  },
+  'q': {
+    color: 'black',
+    name: 'queen',
+    image: Queen,
+  },
+  'b': {
+    color: 'black',
+    name: 'bishop',
+    image: Bishop,
+  },
+  'r': {
+    color: 'black',
+    name: 'rook',
+    image: Rook,
+  },
+  'n': {
+    color: 'black',
+    name: 'knight',
+    image: Knight,
+  },
+  'p': {
+    color: 'black',
+    name: 'pawn',
+    image: Pawn,
+  },
+  '_': {
+    color: null,
+    name: null,
+    image: null
+  }
 }
 
 const animationClasses = [
@@ -57,19 +104,18 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
 
   }, [])
 
-  let PieceComponent = SVG_MAP[piece];
+  let PieceComponent = RENDER_DATA[piece]['image'];
 
-  if (isPossible && displayCastling) {
-    if (isWhite(player)) PieceComponent = WhiteRook;
-    else PieceComponent = BlackRook;
-  }
+  if (isPossible && displayCastling) PieceComponent = Rook;
 
   const determinePieceClass = () => {
 
-    let color = piece.toLowerCase() !== piece ? 'white' : 'black';
-    if (isPossible && displayCastling) color = player;
+    let { color, name } = RENDER_DATA[piece];
 
-    const sizing = piece.toLowerCase() === 'p' ? ' pawn' : ' piece';
+    if (isPossible && displayCastling) {
+      color = player;
+      name = 'rook';
+    };
 
     let transparent = '';
 
@@ -77,7 +123,7 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
       transparent = ' transparent';
     }
 
-    return color + sizing + transparent;
+    return color + ' ' + name + transparent;
 
   }
 
@@ -89,9 +135,8 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
   }
 
   const determineStatus = () => {
-    // These statuses must be checked for in this order
     if (isAttackable) return ' targeted';
-    else if (piece === '_' && isPossible) return ' possible';
+    else if (isPossible) return ' possible';
     else if (isSelected) return ' selected';
     else if (isSelectable) return ' selectable';
     else return '';
