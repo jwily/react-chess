@@ -1,9 +1,7 @@
 import kingMoves from "./king";
-import queenMoves from "./queen";
-import bishopMoves from "./bishop";
 import knightMoves from "./knight";
-import rookMoves from "./rook";
 import pawnMoves from "./pawn";
+import longRangeMoves from "./long-range";
 
 export const isWhite = (player) => player === 'white';
 
@@ -98,13 +96,13 @@ export const pieceData = {
   'Q': {
     player: 'white',
     name: 'queen',
-    moves: queenMoves,
+    moves: longRangeMoves('queen'),
     effects: null
   },
   'B': {
     player: 'white',
     name: 'bishop',
-    moves: bishopMoves,
+    moves: longRangeMoves('bishop'),
     effects: null
   },
   'N': {
@@ -116,7 +114,7 @@ export const pieceData = {
   'R': {
     player: 'white',
     name: 'rook',
-    moves: rookMoves,
+    moves: longRangeMoves('rook'),
     effects: rookMoveEffects('white')
   },
   'P': {
@@ -134,13 +132,13 @@ export const pieceData = {
   'q': {
     player: 'black',
     name: 'queen',
-    moves: queenMoves,
+    moves: longRangeMoves('queen'),
     effects: null
   },
   'b': {
     player: 'black',
     name: 'bishop',
-    moves: bishopMoves,
+    moves: longRangeMoves('bishop'),
     effects: null
   },
   'n': {
@@ -152,7 +150,7 @@ export const pieceData = {
   'r': {
     player: 'black',
     name: 'rook',
-    moves: rookMoves,
+    moves: longRangeMoves('rook'),
     effects: rookMoveEffects('black')
   },
   'p': {

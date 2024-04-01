@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import './pieces.css';
 
-import { isWhite, toRowCol } from '../../game-logic';
+import { toRowCol } from '../../game-logic';
 import determineAnimation from "./animations";
 
 import { ReactComponent as King } from '../../images/king.svg'

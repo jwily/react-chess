@@ -169,7 +169,6 @@ const Board = ({ freshGame, setFreshGame }) => {
   // Checks if the moving player's king is checked after each move
   useEffect(() => {
 
-
     const kingPosition = isWhite(turn) ? whiteKing : blackKing;
 
     if (kingChecked(...kingPosition, board, turn)) {
