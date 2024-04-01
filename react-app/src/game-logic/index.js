@@ -8,6 +8,7 @@ export const isWhite = (player) => player === 'white';
 const pawnMoveEffects = (player) => {
 
   const dir = isWhite(player) ? 1 : -1;
+  const promotionRank = isWhite(player) ? 0 : 7;
 
   return (currRC, targetRC, data) => {
 
@@ -18,6 +19,10 @@ const pawnMoveEffects = (player) => {
       data.enPassantTarget = toNotation([targetR + dir, targetC])
     } else if (toNotation([targetR, targetC]) === data.prevEnPassantTarget) {
       data.board[currR][targetC] = '_';
+    }
+
+    if (targetR === promotionRank) {
+      data.turn = data.turn === 'white' ? 'black' : 'white';
     }
 
     return data;

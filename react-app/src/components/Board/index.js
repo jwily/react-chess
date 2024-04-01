@@ -133,6 +133,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     socket.on("move", (gameState) => {
       if (freshGame === matchCode) setFreshGame('');
+      setTurn(gameState.turn);
       setBoard(gameState.board);
       setWhiteKing(gameState.whiteKing);
       setBlackKing(gameState.blackKing);
@@ -141,7 +142,6 @@ const Board = ({ freshGame, setFreshGame }) => {
       setBlackCanLong(gameState.blackCanLong);
       setBlackCanShort(gameState.blackCanShort);
       setEnPassantTarget(gameState.enPassantTarget);
-      setTurn(prev => prev === 'white' ? 'black' : 'white');
     })
 
     // Fires in response to reset game button in Options
@@ -206,6 +206,7 @@ const Board = ({ freshGame, setFreshGame }) => {
   const updateStateAfterMove = (data) => {
 
     const {
+      turn,
       board,
       whiteKing,
       blackKing,
@@ -216,6 +217,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       enPassantTarget,
     } = data;
 
+    setTurn(turn);
     setBoard(board);
     setWhiteKing(whiteKing);
     setBlackKing(blackKing);
@@ -226,9 +228,8 @@ const Board = ({ freshGame, setFreshGame }) => {
     setEnPassantTarget(enPassantTarget);
 
     setSelected('');
-    setHoverState('');
+    // setHoverState('');
     // Do we need to reset the hover state? Probably not
-    setTurn(prev => prev === 'white' ? 'black' : 'white');
 
   };
 
@@ -253,7 +254,8 @@ const Board = ({ freshGame, setFreshGame }) => {
       blackCanShort,
       room: matchCode,
       enPassantTarget: '',
-      prevEnPassantTarget: enPassantTarget
+      prevEnPassantTarget: enPassantTarget,
+      turn: turn === 'white' ? 'black' : 'white',
     }
 
     // Checks if moving piece involves other state changes
@@ -262,8 +264,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     if (effectsFunction) effectsFunction(currRC, targetRC, data);
 
     // Saves new game state to database
-    updateGame(data.board,
-      turn === 'white' ? 'black' : 'white',
+    updateGame(data.board, data.turn,
       data.whiteCanLong, data.whiteCanShort,
       data.blackCanLong, data.blackCanShort,
       data.enPassantTarget);
