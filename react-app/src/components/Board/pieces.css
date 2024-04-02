@@ -1,0 +1,215 @@
+/* Bishop */
+
+.white.bishop .cls-1,
+.white.bishop .cls-2 {
+  fill: #e6e6e6;
+  stroke: #000;
+}
+
+.black.bishop .cls-1,
+.black.bishop .cls-2 {
+  fill: #000;
+  stroke: #e6e6e6;
+}
+
+.bishop .cls-1,
+.bishop .cls-2 {
+  stroke-width: 14px;
+}
+
+.bishop .cls-1 {
+  stroke-linejoin: round;
+}
+
+.bishop .cls-2 {
+  stroke-linecap: round;
+}
+
+/* King */
+
+.white.king .cls-1,
+.white.king .cls-2 {
+  fill: #e6e6e6;
+  stroke: #000;
+}
+
+.black.king .cls-1,
+.black.king .cls-2 {
+  fill: #000;
+  stroke: #e6e6e6;
+}
+
+.king .cls-1,
+.king .cls-2 {
+  stroke-linecap: round;
+  stroke-width: 14px;
+}
+
+.king .cls-2 {
+  stroke-linejoin: round;
+}
+
+/* Knight */
+
+.white.knight .cls-1,
+.white.knight .cls-2,
+.white.knight .cls-5 {
+  fill: #e6e6e6;
+}
+
+.black.knight .cls-1,
+.black.knight .cls-2,
+.black.knight .cls-5 {
+  fill: #000;
+}
+
+.white.knight .cls-1,
+.white.knight .cls-2,
+.white.knight .cls-3,
+.white.knight .cls-4,
+.white.knight .cls-5 {
+  stroke: #000;
+}
+
+.black.knight .cls-1,
+.black.knight .cls-2,
+.black.knight .cls-3,
+.black.knight .cls-4,
+.black.knight .cls-5 {
+  stroke: #e6e6e6;
+}
+
+.knight .cls-1,
+.knight .cls-2,
+.knight .cls-3,
+.knight .cls-4,
+.knight .cls-5 {
+  stroke-linecap: round;
+}
+
+.knight .cls-1,
+.knight .cls-2,
+.knight .cls-3,
+.knight .cls-4 {
+  stroke-linejoin: round;
+}
+
+.knight .cls-1,
+.knight .cls-5 {
+  stroke-width: 14px;
+}
+
+.knight .cls-2 {
+  stroke-width: 13.25px;
+}
+
+.knight .cls-3 {
+  stroke-width: 5px;
+}
+
+.knight .cls-4 {
+  stroke-width: 8px;
+}
+
+/* Pawn */
+
+.white.pawn .cls-1 {
+  fill: #e6e6e6;
+  stroke: #000;
+}
+
+.black.pawn .cls-1 {
+  fill: #000;
+  stroke: #e6e6e6;
+}
+
+.pawn .cls-1 {
+  stroke-linecap: round;
+  stroke-width: 14px;
+}
+
+/* Queen */
+
+.white.queen .cls-1,
+.white.queen .cls-2 {
+  fill: #e6e6e6;
+  stroke: #000;
+}
+
+.black.queen .cls-1,
+.black.queen .cls-2 {
+  fill: #000;
+  stroke: #e6e6e6;
+}
+
+.queen .cls-1,
+.queen .cls-2 {
+  stroke-linejoin: round;
+  stroke-width: 14px;
+}
+
+.queen .cls-2 {
+  stroke-linecap: round;
+}
+
+/* Rook */
+
+.white.rook .cls-1,
+.white.rook .cls-2,
+.white.rook .cls-3,
+.white.rook .cls-4 {
+  fill: #e6e6e6;
+  stroke: #000;
+}
+
+.black.rook .cls-1,
+.black.rook .cls-2,
+.black.rook .cls-3,
+.black.rook .cls-4 {
+  fill: #000;
+  stroke: #e6e6e6;
+}
+
+.rook .cls-1,
+.rook .cls-2,
+.rook .cls-3,
+.rook .cls-4 {
+  stroke-width: 14px;
+}
+
+.rook .cls-1,
+.rook .cls-2 {
+  stroke-linejoin: round;
+}
+
+.rook .cls-2,
+.rook .cls-4 {
+  stroke-linecap: round;
+}
+
+/* General */
+
+.bishop,
+.king,
+.queen,
+.knight,
+.rook {
+  width: 55%;
+}
+
+.pawn {
+  width: 45%;
+}
+
+.transparent {
+  opacity: .5;
+}
+
+.bishop,
+.king,
+.queen,
+.knight,
+.rook,
+.pawn {
+  pointer-events: none;
+}

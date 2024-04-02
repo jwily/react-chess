@@ -8,7 +8,7 @@ const pawnMoves = (r, c, board, player, kingPosition, options) => {
   // Pawn's direction based on player
   const dir = isWhite(player) ? -1 : 1
 
-  if (r + dir < 0 || r + dir > 7) return;
+  if (r + dir < 0 || r + dir > 7) return [];
 
   const unmoved = isWhite(player) ? r === 6 : r === 1;
 

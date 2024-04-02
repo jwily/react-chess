@@ -133,6 +133,7 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     socket.on("move", (gameState) => {
       if (freshGame === matchCode) setFreshGame('');
+      setTurn(gameState.turn);
       setBoard(gameState.board);
       setWhiteKing(gameState.whiteKing);
       setBlackKing(gameState.blackKing);
@@ -141,7 +142,6 @@ const Board = ({ freshGame, setFreshGame }) => {
       setBlackCanLong(gameState.blackCanLong);
       setBlackCanShort(gameState.blackCanShort);
       setEnPassantTarget(gameState.enPassantTarget);
-      setTurn(prev => prev === 'white' ? 'black' : 'white');
     })
 
     // Fires in response to reset game button in Options
@@ -165,9 +165,9 @@ const Board = ({ freshGame, setFreshGame }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
 
-    // Checks if the moving player's king is checked after each move
+  // Checks if the moving player's king is checked after each move
+  useEffect(() => {
 
     const kingPosition = isWhite(turn) ? whiteKing : blackKing;
 
@@ -179,10 +179,10 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [blackKing, whiteKing, turn, board])
 
-  useEffect(() => {
 
-    // If a king is in check, performs a more
-    // elaborate "checkmate" verification
+  // If a king is in check, performs a more
+  // elaborate "checkmate" verification
+  useEffect(() => {
 
     if (checkedPlayer) {
 
@@ -202,9 +202,11 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   }, [board, whiteKing, blackKing, checkedPlayer, enPassantTarget])
 
+
   const updateStateAfterMove = (data) => {
 
     const {
+      turn,
       board,
       whiteKing,
       blackKing,
@@ -215,6 +217,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       enPassantTarget,
     } = data;
 
+    setTurn(turn);
     setBoard(board);
     setWhiteKing(whiteKing);
     setBlackKing(blackKing);
@@ -226,8 +229,6 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     setSelected('');
     setHoverState('');
-    // Do we need to reset the hover state? Probably not
-    setTurn(prev => prev === 'white' ? 'black' : 'white');
 
   };
 
@@ -252,7 +253,8 @@ const Board = ({ freshGame, setFreshGame }) => {
       blackCanShort,
       room: matchCode,
       enPassantTarget: '',
-      prevEnPassantTarget: enPassantTarget
+      prevEnPassantTarget: enPassantTarget,
+      turn: turn === 'white' ? 'black' : 'white',
     }
 
     // Checks if moving piece involves other state changes
@@ -261,8 +263,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     if (effectsFunction) effectsFunction(currRC, targetRC, data);
 
     // Saves new game state to database
-    updateGame(data.board,
-      turn === 'white' ? 'black' : 'white',
+    updateGame(data.board, data.turn,
       data.whiteCanLong, data.whiteCanShort,
       data.blackCanLong, data.blackCanShort,
       data.enPassantTarget);
@@ -277,12 +278,16 @@ const Board = ({ freshGame, setFreshGame }) => {
   }
 
   const clickHandler = (e) => {
+
     // Does different things depending on square's class
     e.stopPropagation();
+
     if (e.target.className.includes('selectable')) {
       setSelected(e.target.id);
+
     } else if (e.target.className.includes('possible') || e.target.className.includes('target')) {
       executeMove(selected, e.target.id);
+
     } else {
       setSelected('');
     }

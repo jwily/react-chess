@@ -172,8 +172,7 @@ const _verticalCheck = (r, c, board, player, direction) => {
   }
 }
 
-// All of the the "check" functions are
-// neatly packaged here, returns a boolean
+// All of the "check" functions are neatly packaged here, returns a boolean
 
 export const kingChecked = (r, c, board, player) => {
   return verticalCheck(r, c, board, player) ||
@@ -185,10 +184,8 @@ export const kingChecked = (r, c, board, player) => {
 
 export const endangersKing = (newPosition, currPosition, kingPosition, board, player, enPassantTarget) => {
 
-  // When given a possible move,
-  // this function creates a copy of the board
-  // in which that move has taken place
-  // and then checks if the king is endangered
+  // When given a possible move, this function creates a copy of the board
+  // in which that move has taken place and then checks if the king is endangered
 
   // This function is used to prohibit moves that would check one's own king
 
@@ -209,7 +206,7 @@ export const endangersKing = (newPosition, currPosition, kingPosition, board, pl
   return kingChecked(kingR, kingC, newBoard, player);
 }
 
-const castleCheck = (board, player, isLong = true) => {
+const castlingCheck = (board, player, isLong = true) => {
 
   const row = isWhite(player) ? 7 : 0;
   const columns = isLong ? [2, 3] : [5, 6];
@@ -259,8 +256,8 @@ const kingMoves = (r, c, board, player, kingPosition, options) => {
     }
   });
 
-  if (canLong && castleCheck(board, player)) moves.push(isWhite(player) ? [7, 2] : [0, 2]);
-  if (canShort && castleCheck(board, player, false)) moves.push(isWhite(player) ? [7, 6] : [0, 6]);
+  if (canLong && castlingCheck(board, player)) moves.push(isWhite(player) ? [7, 2] : [0, 2]);
+  if (canShort && castlingCheck(board, player, false)) moves.push(isWhite(player) ? [7, 6] : [0, 6]);
 
   return moves.map((coords) => toNotation(coords));
 }

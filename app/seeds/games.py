@@ -7,8 +7,9 @@ def seed_games():
     old_demo = Game.query.filter(Game.code == 'demonstrate').first()
     old_castling = Game.query.filter(Game.code == 'castling').first()
     old_en_passant = Game.query.filter(Game.code == 'enpassant').first()
+    old_promotion = Game.query.filter(Game.code == 'promotion').first()
 
-    old_matches = [old_demo, old_castling, old_en_passant]
+    old_matches = [old_demo, old_castling, old_en_passant, old_promotion]
 
     for match in old_matches:
         if not match is None:
@@ -38,6 +39,17 @@ def seed_games():
                               ['_', '_', '_', '_', '_', '_', '_', '_'],
                               ['P', 'P', 'P', 'P', '_', 'P', '_', 'P'],
                               ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+                          ])
+    new_en_passant = Game(code='promotion',
+                          board=[
+                              ['_', '_', '_', '_', 'k', '_', '_', '_'],
+                              ['P', '_', 'P', '_', '_', '_', 'P', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['_', '_', '_', '_', '_', '_', '_', '_'],
+                              ['p', '_', 'p', '_', '_', '_', 'p', '_'],
+                              ['_', '_', '_', '_', 'K', '_', '_', '_']
                           ])
 
     new_matches = [new_demo, new_castling, new_en_passant]
