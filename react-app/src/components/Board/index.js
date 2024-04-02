@@ -228,8 +228,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     setEnPassantTarget(enPassantTarget);
 
     setSelected('');
-    // setHoverState('');
-    // Do we need to reset the hover state? Probably not
+    setHoverState('');
 
   };
 
