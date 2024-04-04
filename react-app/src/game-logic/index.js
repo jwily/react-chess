@@ -1,91 +1,9 @@
-import kingMoves from "./king";
 import knightMoves from "./knight";
-import pawnMoves from "./pawn";
-import longRangeMoves from "./long-range";
+import kingMoves, { kingMoveEffects } from "./king";
+import pawnMoves, { pawnMoveEffects } from "./pawn";
+import longRangeMoves, { rookMoveEffects } from "./long-range";
 
 export const isWhite = (player) => player === 'white';
-
-const pawnMoveEffects = (player) => {
-
-  const dir = isWhite(player) ? 1 : -1;
-  // const promotionRank = isWhite(player) ? 0 : 7;
-
-  return (currRC, targetRC, data) => {
-
-    const currR = currRC[0];
-    const [targetR, targetC] = targetRC;
-
-    if (Math.abs(currR - targetR) === 2) {
-      data.enPassantTarget = toNotation([targetR + dir, targetC])
-    } else if (toNotation([targetR, targetC]) === data.prevEnPassantTarget) {
-      data.board[currR][targetC] = '_';
-    }
-
-    // if (targetR === promotionRank) {
-    //   data.turn = data.turn === 'white' ? 'black' : 'white';
-    // }
-
-    return data;
-
-  }
-}
-
-const kingMoveEffects = (player) => {
-
-  const kingPosition = `${player}King`;
-  const canLong = `${player}CanLong`;
-  const canShort = `${player}CanShort`;
-
-  const startingRow = isWhite(player) ? 7 : 0;
-  const rookPiece = isWhite(player) ? 'R' : 'r';
-
-  return (currRC, targetRC, data) => {
-
-    const currC = currRC[1];
-    const targetC = targetRC[1];
-
-    data[kingPosition] = targetRC;
-
-    if (targetC - currC === 2) {
-      data.board[startingRow][7] = '_';
-      data.board[startingRow][5] = rookPiece;
-    } else if (currC - targetC === 2) {
-      data.board[startingRow][0] = '_';
-      data.board[startingRow][3] = rookPiece;
-    }
-
-    if (data[canLong]) {
-      data[canLong] = false;
-    }
-
-    if (data[canShort]) {
-      data[canShort] = false;
-    }
-
-    return data;
-
-  }
-}
-
-const rookMoveEffects = (player) => {
-
-  const canLong = `${player}CanLong`;
-  const canShort = `${player}CanShort`;
-
-  return (currRC, targetRC, data) => {
-
-    const currC = currRC[1];
-
-    if (data[canShort] && currC === 7) {
-      data[canShort] = false;
-    } else if (data[canLong] && currC === 0) {
-      data[canLong] = false;
-    }
-
-    return data;
-
-  }
-}
 
 // Traditionally, uppercase denotes white
 // while lowercase denotes black

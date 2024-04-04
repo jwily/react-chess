@@ -222,6 +222,42 @@ const castlingCheck = (board, player, isLong = true) => {
   return true
 }
 
+export const kingMoveEffects = (player) => {
+
+  const kingPosition = `${player}King`;
+  const canLong = `${player}CanLong`;
+  const canShort = `${player}CanShort`;
+
+  const startingRow = isWhite(player) ? 7 : 0;
+  const rookPiece = isWhite(player) ? 'R' : 'r';
+
+  return (currRC, targetRC, data) => {
+
+    const currC = currRC[1];
+    const targetC = targetRC[1];
+
+    data[kingPosition] = targetRC;
+
+    if (targetC - currC === 2) {
+      data.board[startingRow][7] = '_';
+      data.board[startingRow][5] = rookPiece;
+    } else if (currC - targetC === 2) {
+      data.board[startingRow][0] = '_';
+      data.board[startingRow][3] = rookPiece;
+    }
+
+    if (data[canLong]) {
+      data[canLong] = false;
+    }
+
+    if (data[canShort]) {
+      data[canShort] = false;
+    }
+
+    return data;
+
+  }
+}
 
 const kingMoves = (r, c, board, player, kingPosition, options) => {
 

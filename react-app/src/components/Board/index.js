@@ -20,16 +20,12 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [loaded, setLoaded] = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  const [player, setPlayer] = useState('white');
   const [winner, setWinner] = useState('');
-  const [checkedPlayer, setCheckedPlayer] = useState('');
+  const [player, setPlayer] = useState('white');
   const [offline, setOffline] = useState(false);
+  const [checkedPlayer, setCheckedPlayer] = useState('');
 
   const [game, dispatch] = useReducer(gameReducer, initialGameState);
-
-  useEffect(() => {
-    console.log(game.whiteKing, game.blackKing)
-  }, [game.whiteKing, game.blackKing])
 
   // Location of the selected piece is represented in algebraic notation (i.e. 'a8')
   const [selected, setSelected] = useState('');
@@ -41,13 +37,10 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const fadeType = useMemo(() => {
 
-    // Generates an integer based on the match code
-    // that determines the board's animation pattern
+    // Generates an integer that determines the board's animation pattern
 
     let total = 0;
-    for (let char of matchCode) {
-      total += char.codePointAt()
-    }
+    for (let char of matchCode) total += char.codePointAt();
     return total % 4;
 
   }, [matchCode])
@@ -66,9 +59,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     // Needs error handling
     fetch(`/api/games/${matchCode}`, {
       method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         board, turn, whiteCanLong, whiteCanShort,
         blackCanLong, blackCanShort, enPassantTarget
@@ -204,7 +195,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       turn: game.turn === 'white' ? 'black' : 'white',
     }
 
-    // Checks if moving piece involves other state changes
+    // Checks if moving the piece involves other state changes
     // Relevant for pawns, kings, and rooks
     const effectsFunction = pieceData[currPiece]['effects'];
     if (effectsFunction) effectsFunction(currRC, targetRC, postMoveData);
