@@ -8,7 +8,7 @@ import Options from './Options';
 import {
   pieceData, toRowCol, isWhite,
   toNotation, copyBoard, isCheckmated, movePiece,
-  initialGameState, gameReducer
+  initialGameState, gameReducer, findPieceBFS
 } from '../../game-logic';
 
 import { kingChecked } from '../../game-logic/king';
@@ -26,6 +26,10 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [offline, setOffline] = useState(false);
 
   const [game, dispatch] = useReducer(gameReducer, initialGameState);
+
+  useEffect(() => {
+    console.log(game.whiteKing, game.blackKing)
+  }, [game.whiteKing, game.blackKing])
 
   // Location of the selected piece is represented in algebraic notation (i.e. 'a8')
   const [selected, setSelected] = useState('');
@@ -84,15 +88,18 @@ const Board = ({ freshGame, setFreshGame }) => {
         const data = await res.json();
 
         // Identifies where the kings are located
-        for (let r = 0; r < 8; r++) {
-          for (let c = 0; c < 8; c++) {
+        data.whiteKing = findPieceBFS('e1', 'K', data.board);
+        data.blackKing = findPieceBFS('e8', 'k', data.board);
 
-            const piece = data.board[r][c];
+        // for (let r = 0; r < 8; r++) {
+        //   for (let c = 0; c < 8; c++) {
 
-            if (piece === 'K') data.whiteKing = [r, c];
-            else if (piece === 'k') data.blackKing = [r, c];
-          }
-        }
+        //     const piece = data.board[r][c];
+
+        //     if (piece === 'K') data.whiteKing = [r, c];
+        //     else if (piece === 'k') data.blackKing = [r, c];
+        //   }
+        // }
 
         // Updates state with saved game data
         loadData(data);
@@ -185,7 +192,6 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     const postMoveData = {
       room: matchCode,
-      turn: game.turn,
       board: newBoard,
       enPassantTarget: '',
       whiteKing: [...game.whiteKing],
@@ -195,6 +201,7 @@ const Board = ({ freshGame, setFreshGame }) => {
       blackCanLong: game.blackCanLong,
       blackCanShort: game.blackCanShort,
       prevEnPassantTarget: game.enPassantTarget,
+      turn: game.turn === 'white' ? 'black' : 'white',
     }
 
     // Checks if moving piece involves other state changes

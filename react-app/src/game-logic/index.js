@@ -269,51 +269,101 @@ export const belongsToPlayer = (piece, player) => {
 
 }
 
-// export const findPieceBFS = (start, target, board) => {
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.prev = null;
+    this.next = null;
+  }
+}
 
-//   const queue = [start];
-//   const visited = new Set([start]);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
 
-//   const deltas = [
-//     [0, 1],
-//     [0, -1],
-//     [1, 0],
-//     [-1, 0],
-//     [1, 1],
-//     [-1, -1],
-//     [-1, 1],
-//     [1, -1],
-//   ]
+  enqueue(value) {
+    const newNode = new Node(value);
 
-//   while (queue.length) {
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      newNode.prev = this.tail;
+      this.tail = newNode;
+    }
 
-//     const curr = queue.shift();
-//     const [currR, currC] = toRowCol(curr);
+    this.length++;
+  }
 
-//     const piece = board[currR][currC];
-//     if (piece === target) return [currR, currC];
+  dequeue() {
+    if (!this.head) return null;
 
-//     for (const [diffR, diffC] of deltas) {
+    const temp = this.head;
+    if (this.head === this.tail) {
+      this.head = null;
+      this.tail = null;
+    } else {
+      this.head = this.head.next;
+      this.head.prev = null;
+      temp.next = null;
+    }
 
-//       const newR = currR - diffR;
-//       const newC = currC - diffC;
+    this.length--;
+    return temp.value;
+  }
+}
 
-//       const rowCheck = newR > -1 && newR < 8;
-//       const colCheck = newC > -1 && newC < 8;
+export const findPieceBFS = (start, target, board) => {
 
-//       if (rowCheck && colCheck) {
+  const queue = new Queue();
+  queue.enqueue(start)
 
-//         const square = toNotation([newR, newC]);
+  const visited = new Set([start]);
 
-//         if (!visited.has(square)) {
+  const deltas = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+    [1, 1],
+    [-1, -1],
+    [-1, 1],
+    [1, -1],
+  ]
 
-//           visited.add(square);
-//           queue.push(square);
+  while (queue.length) {
 
-//         }
-//       }
-//     }
-//   }
+    const curr = queue.dequeue();
+    const [currR, currC] = toRowCol(curr);
 
-//   return [null, null];
-// }
+    const piece = board[currR][currC];
+    if (piece === target) return [currR, currC];
+
+    for (const [diffR, diffC] of deltas) {
+
+      const newR = currR - diffR;
+      const newC = currC - diffC;
+
+      const rowCheck = newR > -1 && newR < 8;
+      const colCheck = newC > -1 && newC < 8;
+
+      if (rowCheck && colCheck) {
+
+        const square = toNotation([newR, newC]);
+
+        if (!visited.has(square)) {
+
+          visited.add(square);
+          queue.enqueue(square);
+
+        }
+      }
+    }
+  }
+
+  return [null, null];
+}
