@@ -177,6 +177,34 @@ export const start = [
   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
 ]
 
+export const initialGameState = {
+  board: start,
+  turn: 'white',
+  whiteKing: [7, 4],
+  blackKing: [0, 4],
+  whiteCanLong: true,
+  whiteCanShort: true,
+  blackCanLong: true,
+  blackCanShort: true,
+  enPassantTarget: ''
+}
+
+export const gameReducer = (state, action) => {
+  switch (action.type) {
+    case 'updateField':
+      return { ...state, [action.field]: action.value };
+
+    case 'reset':
+      return initialGameState;
+
+    case 'loadData':
+      return { ...state, ...action.payload };
+
+    default:
+      throw new Error('Unsupported action type');
+  }
+}
+
 // Creates a deep copy of the board state matrix
 export const copyBoard = (board) => {
   return board.map((row) => [...row]);
