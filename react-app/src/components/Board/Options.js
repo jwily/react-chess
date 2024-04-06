@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useMemo, useRef } from "react";
 
-import { isWhite } from "../../game-logic";
-import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
+import { initialGameState, isWhite } from "../../game-logic";
+import { useHistory, useParams } from "react-router-dom";
 
 const BUTTON_ORDER = [
   'reset',
@@ -13,7 +13,7 @@ const BUTTON_ORDER = [
 ]
 
 const Options = ({ player, setPlayer, socket, turn, offline,
-  setOffline, setSelected, resetGame, winner }) => {
+  setOffline, setSelected, updateGame, winner }) => {
 
   const copiedTimeout = useRef(null);
 
@@ -39,9 +39,9 @@ const Options = ({ player, setPlayer, socket, turn, offline,
   const resetBoard = useCallback((e) => {
 
     socket.emit("reset", matchCode);
-    resetGame();
+    updateGame(initialGameState);
 
-  }, [socket, resetGame, matchCode]);
+  }, [socket, updateGame, matchCode]);
 
   const switchPlayer = useCallback((e) => {
 

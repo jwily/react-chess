@@ -1,6 +1,26 @@
 import { belongsToPlayer, toNotation } from ".";
 import { endangersKing } from "./king";
 
+export const rookMoveEffects = (player) => {
+
+  const canLong = `${player}CanLong`;
+  const canShort = `${player}CanShort`;
+
+  return (currRC, targetRC, data) => {
+
+    const currC = currRC[1];
+
+    if (data[canShort] && currC === 7) {
+      data[canShort] = false;
+    } else if (data[canLong] && currC === 0) {
+      data[canLong] = false;
+    }
+
+    return data;
+
+  }
+}
+
 const longRangeMoves = (piece) => {
 
   const directions = [];

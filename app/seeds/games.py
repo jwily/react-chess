@@ -40,8 +40,8 @@ def seed_games():
                               ['P', 'P', 'P', 'P', '_', 'P', '_', 'P'],
                               ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
                           ])
-    new_en_passant = Game(code='promotion',
-                          board=[
+    new_promotion = Game(code='promotion',
+                         board=[
                               ['_', '_', '_', '_', 'k', '_', '_', '_'],
                               ['P', '_', 'P', '_', '_', '_', 'P', '_'],
                               ['_', '_', '_', '_', '_', '_', '_', '_'],
@@ -50,9 +50,9 @@ def seed_games():
                               ['_', '_', '_', '_', '_', '_', '_', '_'],
                               ['p', '_', 'p', '_', '_', '_', 'p', '_'],
                               ['_', '_', '_', '_', 'K', '_', '_', '_']
-                          ])
+                         ])
 
-    new_matches = [new_demo, new_castling, new_en_passant]
+    new_matches = [new_demo, new_castling, new_en_passant, new_promotion]
 
     for match in new_matches:
         db.session.add(match)

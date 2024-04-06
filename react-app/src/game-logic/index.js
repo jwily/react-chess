@@ -1,91 +1,9 @@
-import kingMoves from "./king";
 import knightMoves from "./knight";
-import pawnMoves from "./pawn";
-import longRangeMoves from "./long-range";
+import kingMoves, { kingMoveEffects } from "./king";
+import pawnMoves, { pawnMoveEffects } from "./pawn";
+import longRangeMoves, { rookMoveEffects } from "./long-range";
 
 export const isWhite = (player) => player === 'white';
-
-const pawnMoveEffects = (player) => {
-
-  const dir = isWhite(player) ? 1 : -1;
-  // const promotionRank = isWhite(player) ? 0 : 7;
-
-  return (currRC, targetRC, data) => {
-
-    const currR = currRC[0];
-    const [targetR, targetC] = targetRC;
-
-    if (Math.abs(currR - targetR) === 2) {
-      data.enPassantTarget = toNotation([targetR + dir, targetC])
-    } else if (toNotation([targetR, targetC]) === data.prevEnPassantTarget) {
-      data.board[currR][targetC] = '_';
-    }
-
-    // if (targetR === promotionRank) {
-    //   data.turn = data.turn === 'white' ? 'black' : 'white';
-    // }
-
-    return data;
-
-  }
-}
-
-const kingMoveEffects = (player) => {
-
-  const kingPosition = `${player}King`;
-  const canLong = `${player}CanLong`;
-  const canShort = `${player}CanShort`;
-
-  const startingRow = isWhite(player) ? 7 : 0;
-  const rookPiece = isWhite(player) ? 'R' : 'r';
-
-  return (currRC, targetRC, data) => {
-
-    const currC = currRC[1];
-    const targetC = targetRC[1];
-
-    data[kingPosition] = targetRC;
-
-    if (targetC - currC === 2) {
-      data.board[startingRow][7] = '_';
-      data.board[startingRow][5] = rookPiece;
-    } else if (currC - targetC === 2) {
-      data.board[startingRow][0] = '_';
-      data.board[startingRow][3] = rookPiece;
-    }
-
-    if (data[canLong]) {
-      data[canLong] = false;
-    }
-
-    if (data[canShort]) {
-      data[canShort] = false;
-    }
-
-    return data;
-
-  }
-}
-
-const rookMoveEffects = (player) => {
-
-  const canLong = `${player}CanLong`;
-  const canShort = `${player}CanShort`;
-
-  return (currRC, targetRC, data) => {
-
-    const currC = currRC[1];
-
-    if (data[canShort] && currC === 7) {
-      data[canShort] = false;
-    } else if (data[canLong] && currC === 0) {
-      data[canLong] = false;
-    }
-
-    return data;
-
-  }
-}
 
 // Traditionally, uppercase denotes white
 // while lowercase denotes black
@@ -177,6 +95,34 @@ export const start = [
   ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
 ]
 
+export const initialGameState = {
+  board: start,
+  turn: 'white',
+  whiteKing: [7, 4],
+  blackKing: [0, 4],
+  whiteCanLong: true,
+  whiteCanShort: true,
+  blackCanLong: true,
+  blackCanShort: true,
+  enPassantTarget: ''
+}
+
+export const gameReducer = (state, action) => {
+  switch (action.type) {
+    case 'updateField':
+      return { ...state, [action.field]: action.value };
+
+    case 'reset':
+      return initialGameState;
+
+    case 'loadData':
+      return { ...state, ...action.payload };
+
+    default:
+      throw new Error('Unsupported action type');
+  }
+}
+
 // Creates a deep copy of the board state matrix
 export const copyBoard = (board) => {
   return board.map((row) => [...row]);
@@ -241,51 +187,101 @@ export const belongsToPlayer = (piece, player) => {
 
 }
 
-// export const findPieceBFS = (start, target, board) => {
+class Node {
+  constructor(value) {
+    this.value = value;
+    this.prev = null;
+    this.next = null;
+  }
+}
 
-//   const queue = [start];
-//   const visited = new Set([start]);
+class Queue {
+  constructor() {
+    this.head = null;
+    this.tail = null;
+    this.length = 0;
+  }
 
-//   const deltas = [
-//     [0, 1],
-//     [0, -1],
-//     [1, 0],
-//     [-1, 0],
-//     [1, 1],
-//     [-1, -1],
-//     [-1, 1],
-//     [1, -1],
-//   ]
+  enqueue(value) {
+    const newNode = new Node(value);
 
-//   while (queue.length) {
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      newNode.prev = this.tail;
+      this.tail = newNode;
+    }
 
-//     const curr = queue.shift();
-//     const [currR, currC] = toRowCol(curr);
+    this.length++;
+  }
 
-//     const piece = board[currR][currC];
-//     if (piece === target) return [currR, currC];
+  dequeue() {
+    if (!this.head) return null;
 
-//     for (const [diffR, diffC] of deltas) {
+    const temp = this.head;
+    if (this.head === this.tail) {
+      this.head = null;
+      this.tail = null;
+    } else {
+      this.head = this.head.next;
+      this.head.prev = null;
+      temp.next = null;
+    }
 
-//       const newR = currR - diffR;
-//       const newC = currC - diffC;
+    this.length--;
+    return temp.value;
+  }
+}
 
-//       const rowCheck = newR > -1 && newR < 8;
-//       const colCheck = newC > -1 && newC < 8;
+export const findPieceBFS = (start, target, board) => {
 
-//       if (rowCheck && colCheck) {
+  const queue = new Queue();
+  queue.enqueue(start)
 
-//         const square = toNotation([newR, newC]);
+  const visited = new Set([start]);
 
-//         if (!visited.has(square)) {
+  const deltas = [
+    [0, 1],
+    [0, -1],
+    [1, 0],
+    [-1, 0],
+    [1, 1],
+    [-1, -1],
+    [-1, 1],
+    [1, -1],
+  ]
 
-//           visited.add(square);
-//           queue.push(square);
+  while (queue.length) {
 
-//         }
-//       }
-//     }
-//   }
+    const curr = queue.dequeue();
+    const [currR, currC] = toRowCol(curr);
 
-//   return [null, null];
-// }
+    const piece = board[currR][currC];
+    if (piece === target) return [currR, currC];
+
+    for (const [diffR, diffC] of deltas) {
+
+      const newR = currR - diffR;
+      const newC = currC - diffC;
+
+      const rowCheck = newR > -1 && newR < 8;
+      const colCheck = newC > -1 && newC < 8;
+
+      if (rowCheck && colCheck) {
+
+        const square = toNotation([newR, newC]);
+
+        if (!visited.has(square)) {
+
+          visited.add(square);
+          queue.enqueue(square);
+
+        }
+      }
+    }
+  }
+
+  return [null, null];
+}
