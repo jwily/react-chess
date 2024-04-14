@@ -59,19 +59,27 @@ body {
   z-index: 1;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, .35);
   border-radius: 10px;
+  cursor: default;
 }
 
 .promotion-grid.black {
-  background-color: rgba(200, 200, 200, .95);
+  background-color: rgba(225, 225, 225, 1);
 }
 
 .promotion-grid.white {
-  background-color: rgba(60, 50, 50, .95);
+  background-color: rgba(85, 75, 75, 1);
 }
 
-.promotion-grid>span {
+.promotion-grid>button {
   height: 7rem;
   width: 7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid transparent;
+  background-color: transparent;
+  border-radius: 10px;
 }
 
 .square {
@@ -129,11 +137,13 @@ body {
   cursor: pointer;
 }
 
-.selectable.dark:hover {
+.selectable.dark:hover,
+.promotion-grid.white>button:hover {
   border: 3px solid rgba(200, 200, 200, .75);
 }
 
-.selectable.light:hover {
+.selectable.light:hover,
+.promotion-grid.black>button:hover {
   border: 3px solid rgba(60, 50, 50, .75);
 }
 
