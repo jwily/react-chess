@@ -295,7 +295,7 @@ const Board = ({ freshGame, setFreshGame }) => {
         const enPassantPawn = game.enPassantTarget && notation[0] === game.enPassantTarget[0] && notation[1] === selected[1];
         const displayEnPassant = enPassantPawn && hoverState === 'ep';
 
-        const isPromoting = (piece === 'P' && r === 0) || (piece === 'p' && r === 7);
+        const isPromoting = (piece === 'P' && r === 0 && player === 'white') || (piece === 'p' && r === 7 && player === 'black');
 
         squares.push((
           <Square
