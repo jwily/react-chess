@@ -5,7 +5,12 @@ import './pieces.css';
 const Promotion = () => {
 
   return (
-    <div>Blip</div>
+    <span className="promotion-grid">
+      <span>Q</span>
+      <span>B</span>
+      <span>N</span>
+      <span>R</span>
+    </span>
   )
 
 }

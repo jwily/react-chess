@@ -105,10 +105,6 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
 
   }, [])
 
-  if (isPromoting) {
-    return <Promotion />
-  }
-
   let PieceComponent = RENDER_DATA[piece]['image'];
 
   if (isPossible && displayCastling) PieceComponent = Rook;
@@ -155,7 +151,8 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
       }
       id={notation} >
-      {PieceComponent && <PieceComponent className={determinePieceClass(piece)} />}
+      {PieceComponent && !isPromoting && <PieceComponent className={determinePieceClass(piece)} />}
+      {isPromoting && <Promotion />}
     </span >
   )
 })
