@@ -6,10 +6,10 @@ const Promotion = () => {
 
   return (
     <span className="promotion-grid">
-      <span>Q</span>
-      <span>B</span>
-      <span>N</span>
-      <span>R</span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
     </span>
   )
 

@@ -151,8 +151,8 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
       }
       id={notation} >
-      {PieceComponent && !isPromoting && <PieceComponent className={determinePieceClass(piece)} />}
-      {isPromoting && <Promotion />}
+      {PieceComponent && <PieceComponent className={determinePieceClass(piece)} />}
+      {isPromoting && !animated && <Promotion />}
     </span >
   )
 })
