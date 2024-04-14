@@ -5,7 +5,7 @@ import './pieces.css';
 const Promotion = () => {
 
   return (
-    <div></div>
+    <div>Blip</div>
   )
 
 }

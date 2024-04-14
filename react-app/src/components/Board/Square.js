@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import './pieces.css';
-
+import Promotion from '../Board/Promotion';
 import { toRowCol } from '../../game-logic';
 import determineAnimation from "./animations";
 
@@ -11,6 +10,8 @@ import { ReactComponent as Bishop } from '../../images/bishop.svg'
 import { ReactComponent as Rook } from '../../images/rook.svg'
 import { ReactComponent as Knight } from '../../images/knight.svg'
 import { ReactComponent as Pawn } from '../../images/pawn.svg'
+
+import './pieces.css';
 
 const RENDER_DATA = {
   'K': {
@@ -103,6 +104,10 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
     return () => clearTimeout(removeAnimation);
 
   }, [])
+
+  if (isPromoting) {
+    return <Promotion />
+  }
 
   let PieceComponent = RENDER_DATA[piece]['image'];
 
