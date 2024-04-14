@@ -87,7 +87,7 @@ const animationClasses = [
   ' fade-in-slow',
 ]
 
-const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
+const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromoting,
   isSelectable, isSelected, isPossible, fadeType, displayCastling, displayEnPassant }) => {
 
   const [animated, setAnimated] = useState(true);
