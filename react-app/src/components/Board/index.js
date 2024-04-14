@@ -82,16 +82,6 @@ const Board = ({ freshGame, setFreshGame }) => {
         data.whiteKing = findPieceBFS('e1', 'K', data.board);
         data.blackKing = findPieceBFS('e8', 'k', data.board);
 
-        // for (let r = 0; r < 8; r++) {
-        //   for (let c = 0; c < 8; c++) {
-
-        //     const piece = data.board[r][c];
-
-        //     if (piece === 'K') data.whiteKing = [r, c];
-        //     else if (piece === 'k') data.blackKing = [r, c];
-        //   }
-        // }
-
         // Updates state with saved game data
         loadData(data);
         setLoaded(true);
@@ -305,6 +295,8 @@ const Board = ({ freshGame, setFreshGame }) => {
         const enPassantPawn = game.enPassantTarget && notation[0] === game.enPassantTarget[0] && notation[1] === selected[1];
         const displayEnPassant = enPassantPawn && hoverState === 'ep';
 
+        const isPromoting = (piece === 'P' && r === 0 && player === 'white') || (piece === 'p' && r === 7 && player === 'black');
+
         squares.push((
           <Square
             key={notation}
@@ -319,6 +311,7 @@ const Board = ({ freshGame, setFreshGame }) => {
             isPossible={possibleMoves.has(notation)}
 
             isEnPassantTarget={isEnPassantTarget}
+            isPromoting={isPromoting}
 
             // These two props will turn to 'true' under specific conditions
             // adding a class to the relevant squares to visually represent special moves

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import './pieces.css';
-
+import Promotion from '../Board/Promotion';
 import { toRowCol } from '../../game-logic';
 import determineAnimation from "./animations";
 
@@ -11,6 +10,8 @@ import { ReactComponent as Bishop } from '../../images/bishop.svg'
 import { ReactComponent as Rook } from '../../images/rook.svg'
 import { ReactComponent as Knight } from '../../images/knight.svg'
 import { ReactComponent as Pawn } from '../../images/pawn.svg'
+
+import './pieces.css';
 
 const RENDER_DATA = {
   'K': {
@@ -87,7 +88,7 @@ const animationClasses = [
   ' fade-in-slow',
 ]
 
-const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
+const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromoting,
   isSelectable, isSelected, isPossible, fadeType, displayCastling, displayEnPassant }) => {
 
   const [animated, setAnimated] = useState(true);
@@ -151,6 +152,7 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget,
       }
       id={notation} >
       {PieceComponent && <PieceComponent className={determinePieceClass(piece)} />}
+      {isPromoting && !animated && <Promotion player={player} data={RENDER_DATA} />}
     </span >
   )
 })

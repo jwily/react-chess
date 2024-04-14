@@ -45,10 +45,47 @@ body {
   gap: 10px;
 }
 
+.promotion-grid {
+  width: calc(7rem + 20px);
+  height: calc(28rem + 50px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  position: absolute;
+  top: -13px;
+  bottom: -3px;
+  animation: fadeIn .2s ease-in-out 1 forwards;
+  z-index: 1;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, .35);
+  border-radius: 10px;
+  cursor: default;
+}
+
+.promotion-grid.black {
+  background-color: rgba(225, 225, 225, 1);
+}
+
+.promotion-grid.white {
+  background-color: rgba(85, 75, 75, 1);
+}
+
+.promotion-grid>button {
+  height: 7rem;
+  width: 7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid transparent;
+  background-color: transparent;
+  border-radius: 10px;
+}
+
 .square {
   height: 7rem;
   width: 7rem;
-  /* position: relative; */
+  position: relative;
 
   transition: border .15s;
 
@@ -56,7 +93,7 @@ body {
   justify-content: center;
   align-items: center;
 
-  line-height: 0px;
+  /* line-height: 0px; */
 }
 
 /* @media (max-width: 800px) {
@@ -100,11 +137,13 @@ body {
   cursor: pointer;
 }
 
-.selectable.dark:hover {
+.selectable.dark:hover,
+.promotion-grid.white>button:hover {
   border: 3px solid rgba(200, 200, 200, .75);
 }
 
-.selectable.light:hover {
+.selectable.light:hover,
+.promotion-grid.black>button:hover {
   border: 3px solid rgba(60, 50, 50, .75);
 }
 
