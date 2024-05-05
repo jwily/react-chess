@@ -27,9 +27,9 @@ const Board = ({ freshGame, setFreshGame }) => {
 
   const [game, dispatch] = useReducer(gameReducer, initialGameState);
 
-  useEffect(() => {
-    console.log(game);
-  }, [game])
+  // useEffect(() => {
+  //   console.log(game);
+  // }, [game])
 
   // Location of the selected piece is represented in algebraic notation (i.e. 'a8')
   const [selected, setSelected] = useState('');

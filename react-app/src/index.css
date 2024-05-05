@@ -64,28 +64,11 @@ body {
   z-index: 1;
 }
 
-.promotion-close {
-  position: absolute;
-  bottom: -3.4rem;
-  height: 4rem;
-  width: 4rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.6rem;
-  border: 3px solid transparent;
-  cursor: pointer;
-  border-radius: 4rem;
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, .35);
-}
-
-.promotion-grid.light button:hover,
-.promotion-grid.light .promotion-close:hover {
+.promotion-grid.light button:hover {
   border: 3px solid rgba(60, 50, 50, .75);
 }
 
-.promotion-grid.dark button:hover,
-.promotion-grid.dark .promotion-close:hover {
+.promotion-grid.dark button:hover {
   border: 3px solid rgba(200, 200, 200, .75);
 }
 
@@ -111,6 +94,22 @@ body {
   border: 3px solid transparent;
   background-color: transparent;
   border-radius: 5px;
+}
+
+
+.promotion-close {
+  align-items: center;
+  bottom: -3.4rem;
+  border: 3px solid transparent;
+  border-radius: 4rem;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, .35);
+  cursor: pointer;
+  display: flex;
+  font-size: 1.6rem;
+  height: 4rem;
+  justify-content: center;
+  position: absolute;
+  width: 4rem;
 }
 
 .square {
