@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Promotion from '../Board/Promotion';
-import { isWhite, toRowCol } from '../../game-logic';
+import { toRowCol } from '../../game-logic';
 import determineAnimation from "./animations";
 
 import { ReactComponent as King } from '../../images/king.svg'
@@ -138,7 +138,8 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
 
     const isAttackable = isPossible && (piece !== '_' || isEnPassantTarget);
 
-    if (isAttackable) return ' targeted';
+    if (isPromoting) return ' promoting';
+    else if (isAttackable) return ' targeted';
     else if (isPossible) return ' possible';
     else if (isSelected) return ' selected';
     else if (isSelectable) return ' selectable';
@@ -152,7 +153,6 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
         determineColor()
         + determineStatus()
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
-        + (isPromoting ? ' promoting' : '')
       }
       id={notation}
       onClick={(e) => {
@@ -163,7 +163,7 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
       }}>
       {PieceComponent && <PieceComponent className={determinePieceClass(piece)} />}
       {isPromoting && <Promotion player={player} data={RENDER_DATA}
-        promotionOpen={promotionOpen} setPromotionOpen={setPromotionOpen} animated={animated} />}
+        promotionOpen={promotionOpen} setPromotionOpen={setPromotionOpen} squareColor={determineColor().split(' ')[0]} />}
     </span >
   )
 })

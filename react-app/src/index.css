@@ -79,23 +79,25 @@ body {
   box-shadow: 5px 5px 10px rgba(0, 0, 0, .35);
 }
 
-.promotion-grid.black .promotion-close:hover {
+.promotion-grid.light button:hover,
+.promotion-grid.light .promotion-close:hover {
   border: 3px solid rgba(60, 50, 50, .75);
 }
 
-.promotion-grid.white .promotion-close:hover {
+.promotion-grid.dark button:hover,
+.promotion-grid.dark .promotion-close:hover {
   border: 3px solid rgba(200, 200, 200, .75);
 }
 
-.promotion-grid.black,
-.promotion-grid.black .promotion-close {
-  background-color: rgba(200, 200, 200);
+.promotion-grid.light,
+.promotion-grid.light .promotion-close {
+  background-color: rgba(215, 215, 215);
   color: rgba(0, 0, 0, .95)
 }
 
-.promotion-grid.white,
-.promotion-grid.white .promotion-close {
-  background-color: rgba(70, 60, 60);
+.promotion-grid.dark,
+.promotion-grid.dark .promotion-close {
+  background-color: rgba(75, 65, 65);
   color: rgba(255, 255, 255, .95);
 }
 
@@ -159,6 +161,7 @@ body {
   align-items: center;
 }
 
+.promoting,
 .selected,
 .possible,
 .targeted,
