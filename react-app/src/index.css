@@ -55,11 +55,13 @@ body {
   position: absolute;
   top: -13px;
   bottom: -3px;
-  animation: fadeIn .2s ease-in-out 1 forwards;
-  z-index: 1;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, .35);
   border-radius: 5px;
   cursor: default;
+}
+
+.square.promoting {
+  z-index: 1;
 }
 
 .promotion-close {
@@ -87,13 +89,13 @@ body {
 
 .promotion-grid.black,
 .promotion-grid.black .promotion-close {
-  background-color: rgba(225, 225, 225);
+  background-color: rgba(200, 200, 200);
   color: rgba(0, 0, 0, .95)
 }
 
 .promotion-grid.white,
 .promotion-grid.white .promotion-close {
-  background-color: rgba(85, 75, 75);
+  background-color: rgba(70, 60, 60);
   color: rgba(255, 255, 255, .95);
 }
 
@@ -332,6 +334,20 @@ body {
 
   to {
     opacity: 0;
+  }
+}
+
+@keyframes fadePromo {
+  0% {
+    opacity: 0;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
 

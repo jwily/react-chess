@@ -3,14 +3,14 @@ import React from "react";
 import './pieces.css';
 import { isWhite } from "../../game-logic";
 
-const Promotion = ({ player, data, promotionOpen, setPromotionOpen }) => {
+const Promotion = ({ player, data, promotionOpen, setPromotionOpen, animated }) => {
 
   const pieces = isWhite(player) ? ['Q', 'N', 'R', 'B'] : ['q', 'n', 'r', 'b'];
 
   if (!promotionOpen) return null;
 
   return (
-    <div className={`promotion-grid white`}>
+    <div className={`promotion-grid white ${animated ? 'animated' : ''}`}>
       {pieces.map(piece => {
 
         const { color, name, image } = data[piece];

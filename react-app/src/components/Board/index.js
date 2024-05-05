@@ -303,7 +303,8 @@ const Board = ({ freshGame, setFreshGame }) => {
         const enPassantPawn = notation[0] === game.enPassantTarget[0] && notation[1] === selected[1];
         const displayEnPassant = enPassantPawn && hoverState === 'ep';
 
-        const isPromoting = game.pawnPromotion === notation;
+        const isPromoting = game.pawnPromotion === notation &&
+          ((isWhite(player) && game.pawnPromotion[1] === '8') || (!isWhite(player) && game.pawnPromotion[1] === '1'));
 
         squares.push((
           <Square

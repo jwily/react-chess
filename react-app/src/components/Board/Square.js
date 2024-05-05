@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 import Promotion from '../Board/Promotion';
-import { toRowCol } from '../../game-logic';
+import { isWhite, toRowCol } from '../../game-logic';
 import determineAnimation from "./animations";
 
 import { ReactComponent as King } from '../../images/king.svg'
@@ -94,7 +94,7 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
   const [animated, setAnimated] = useState(true);
   const [promotionOpen, setPromotionOpen] = useState(true);
 
-  // console.log('Square Rendered');
+  console.log('Square Rendered');
 
   useEffect(() => {
 
@@ -145,12 +145,14 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
     else return '';
   }
 
+
   return (
     <span
       className={
         determineColor()
         + determineStatus()
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
+        + (isPromoting ? ' promoting' : '')
       }
       id={notation}
       onClick={(e) => {
@@ -160,8 +162,8 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
         }
       }}>
       {PieceComponent && <PieceComponent className={determinePieceClass(piece)} />}
-      {isPromoting && !animated && <Promotion player={player} data={RENDER_DATA}
-        promotionOpen={promotionOpen} setPromotionOpen={setPromotionOpen} />}
+      {isPromoting && <Promotion player={player} data={RENDER_DATA}
+        promotionOpen={promotionOpen} setPromotionOpen={setPromotionOpen} animated={animated} />}
     </span >
   )
 })
