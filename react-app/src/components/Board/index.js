@@ -8,7 +8,7 @@ import Options from './Options';
 import {
   pieceData, toRowCol, isWhite,
   toNotation, copyBoard, isCheckmated, movePiece,
-  initialGameState, gameReducer, findPieceBFS
+  initialGameState, gameReducer, findPieceBFS, checkForPromotion
 } from '../../game-logic';
 
 import { kingChecked } from '../../game-logic/king';
@@ -26,6 +26,10 @@ const Board = ({ freshGame, setFreshGame }) => {
   const [checkedPlayer, setCheckedPlayer] = useState('');
 
   const [game, dispatch] = useReducer(gameReducer, initialGameState);
+
+  useEffect(() => {
+    console.log(game);
+  }, [game])
 
   // Location of the selected piece is represented in algebraic notation (i.e. 'a8')
   const [selected, setSelected] = useState('');
@@ -82,6 +86,9 @@ const Board = ({ freshGame, setFreshGame }) => {
         data.whiteKing = findPieceBFS('e1', 'K', data.board);
         data.blackKing = findPieceBFS('e8', 'k', data.board);
 
+        // Identifies if a pawn is currently awaiting promotion
+        data.pawnPromotion = checkForPromotion(data.board);
+
         // Updates state with saved game data
         loadData(data);
         setLoaded(true);
@@ -99,6 +106,8 @@ const Board = ({ freshGame, setFreshGame }) => {
 
     socket.on("move", (gameState) => {
       if (freshGame === matchCode) setFreshGame('');
+      delete gameState.room;
+      delete gameState.prevEnPassantTarget;
       loadData(gameState);
     })
 
@@ -233,10 +242,9 @@ const Board = ({ freshGame, setFreshGame }) => {
       }
     }
 
-    if (game.enPassantTarget) {
-      if (game.enPassantTarget === e.target.id
-        && e.target.className.includes('targeted')) setHoverState('ep');
-    }
+    if (game.enPassantTarget === e.target.id
+      && e.target.className.includes('targeted')) setHoverState('ep');
+
   }
 
   const possibleMoves = useMemo(() => {
@@ -283,7 +291,7 @@ const Board = ({ freshGame, setFreshGame }) => {
         const piece = game.board[r][c];
         const notation = toNotation([r, c]);
 
-        const isSelectable = !winner && game.turn === player && piece !== '_' && pieceData[piece]['player'] === player;
+        const isSelectable = !winner && game.turn === player && !game.pawnPromotion && piece !== '_' && pieceData[piece]['player'] === player;
 
         const castleLongSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 7 || c === 5);
         const castleShortSquare = (isWhite(player) ? r === 7 : r === 0) && (c === 0 || c === 3);
@@ -292,10 +300,11 @@ const Board = ({ freshGame, setFreshGame }) => {
           (castleLongSquare && hoverState === 'long') || (castleShortSquare && hoverState === 'short');
 
         const isEnPassantTarget = game.enPassantTarget === notation;
-        const enPassantPawn = game.enPassantTarget && notation[0] === game.enPassantTarget[0] && notation[1] === selected[1];
+        const enPassantPawn = notation[0] === game.enPassantTarget[0] && notation[1] === selected[1];
         const displayEnPassant = enPassantPawn && hoverState === 'ep';
 
-        const isPromoting = (piece === 'P' && r === 0 && player === 'white') || (piece === 'p' && r === 7 && player === 'black');
+        const isPromoting = game.pawnPromotion === notation &&
+          ((isWhite(player) && game.pawnPromotion[1] === '8') || (!isWhite(player) && game.pawnPromotion[1] === '1'));
 
         squares.push((
           <Square
@@ -328,7 +337,7 @@ const Board = ({ freshGame, setFreshGame }) => {
     return squares;
 
   }, [game.board, player, possibleMoves, game.turn, selected,
-    winner, fadeType, game.enPassantTarget, hoverState])
+    winner, fadeType, game.enPassantTarget, game.pawnPromotion, hoverState])
 
   if (notFound) {
     return <div className='not-found fade-in-error'>Match Not Found</div>

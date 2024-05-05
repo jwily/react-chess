@@ -92,8 +92,9 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
   isSelectable, isSelected, isPossible, fadeType, displayCastling, displayEnPassant }) => {
 
   const [animated, setAnimated] = useState(true);
+  const [promotionOpen, setPromotionOpen] = useState(true);
 
-  // console.log('Square Rendered');
+  console.log('Square Rendered');
 
   useEffect(() => {
 
@@ -128,20 +129,23 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
 
   }
 
-  const isAttackable = isPossible && (piece !== '_' || isEnPassantTarget);
-
   const determineColor = () => {
     const [row, col] = toRowCol(notation);
     return (row + col) % 2 === 0 ? 'light square' : 'dark square'
   }
 
   const determineStatus = () => {
-    if (isAttackable) return ' targeted';
+
+    const isAttackable = isPossible && (piece !== '_' || isEnPassantTarget);
+
+    if (isPromoting) return ' promoting';
+    else if (isAttackable) return ' targeted';
     else if (isPossible) return ' possible';
     else if (isSelected) return ' selected';
     else if (isSelectable) return ' selectable';
     else return '';
   }
+
 
   return (
     <span
@@ -150,9 +154,16 @@ const Square = React.memo(({ notation, piece, player, isEnPassantTarget, isPromo
         + determineStatus()
         + (animated ? animationClasses[determineAnimation(notation, fadeType)] : '')
       }
-      id={notation} >
+      id={notation}
+      onClick={(e) => {
+        if (isPromoting) {
+          e.stopPropagation();
+          setPromotionOpen(true);
+        }
+      }}>
       {PieceComponent && <PieceComponent className={determinePieceClass(piece)} />}
-      {isPromoting && !animated && <Promotion player={player} data={RENDER_DATA} />}
+      {isPromoting && <Promotion player={player} data={RENDER_DATA}
+        promotionOpen={promotionOpen} setPromotionOpen={setPromotionOpen} squareColor={determineColor().split(' ')[0]} />}
     </span >
   )
 })

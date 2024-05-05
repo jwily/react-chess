@@ -4,7 +4,7 @@ import { endangersKing } from "./king";
 export const pawnMoveEffects = (player) => {
 
   const dir = isWhite(player) ? 1 : -1;
-  // const promotionRank = isWhite(player) ? 0 : 7;
+  const promotionRank = isWhite(player) ? 0 : 7;
 
   return (currRC, targetRC, data) => {
 
@@ -17,9 +17,10 @@ export const pawnMoveEffects = (player) => {
       data.board[currR][targetC] = '_';
     }
 
-    // if (targetR === promotionRank) {
-    //   data.turn = data.turn === 'white' ? 'black' : 'white';
-    // }
+    if (targetR === promotionRank) {
+      data.pawnPromotion = toNotation([targetR, targetC]);
+      data.turn = data.turn === 'white' ? 'black' : 'white';
+    }
 
     return data;
 

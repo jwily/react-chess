@@ -55,22 +55,53 @@ body {
   position: absolute;
   top: -13px;
   bottom: -3px;
-  animation: fadeIn .2s ease-in-out 1 forwards;
-  z-index: 1;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, .35);
-  border-radius: 10px;
+  border-radius: 5px;
   cursor: default;
 }
 
-.promotion-grid.black {
-  background-color: rgba(225, 225, 225, 1);
+.square.promoting {
+  z-index: 1;
 }
 
-.promotion-grid.white {
-  background-color: rgba(85, 75, 75, 1);
+.promotion-close {
+  position: absolute;
+  bottom: -3.4rem;
+  height: 4rem;
+  width: 4rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.6rem;
+  border: 3px solid transparent;
+  cursor: pointer;
+  border-radius: 4rem;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, .35);
 }
 
-.promotion-grid>button {
+.promotion-grid.light button:hover,
+.promotion-grid.light .promotion-close:hover {
+  border: 3px solid rgba(60, 50, 50, .75);
+}
+
+.promotion-grid.dark button:hover,
+.promotion-grid.dark .promotion-close:hover {
+  border: 3px solid rgba(200, 200, 200, .75);
+}
+
+.promotion-grid.light,
+.promotion-grid.light .promotion-close {
+  background-color: rgba(215, 215, 215);
+  color: rgba(0, 0, 0, .95)
+}
+
+.promotion-grid.dark,
+.promotion-grid.dark .promotion-close {
+  background-color: rgba(75, 65, 65);
+  color: rgba(255, 255, 255, .95);
+}
+
+.promotion-grid>button:not(:last-child) {
   height: 7rem;
   width: 7rem;
   cursor: pointer;
@@ -79,7 +110,7 @@ body {
   justify-content: center;
   border: 3px solid transparent;
   background-color: transparent;
-  border-radius: 10px;
+  border-radius: 5px;
 }
 
 .square {
@@ -130,6 +161,7 @@ body {
   align-items: center;
 }
 
+.promoting,
 .selected,
 .possible,
 .targeted,
@@ -138,12 +170,12 @@ body {
 }
 
 .selectable.dark:hover,
-.promotion-grid.white>button:hover {
+.promotion-grid.white>button:hover:not(:last-child) {
   border: 3px solid rgba(200, 200, 200, .75);
 }
 
 .selectable.light:hover,
-.promotion-grid.black>button:hover {
+.promotion-grid.black>button:hover:not(:last-child) {
   border: 3px solid rgba(60, 50, 50, .75);
 }
 
@@ -305,6 +337,20 @@ body {
 
   to {
     opacity: 0;
+  }
+}
+
+@keyframes fadePromo {
+  0% {
+    opacity: 0;
+  }
+
+  80% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
 
