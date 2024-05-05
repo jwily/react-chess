@@ -104,7 +104,8 @@ export const initialGameState = {
   whiteCanShort: true,
   blackCanLong: true,
   blackCanShort: true,
-  enPassantTarget: ''
+  enPassantTarget: '',
+  pawnPromotion: '',
 }
 
 export const gameReducer = (state, action) => {
@@ -284,4 +285,21 @@ export const findPieceBFS = (start, target, board) => {
   }
 
   return [null, null];
+}
+
+export const checkForPromotion = (board) => {
+
+  const firstRow = board[0];
+  const eigthRow = board[7];
+
+  for (let i = 0; i <= 7; i++) {
+    if (firstRow[i] === 'P') return toNotation([0, i]);
+  }
+
+  for (let i = 0; i <= 7; i++) {
+    if (eigthRow[i] === 'p') return toNotation([7, i]);
+  }
+
+  return '';
+
 }
